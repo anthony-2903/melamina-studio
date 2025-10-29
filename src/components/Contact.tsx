@@ -3,10 +3,19 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Phone, Mail, MapPin } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { motion } from "framer-motion";
+
+// <-- Reemplaza con tu endpoint real de Formspree
+const FORM_ENDPOINT = "https://formspree.io/f/xvgvrgbo";
 
 const Contact = () => {
   const { toast } = useToast();
@@ -16,17 +25,41 @@ const Contact = () => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    setTimeout(() => {
-      toast({
-        title: "¡Mensaje enviado!",
-        description: "Nos pondremos en contacto contigo pronto.",
+    const form = e.target as HTMLFormElement;
+    const formData = new FormData(form);
+
+    try {
+      const response = await fetch(FORM_ENDPOINT, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+        },
+        body: formData,
       });
+
+      if (response.ok) {
+        toast({
+          title: "¡Mensaje enviado!",
+          description: "Nos pondremos en contacto contigo pronto.",
+        });
+        form.reset();
+      } else {
+        toast({
+          title: "Error",
+          description: "Ocurrió un error al enviar el mensaje.",
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "No se pudo enviar el mensaje. Intenta nuevamente.",
+      });
+    } finally {
       setIsSubmitting(false);
-      (e.target as HTMLFormElement).reset();
-    }, 1000);
+    }
   };
 
-  // Variants
+  // Variants para animaciones
   const textVariants = { hidden: { opacity: 0, y: -30 }, visible: { opacity: 1, y: 0, transition: { duration: 0.8 } } };
   const infoVariants = { hidden: { opacity: 0, x: -50 }, visible: { opacity: 1, x: 0, transition: { duration: 0.8 } } };
   const formVariants = { hidden: { opacity: 0, x: 50 }, visible: { opacity: 1, x: 0, transition: { duration: 0.8 } } };
@@ -90,7 +123,8 @@ const Contact = () => {
               <div>
                 <h3 className="font-heading font-semibold text-foreground mb-1">Dirección</h3>
                 <p className="text-muted-foreground">
-                  Av. Principal 123, Distrito<br />
+                  Av. Principal 123, Distrito
+                  <br />
                   Lima, Perú
                 </p>
               </div>
@@ -99,7 +133,8 @@ const Contact = () => {
             <div className="pt-6">
               <h3 className="font-heading font-semibold text-foreground mb-3">Horario de Atención</h3>
               <p className="text-muted-foreground">
-                Lunes a Viernes: 9:00 AM - 6:00 PM<br />
+                Lunes a Viernes: 9:00 AM - 6:00 PM
+                <br />
                 Sábados: 9:00 AM - 1:00 PM
               </p>
             </div>
@@ -120,7 +155,7 @@ const Contact = () => {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="phone">Teléfono</Label>
-                  <Input id="phone" name="phone" type="tel" required placeholder="+51 999 999 999" />
+                  <Input id="phone" name="phone" type="tel" required placeholder="Ingrese su número" />
                 </div>
               </div>
 
@@ -132,15 +167,25 @@ const Contact = () => {
               <div className="space-y-2">
                 <Label htmlFor="project-type">Tipo de proyecto</Label>
                 <Select name="project-type">
-                  <SelectTrigger>
+                  <SelectTrigger className="bg-card border border-border">
                     <SelectValue placeholder="Selecciona un tipo" />
                   </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="cocina">Cocina</SelectItem>
-                    <SelectItem value="sala">Sala</SelectItem>
-                    <SelectItem value="empotrado">Empotrado</SelectItem>
-                    <SelectItem value="oficina">Oficina</SelectItem>
-                    <SelectItem value="otro">Otro</SelectItem>
+                  <SelectContent className="bg-card border border-border">
+                    <SelectItem value="cocina" className="bg-card">
+                      Cocina
+                    </SelectItem>
+                    <SelectItem value="sala" className="bg-card">
+                      Sala
+                    </SelectItem>
+                    <SelectItem value="empotrado" className="bg-card">
+                      Empotrado
+                    </SelectItem>
+                    <SelectItem value="oficina" className="bg-card">
+                      Oficina
+                    </SelectItem>
+                    <SelectItem value="otro" className="bg-card">
+                      Otro
+                    </SelectItem>
                   </SelectContent>
                 </Select>
               </div>

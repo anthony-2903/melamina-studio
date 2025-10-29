@@ -2,7 +2,7 @@ import { MessageCircle } from "lucide-react";
 import { motion } from "framer-motion";
 
 const WhatsAppFloat = () => {
-  const phoneNumber = "51999999999";
+  const phoneNumber = "51914299860";
   const message = "Hola, me gustaría solicitar información sobre sus muebles de melamina.";
   const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
 
