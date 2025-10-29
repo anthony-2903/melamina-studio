@@ -1,5 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Star } from "lucide-react";
+import { motion } from "framer-motion";
 
 const testimonials = [
   {
@@ -22,43 +23,75 @@ const testimonials = [
   },
 ];
 
+// Variants para container
+const containerVariants = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.25,
+    },
+  },
+};
+
+// Variants para cada tarjeta
+const cardVariants = {
+  hidden: { opacity: 0, y: 50, scale: 0.95 },
+  visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.8 } },
+};
+
 const Testimonials = () => {
   return (
     <section className="py-20 bg-muted">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-12 animate-fade-up">
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-foreground mb-4">
+        {/* Título */}
+        <motion.div
+          className="text-center mb-12"
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+        >
+          <motion.h2
+            className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-foreground mb-4"
+            variants={{ hidden: { opacity: 0, y: -30 }, visible: { opacity: 1, y: 0, transition: { duration: 0.8 } } }}
+          >
             Lo que dicen nuestros clientes
-          </h2>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+          </motion.h2>
+          <motion.p
+            className="text-muted-foreground text-lg max-w-2xl mx-auto"
+            variants={{ hidden: { opacity: 0, y: -20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.8 } } }}
+          >
             La satisfacción de nuestros clientes es nuestra mejor carta de presentación
-          </p>
-        </div>
+          </motion.p>
+        </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {testimonials.map((testimonial, index) => (
-            <Card
-              key={testimonial.name}
-              className="hover:shadow-xl transition-all duration-300 animate-fade-up"
-              style={{ animationDelay: `${index * 0.1}s` }}
-            >
-              <CardContent className="p-6">
-                <div className="flex mb-4">
-                  {[...Array(testimonial.rating)].map((_, i) => (
-                    <Star key={i} className="w-5 h-5 fill-secondary text-secondary" />
-                  ))}
-                </div>
-                <p className="text-muted-foreground mb-6 italic">
-                  "{testimonial.content}"
-                </p>
-                <div className="border-t border-border pt-4">
-                  <p className="font-semibold text-card-foreground">{testimonial.name}</p>
-                  <p className="text-sm text-muted-foreground">{testimonial.role}</p>
-                </div>
-              </CardContent>
-            </Card>
+        {/* Grid de testimonials */}
+        <motion.div
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+        >
+          {testimonials.map((testimonial) => (
+            <motion.div key={testimonial.name} variants={cardVariants}>
+              <Card className="hover:shadow-xl transition-all duration-300">
+                <CardContent className="p-6">
+                  <div className="flex mb-4">
+                    {[...Array(testimonial.rating)].map((_, i) => (
+                      <Star key={i} className="w-5 h-5 fill-secondary text-secondary" />
+                    ))}
+                  </div>
+                  <p className="text-muted-foreground mb-6 italic">
+                    "{testimonial.content}"
+                  </p>
+                  <div className="border-t border-border pt-4">
+                    <p className="font-semibold text-card-foreground">{testimonial.name}</p>
+                    <p className="text-sm text-muted-foreground">{testimonial.role}</p>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );

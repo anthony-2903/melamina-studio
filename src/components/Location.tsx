@@ -1,19 +1,47 @@
+import { motion } from "framer-motion";
+
 const Location = () => {
+  // Variants para el texto principal
+  const textVariants = {
+    hidden: { opacity: 0, y: -30 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.8 } },
+  };
+
+  // Variants para la tarjeta del mapa
+  const cardVariants = {
+    hidden: { opacity: 0, scale: 0.95 },
+    visible: { opacity: 1, scale: 1, transition: { duration: 0.8 } },
+  };
+
   return (
     <section id="ubicacion" className="py-20 bg-background">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-12 animate-fade-up">
+        {/* Texto principal */}
+        <motion.div
+          className="text-center mb-12"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.3 }}
+          variants={textVariants}
+        >
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-foreground mb-4">
             Ubícanos
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Visítanos en nuestro tienda o agenda una visita técnica
+            Visítanos en nuestra tienda o agenda una visita técnica
           </p>
-        </div>
+        </motion.div>
 
-        <div className="max-w-4xl mx-auto animate-fade-up">
+        {/* Mapa y tarjeta */}
+        <motion.div
+          className="max-w-4xl mx-auto"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.3 }}
+          variants={cardVariants}
+        >
           <div className="bg-card rounded-lg overflow-hidden shadow-xl">
-            {/* Google Maps Embed - Replace with actual location */}
+            {/* Google Maps Embed */}
             <div className="aspect-video bg-muted flex items-center justify-center">
               <iframe
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d62411.19741788604!2d-77.08091779155518!3d-12.046374042684825!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9105c8b5d35662c7%3A0x14206cb9cc452e4a!2sLima%2C%20Peru!5e0!3m2!1sen!2sus!4v1234567890123!5m2!1sen!2sus"
@@ -26,6 +54,8 @@ const Location = () => {
                 title="Ubicación de Demo"
               />
             </div>
+
+            {/* Información de dirección */}
             <div className="p-8 text-center">
               <h3 className="text-xl font-heading font-semibold text-card-foreground mb-2">
                 Av. Principal 123, Distrito
@@ -41,7 +71,7 @@ const Location = () => {
               </a>
             </div>
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

@@ -4,6 +4,7 @@ import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import salaImage from "@/assets/portfolio-sala.jpg";
 import closetImage from "@/assets/portfolio-closet.jpg";
 import officeImage from "@/assets/portfolio-office.jpg";
+import { motion } from "framer-motion";
 
 const projects = [
   {
@@ -29,28 +30,58 @@ const projects = [
   },
 ];
 
+const containerVariants = {
+  hidden: {},
+  visible: {
+    transition: { staggerChildren: 0.2 },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.8 } }, // solo duration, compatible con TS
+};
+
 const Portfolio = () => {
   const [selectedProject, setSelectedProject] = useState<typeof projects[0] | null>(null);
 
   return (
     <section id="portafolio" className="py-20 bg-muted">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-12 animate-fade-up">
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-foreground mb-4">
+        {/* Título */}
+        <motion.div
+          className="text-center mb-12"
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+        >
+          <motion.h2
+            className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-foreground mb-4"
+            variants={itemVariants}
+          >
             Nuestro Portafolio
-          </h2>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+          </motion.h2>
+          <motion.p
+            className="text-muted-foreground text-lg max-w-2xl mx-auto"
+            variants={itemVariants}
+          >
             Descubre algunos de nuestros proyectos más destacados
-          </p>
-        </div>
+          </motion.p>
+        </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {projects.map((project, index) => (
+        {/* Grid de proyectos */}
+        <motion.div
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+        >
+          {projects.map((project) => (
             <Dialog key={project.id}>
               <DialogTrigger asChild>
-                <div
-                  className="group cursor-pointer animate-fade-up"
-                  style={{ animationDelay: `${index * 0.1}s` }}
+                <motion.div
+                  variants={itemVariants}
+                  className="group cursor-pointer"
                   onClick={() => setSelectedProject(project)}
                 >
                   <div className="bg-card rounded-lg overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
@@ -74,8 +105,9 @@ const Portfolio = () => {
                       </p>
                     </div>
                   </div>
-                </div>
+                </motion.div>
               </DialogTrigger>
+
               <DialogContent className="max-w-4xl">
                 <div className="space-y-4">
                   <img
@@ -90,15 +122,13 @@ const Portfolio = () => {
                     <h3 className="text-2xl font-heading font-bold mb-2">
                       {project.title}
                     </h3>
-                    <p className="text-muted-foreground">
-                      {project.description}
-                    </p>
+                    <p className="text-muted-foreground">{project.description}</p>
                   </div>
                 </div>
               </DialogContent>
             </Dialog>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );

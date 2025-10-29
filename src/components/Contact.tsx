@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Phone, Mail, MapPin } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { motion } from "framer-motion";
 
 const Contact = () => {
   const { toast } = useToast();
@@ -15,7 +16,6 @@ const Contact = () => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Simulate form submission
     setTimeout(() => {
       toast({
         title: "¡Mensaje enviado!",
@@ -26,21 +26,39 @@ const Contact = () => {
     }, 1000);
   };
 
+  // Variants
+  const textVariants = { hidden: { opacity: 0, y: -30 }, visible: { opacity: 1, y: 0, transition: { duration: 0.8 } } };
+  const infoVariants = { hidden: { opacity: 0, x: -50 }, visible: { opacity: 1, x: 0, transition: { duration: 0.8 } } };
+  const formVariants = { hidden: { opacity: 0, x: 50 }, visible: { opacity: 1, x: 0, transition: { duration: 0.8 } } };
+
   return (
     <section id="contacto" className="py-20 bg-muted">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-12 animate-fade-up">
+        {/* Texto principal */}
+        <motion.div
+          className="text-center mb-12"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.3 }}
+          variants={textVariants}
+        >
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-foreground mb-4">
             Contáctenos
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
             Estamos listos para hacer realidad tu proyecto
           </p>
-        </div>
+        </motion.div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           {/* Contact Info */}
-          <div className="space-y-8 animate-fade-up">
+          <motion.div
+            className="space-y-8"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.3 }}
+            variants={infoVariants}
+          >
             <div className="flex items-start space-x-4">
               <div className="w-12 h-12 rounded-lg bg-accent/10 flex items-center justify-center flex-shrink-0">
                 <Phone className="w-6 h-6 text-accent" />
@@ -85,10 +103,15 @@ const Contact = () => {
                 Sábados: 9:00 AM - 1:00 PM
               </p>
             </div>
-          </div>
+          </motion.div>
 
           {/* Contact Form */}
-          <div className="animate-fade-up" style={{ animationDelay: "0.2s" }}>
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.3 }}
+            variants={formVariants}
+          >
             <form onSubmit={handleSubmit} className="space-y-6 bg-card p-8 rounded-lg shadow-lg">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
@@ -124,20 +147,14 @@ const Contact = () => {
 
               <div className="space-y-2">
                 <Label htmlFor="message">Mensaje</Label>
-                <Textarea
-                  id="message"
-                  name="message"
-                  required
-                  placeholder="Cuéntanos sobre tu proyecto..."
-                  rows={5}
-                />
+                <Textarea id="message" name="message" required placeholder="Cuéntanos sobre tu proyecto..." rows={5} />
               </div>
 
               <Button type="submit" className="w-full" size="lg" disabled={isSubmitting}>
                 {isSubmitting ? "Enviando..." : "Enviar Mensaje"}
               </Button>
             </form>
-          </div>
+          </motion.div>
         </div>
       </div>
     </section>

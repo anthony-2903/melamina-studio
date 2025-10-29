@@ -1,22 +1,39 @@
 import { Phone, Mail, MapPin, Facebook, Instagram, Linkedin } from "lucide-react";
+import { motion } from "framer-motion";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
+
+  // Variants
+  const topVariants = { hidden: { opacity: 0, y: -30 }, visible: { opacity: 1, y: 0, transition: { duration: 0.8 } } };
+  const leftVariants = { hidden: { opacity: 0, x: -50 }, visible: { opacity: 1, x: 0, transition: { duration: 0.8 } } };
+  const rightVariants = { hidden: { opacity: 0, x: 50 }, visible: { opacity: 1, x: 0, transition: { duration: 0.8 } } };
+  const bottomVariants = { hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0, transition: { duration: 0.8 } } };
 
   return (
     <footer className="bg-primary text-primary-foreground">
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Company Info */}
-          <div>
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.3 }}
+            variants={topVariants}
+          >
             <h3 className="text-2xl font-heading font-bold mb-4">Demo</h3>
             <p className="text-primary-foreground/80 mb-4">
               Fabricación de muebles de melamina a medida con calidad superior y atención personalizada.
             </p>
-          </div>
+          </motion.div>
 
           {/* Quick Links */}
-          <div>
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.3 }}
+            variants={leftVariants}
+          >
             <h4 className="font-heading font-semibold mb-4">Enlaces Rápidos</h4>
             <ul className="space-y-2">
               <li>
@@ -40,10 +57,15 @@ const Footer = () => {
                 </a>
               </li>
             </ul>
-          </div>
+          </motion.div>
 
           {/* Contact Info */}
-          <div>
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.3 }}
+            variants={rightVariants}
+          >
             <h4 className="font-heading font-semibold mb-4">Contacto</h4>
             <ul className="space-y-3">
               <li className="flex items-center space-x-2">
@@ -65,10 +87,15 @@ const Footer = () => {
                 </span>
               </li>
             </ul>
-          </div>
+          </motion.div>
 
           {/* Social & Hours */}
-          <div>
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.3 }}
+            variants={bottomVariants}
+          >
             <h4 className="font-heading font-semibold mb-4">Síguenos</h4>
             <div className="flex space-x-4 mb-6">
               <a href="#" className="w-10 h-10 rounded-full bg-primary-foreground/10 hover:bg-secondary flex items-center justify-center transition-colors">
@@ -86,14 +113,19 @@ const Footer = () => {
               Lun - Vie: 9:00 AM - 6:00 PM<br />
               Sábado: 9:00 AM - 1:00 PM
             </p>
-          </div>
+          </motion.div>
         </div>
 
-        <div className="border-t border-primary-foreground/10 mt-8 pt-8 text-center">
+        <motion.div
+          className="border-t border-primary-foreground/10 mt-8 pt-8 text-center"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1, transition: { duration: 0.8 } }}
+          viewport={{ once: true }}
+        >
           <p className="text-primary-foreground/60 text-sm">
             © {currentYear} Demo. Todos los derechos reservados.
           </p>
-        </div>
+        </motion.div>
       </div>
     </footer>
   );
