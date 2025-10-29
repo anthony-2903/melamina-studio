@@ -9,6 +9,7 @@ export default {
     extend: {
       colors: {
         primary: "#0d6efd", // color principal
+        
         secondary: "#6610f2", // color secundario
         accent: "#f59e0b", // acento
         foreground: "#111827", // texto principal
