@@ -7,7 +7,7 @@ const Location = () => {
             Ubícanos
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Visítanos en nuestro taller o agenda una visita técnica
+            Visítanos en nuestro tienda o agenda una visita técnica
           </p>
         </div>
 
