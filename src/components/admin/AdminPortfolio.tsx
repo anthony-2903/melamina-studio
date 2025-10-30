@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { supabase } from "@/lib/supabaseClient";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -23,23 +24,55 @@ const AdminPortfolio = () => {
     const form = e.currentTarget;
     const formData = new FormData(form);
 
-    const name = formData.get("name") as string;
+    const title = formData.get("name") as string;
     const type = formData.get("type") as string;
     const description = formData.get("description") as string;
 
-    console.log("Nombre proyecto:", name);
-    console.log("Tipo:", type);
-    console.log("Descripción:", description);
-    console.log("Imagen:", imageFile);
+    try {
+      let imageUrl = "";
 
-    // Aquí podrías agregar la lógica para subir los datos a Supabase o tu API
+      if (imageFile) {
+        const fileName = `${Date.now()}-${imageFile.name}`;
+        const { error: uploadError } = await supabase.storage
+          .from("portfolio-images")
+          .upload(fileName, imageFile);
 
-    setTimeout(() => {
-      toast({ title: "Portafolio agregado" });
+        if (uploadError) throw uploadError;
+
+        const { data: publicData } = supabase.storage
+          .from("portfolio-images")
+          .getPublicUrl(fileName);
+
+        imageUrl = publicData?.publicUrl || "";
+      }
+
+      const { error: insertError } = await supabase.from("portfolios").insert([
+        {
+          title,
+          type,
+          description,
+          image_url: imageUrl,
+        },
+      ]);
+
+      if (insertError) throw insertError;
+
+      toast({
+        title: "✅ Portafolio agregado con éxito",
+        description: "Tu proyecto ha sido guardado correctamente.",
+      });
+
       form.reset();
       setImageFile(null);
+    } catch (error) {
+      console.error("Error al guardar portafolio:", error);
+      toast({
+        title: "❌ Error al guardar",
+        description: "Hubo un problema al subir el proyecto.",
+      });
+    } finally {
       setIsSubmitting(false);
-    }, 1000);
+    }
   };
 
   return (
@@ -62,12 +95,24 @@ const AdminPortfolio = () => {
 
           <div className="space-y-2">
             <Label htmlFor="description">Descripción</Label>
-            <Textarea id="description" name="description" required placeholder="Descripción del proyecto..." rows={4} />
+            <Textarea
+              id="description"
+              name="description"
+              required
+              placeholder="Descripción del proyecto..."
+              rows={4}
+            />
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="image">Imagen del proyecto</Label>
-            <Input id="image" name="image" type="file" accept="image/*" onChange={handleImageChange} />
+            <Input
+              id="image"
+              name="image"
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+            />
           </div>
 
           <Button type="submit" disabled={isSubmitting}>
