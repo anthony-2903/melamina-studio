@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
+import logo from "@/assets/logo-husheniid.png";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -27,9 +28,12 @@ const Header = () => {
         <nav className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
-            <span className="text-2xl font-heading font-bold text-primary">
-              Demo
-            </span>
+            <img
+              src={logo}
+              alt="Husheniid"
+              loading="lazy"
+              className="h-8 sm:h-10 md:h-12 lg:h-14 w-auto object-contain"
+            />
           </Link>
 
           {/* Desktop Navigation */}

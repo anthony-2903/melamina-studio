@@ -51,7 +51,7 @@ const Hero = () => {
 
           <motion.div variants={itemVariants}>
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-heading font-bold text-primary-foreground text-balance">
-              Muebles de melamina a medida — calidad y diseño para tu hogar
+              estudio husheniid
             </h1>
           </motion.div>
 
