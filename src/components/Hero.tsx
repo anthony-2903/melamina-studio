@@ -43,11 +43,7 @@ const Hero = () => {
           initial="hidden"
           animate="visible"
         >
-          <motion.div variants={itemVariants}>
-            <Badge variant="secondary" className="mb-4">
-              Fabricación a medida
-            </Badge>
-          </motion.div>
+        
 
           <motion.div variants={itemVariants}>
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-heading font-bold text-primary-foreground text-balance">
