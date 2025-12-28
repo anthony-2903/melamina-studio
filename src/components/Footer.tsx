@@ -123,7 +123,7 @@ const Footer = () => {
           viewport={{ once: true }}
         >
           <p className="text-primary-foreground/60 text-sm">
-            © {currentYear} Demo. Todos los derechos reservados.
+            © {currentYear} Husheniid. Tu mejor opción en muebles de melamina a medida.
           </p>
         </motion.div>
       </div>
