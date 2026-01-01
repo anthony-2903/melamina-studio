@@ -44,31 +44,35 @@ const Location = () => {
             {/* Google Maps Embed */}
             <div className="aspect-video bg-muted flex items-center justify-center">
               <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d62411.19741788604!2d-77.08091779155518!3d-12.046374042684825!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9105c8b5d35662c7%3A0x14206cb9cc452e4a!2sLima%2C%20Peru!5e0!3m2!1sen!2sus!4v1234567890123!5m2!1sen!2sus"
+                src="https://www.google.com/maps?q=-12.053204,-75.245931&hl=es;z=16&output=embed"
                 width="100%"
                 height="100%"
                 style={{ border: 0 }}
                 allowFullScreen
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
-                title="Ubicación de Demo"
+                title="Ubicación -12.053204, -75.245931"
               />
             </div>
 
             {/* Información de dirección */}
             <div className="p-8 text-center">
               <h3 className="text-xl font-heading font-semibold text-card-foreground mb-2">
-                Av. Principal 123, Distrito
+                AV Coronel Parra, ref Cruce de pilcomayo
               </h3>
-              <p className="text-muted-foreground mb-4">Lima, Perú</p>
-              <a
-                href="https://maps.google.com/?q=Lima,Peru"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-block text-accent hover:text-accent/80 transition-colors font-medium"
-              >
-                Ver en Google Maps →
-              </a>
+              <p className="text-muted-foreground mb-4">Huancayo, Perú</p>
+              <div className="flex items-center justify-center gap-4">
+                
+
+                <a
+                  href="https://www.google.com/maps/dir/?api=1&destination=-12.053204,-75.245931"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-block bg-accent text-card-foreground px-4 py-2 rounded hover:opacity-90 transition-colors font-medium"
+                >
+                  Cómo llegar →
+                </a>
+              </div>
             </div>
           </div>
         </motion.div>

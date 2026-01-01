@@ -83,7 +83,7 @@ const Footer = () => {
               <li className="flex items-start space-x-2">
                 <MapPin className="w-4 h-4 text-secondary flex-shrink-0 mt-1" />
                 <span className="text-primary-foreground/80">
-                  Av. Principal 123<br />Lima, Perú
+                  Av. Principal 123<br />Huancayo, Perú
                 </span>
               </li>
             </ul>

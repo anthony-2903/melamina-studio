@@ -123,9 +123,9 @@ const Contact = () => {
               <div>
                 <h3 className="font-heading font-semibold text-foreground mb-1">Dirección</h3>
                 <p className="text-muted-foreground">
-                  Av. Principal 123, Distrito
+                  AV Coronel Parra, ref Cruce de pilcomayo
                   <br />
-                  Lima, Perú
+                  Huancayo, Perú
                 </p>
               </div>
             </div>
