@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,12 +10,26 @@ const AdminPortfolio = () => {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [imageFile, setImageFile] = useState<File | null>(null);
+  const [categories, setCategories] = useState<Array<any>>([]);
+  const [selectedCategory, setSelectedCategory] = useState<string>("");
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       setImageFile(e.target.files[0]);
     }
   };
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      const res = await supabase.from("categories").select("*").order("created_at", { ascending: false });
+      if (res && res.data) {
+        setCategories(res.data as any[]);
+        if ((res.data as any[]).length > 0) setSelectedCategory((res.data as any[])[0].name || "");
+      }
+    };
+
+    fetchCategories();
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -25,7 +39,7 @@ const AdminPortfolio = () => {
     const formData = new FormData(form);
 
     const title = formData.get("name") as string;
-    const type = formData.get("type") as string;
+    const type = formData.get("type") as string || selectedCategory;
     const description = formData.get("description") as string;
 
     try {
@@ -89,8 +103,23 @@ const AdminPortfolio = () => {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="type">Tipo de proyecto</Label>
-            <Input id="type" name="type" required placeholder="Cocina, Sala, Empotrado..." />
+            <Label htmlFor="type">Categoría</Label>
+            {categories.length === 0 ? (
+              <p className="text-sm text-muted-foreground">No hay categorías. Crea una en el apartado "Categorías".</p>
+            ) : (
+              <select
+                id="type"
+                name="type"
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+                className="w-full border border-border rounded px-3 py-2"
+                required
+              >
+                {categories.map((c) => (
+                  <option key={c.id} value={c.name}>{c.name}</option>
+                ))}
+              </select>
+            )}
           </div>
 
           <div className="space-y-2">
