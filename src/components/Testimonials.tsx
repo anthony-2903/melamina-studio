@@ -12,7 +12,7 @@ const testimonials = [
   {
     name: "Carlos Ramírez",
     role: "Cliente Satisfecho",
-    content: "Contraté a Demo para mi closet empotrado y quedé encantado. La atención personalizada y la puntualidad en la entrega fueron impecables.",
+    content: "Contraté a Husheniid para mi closet empotrado y quedé encantado. La atención personalizada y la puntualidad en la entrega fueron impecables.",
     rating: 5,
   },
   {

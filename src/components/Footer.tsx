@@ -21,7 +21,7 @@ const Footer = () => {
             viewport={{ once: true, amount: 0.3 }}
             variants={topVariants}
           >
-            <h3 className="text-2xl font-heading font-bold mb-4">Demo</h3>
+            <h3 className="text-2xl font-heading font-bold mb-4">Husheniid</h3>
             <p className="text-primary-foreground/80 mb-4">
               Fabricación de muebles de melamina a medida con calidad superior y atención personalizada.
             </p>
@@ -76,8 +76,8 @@ const Footer = () => {
               </li>
               <li className="flex items-center space-x-2">
                 <Mail className="w-4 h-4 text-secondary" />
-                <a href="mailto:contacto@demo.com" className="text-primary-foreground/80 hover:text-secondary transition-colors">
-                  contacto@demo.com
+                <a href="mailto:contacto@Husheniid.com" className="text-primary-foreground/80 hover:text-secondary transition-colors">
+                  contacto@Husheniid.com
                 </a>
               </li>
               <li className="flex items-start space-x-2">
