@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
@@ -27,14 +26,14 @@ const Header = () => {
       <div className="container mx-auto px-4">
         <nav className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2">
+          <a href="/" className="flex items-center space-x-2">
             <img
               src={logo}
               alt="Husheniid"
               loading="lazy"
               className="h-8 sm:h-10 md:h-12 lg:h-14 w-auto object-contain"
             />
-          </Link>
+          </a>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
@@ -56,7 +55,7 @@ const Header = () => {
           {/* CTA Button */}
           <div className="hidden md:block">
             <Button asChild variant="default" size="default">
-              <a href="#contacto">Solicitar Cotización</a>
+              <a href="/login">Iniciar Sesión</a>
             </Button>
           </div>
 
@@ -92,11 +91,15 @@ const Header = () => {
                     {link.name}
                   </motion.a>
                 ))}
-                <Button asChild variant="default" size="default" className="w-full">
-                  <a href="#contacto" onClick={() => setIsMenuOpen(false)}>
-                    Solicitar Cotización
-                  </a>
-                </Button>
+                <motion.a
+                  href="/login"
+                  onClick={() => setIsMenuOpen(false)}
+                  whileHover={{ scale: 1.05, color: "#6366F1" }}
+                  className="text-sm font-medium text-foreground py-2 transition-colors"
+                >
+                  Iniciar Sesión
+                </motion.a>
+                
               </div>
             </motion.div>
           )}

@@ -46,13 +46,13 @@ const Hero = () => {
         
 
           <motion.div variants={itemVariants}>
-            <h1 className="text-4xl md:text-6xl lg:text-7xl font-heading font-bold text-primary-foreground text-balance">
+            <h1 className="text-4xl md:text-6xl lg:text-7xl font-heading font-bold text-black text-balance">
               estudio husheniid
             </h1>
           </motion.div>
 
           <motion.div variants={itemVariants}>
-            <p className="text-lg md:text-xl text-primary-foreground/90 max-w-2xl mx-auto text-balance">
+            <p className="text-lg md:text-xl text-black max-w-2xl mx-auto text-balance">
               Salas, cocinas y empotrados personalizados. Fabricación e instalación profesional.
             </p>
           </motion.div>
@@ -70,7 +70,7 @@ const Hero = () => {
               variant="outline"
               className="min-w-[200px] border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary"
             >
-              <a href="#contacto">Solicitar Cotización</a>
+              <a href="/login">aaaaaaa</a>
             </Button>
           </motion.div>
         </motion.div>
