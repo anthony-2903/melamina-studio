@@ -66,9 +66,6 @@ const AdminPage = () => {
                     >
                       <ChevronLeft className="w-4 h-4" />
                     </button>
-                    <button onClick={handleLogout} title="Cerrar sesión" className="px-2 py-1 text-sm text-white bg-destructive rounded flex items-center">
-                      <LogOut className="w-4 h-4 mr-2" />Salir
-                    </button>
                   </div>
                 </div>
                 <nav className="space-y-2">
@@ -96,6 +93,9 @@ const AdminPage = () => {
                   </button>
                 )}
                 <div className="flex-1" />
+                <button onClick={handleLogout} title="Cerrar sesión" className="px-3 py-2 bg-red-600 hover:bg-red-700 text-white rounded flex items-center shadow">
+                  <LogOut className="w-4 h-4 mr-2" />Cerrar sesión
+                </button>
               </div>
               {tab === "portfolio" ? <AdminPortfolio /> : <AdminCategory />}
             </main>
