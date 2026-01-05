@@ -1,3 +1,5 @@
+"use client";
+
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import { Button } from "@/components/ui/button";
@@ -6,83 +8,107 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 
+type Category = {
+  id: string;
+  name: string;
+};
+
 const AdminPortfolio = () => {
   const { toast } = useToast();
+
+  const [mounted, setMounted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [imageFile, setImageFile] = useState<File | null>(null);
-  const [categories, setCategories] = useState<Array<any>>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>("");
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setImageFile(e.target.files[0]);
-    }
-  };
-
+  // ⛔ Evita hydration error
   useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // 🔒 Supabase SOLO cuando el cliente está montado
+  useEffect(() => {
+    if (!mounted) return;
+
     const fetchCategories = async () => {
-      const res = await supabase.from("categories").select("*").order("created_at", { ascending: false });
-      if (res && res.data) {
-        setCategories(res.data as any[]);
-        if ((res.data as any[]).length > 0) setSelectedCategory((res.data as any[])[0].name || "");
+      const { data, error } = await supabase
+        .from("categories")
+        .select("id, name")
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        console.error(error);
+        return;
+      }
+
+      if (data && data.length > 0) {
+        setCategories(data);
+        setSelectedCategory(data[0].name);
       }
     };
 
     fetchCategories();
-  }, []);
+  }, [mounted]);
+
+  if (!mounted) return null;
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files?.[0]) {
+      setImageFile(e.target.files[0]);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    const form = e.currentTarget;
-    const formData = new FormData(form);
+    const formData = new FormData(e.currentTarget);
 
     const title = formData.get("name") as string;
-    const type = formData.get("type") as string || selectedCategory;
     const description = formData.get("description") as string;
+    const type = selectedCategory;
 
     try {
       let imageUrl = "";
 
       if (imageFile) {
-        const fileName = `${Date.now()}-${imageFile.name}`;
+        const fileName = `${crypto.randomUUID()}-${imageFile.name}`;
+
         const { error: uploadError } = await supabase.storage
           .from("portfolio-images")
           .upload(fileName, imageFile);
 
         if (uploadError) throw uploadError;
 
-        const { data: publicData } = supabase.storage
+        const { data } = supabase.storage
           .from("portfolio-images")
           .getPublicUrl(fileName);
 
-        imageUrl = publicData?.publicUrl || "";
+        imageUrl = data.publicUrl;
       }
 
-      const { error: insertError } = await supabase.from("portfolios").insert([
-        {
-          title,
-          type,
-          description,
-          image_url: imageUrl,
-        },
-      ]);
-
-      if (insertError) throw insertError;
-
-      toast({
-        title: "✅ Portafolio agregado con éxito",
-        description: "Tu proyecto ha sido guardado correctamente.",
+      const { error } = await supabase.from("portfolios").insert({
+        title,
+        type,
+        description,
+        image_url: imageUrl,
       });
 
-      form.reset();
-      setImageFile(null);
-    } catch (error) {
-      console.error("Error al guardar portafolio:", error);
+      if (error) throw error;
+
       toast({
-        title: "❌ Error al guardar",
-        description: "Hubo un problema al subir el proyecto.",
+        title: "✅ Portafolio agregado",
+        description: "Proyecto guardado correctamente",
+      });
+
+      e.currentTarget.reset();
+      setImageFile(null);
+    } catch (err) {
+      console.error(err);
+      toast({
+        title: "❌ Error",
+        description: "No se pudo guardar el proyecto",
       });
     } finally {
       setIsSubmitting(false);
@@ -91,32 +117,32 @@ const AdminPortfolio = () => {
 
   return (
     <section className="py-10">
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-4 max-w-2xl">
         <h2 className="text-2xl font-bold mb-6">Agregar Portafolio</h2>
-        <form
-          onSubmit={handleSubmit}
-          className="space-y-4 bg-card p-6 rounded-lg shadow"
-        >
+
+        <form onSubmit={handleSubmit} className="space-y-4 bg-card p-6 rounded-lg shadow">
           <div className="space-y-2">
             <Label htmlFor="name">Nombre del proyecto</Label>
-            <Input id="name" name="name" required placeholder="Nombre del proyecto" />
+            <Input id="name" name="name" required />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="type">Categoría</Label>
+            <Label>Categoría</Label>
             {categories.length === 0 ? (
-              <p className="text-sm text-muted-foreground">No hay categorías. Crea una en el apartado "Categorías".</p>
+              <p className="text-sm text-muted-foreground">
+                No hay categorías creadas
+              </p>
             ) : (
               <select
-                id="type"
-                name="type"
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
-                className="w-full border border-border rounded px-3 py-2"
+                className="w-full border rounded px-3 py-2"
                 required
               >
                 {categories.map((c) => (
-                  <option key={c.id} value={c.name}>{c.name}</option>
+                  <option key={c.id} value={c.name}>
+                    {c.name}
+                  </option>
                 ))}
               </select>
             )}
@@ -124,28 +150,16 @@ const AdminPortfolio = () => {
 
           <div className="space-y-2">
             <Label htmlFor="description">Descripción</Label>
-            <Textarea
-              id="description"
-              name="description"
-              required
-              placeholder="Descripción del proyecto..."
-              rows={4}
-            />
+            <Textarea id="description" name="description" rows={4} required />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="image">Imagen del proyecto</Label>
-            <Input
-              id="image"
-              name="image"
-              type="file"
-              accept="image/*"
-              onChange={handleImageChange}
-            />
+            <Label htmlFor="image">Imagen</Label>
+            <Input type="file" accept="image/*" onChange={handleImageChange} />
           </div>
 
           <Button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? "Enviando..." : "Agregar Portafolio"}
+            {isSubmitting ? "Guardando..." : "Agregar Portafolio"}
           </Button>
         </form>
       </div>
