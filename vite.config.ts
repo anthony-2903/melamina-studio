@@ -15,4 +15,19 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  build: {
+    chunkSizeWarningLimit: 1200,
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            if (id.includes('react')) return 'vendor_react';
+            if (id.includes('framer-motion') || id.includes('lucide-react') || id.includes('@radix-ui')) return 'vendor_ui';
+            if (id.includes('recharts')) return 'vendor_charts';
+            return 'vendor_misc';
+          }
+        }
+      }
+    }
+  }
 }));

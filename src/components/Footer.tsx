@@ -11,7 +11,7 @@ const Footer = () => {
   const bottomVariants = { hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0, transition: { duration: 0.8 } } };
 
   return (
-    <footer className="bg-orange-600 text-white">
+    <footer className="bg-[#F59E0B] text-white">
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Company Info */}
@@ -109,7 +109,7 @@ const Footer = () => {
               </a>
             </div>
             <h4 className="font-heading font-semibold mb-2">Horario</h4>
-            <p className="text-primary-foreground/80 text-sm">
+            <p className="text-white/80 text-sm">
               Lun - Vie: 9:00 AM - 6:00 PM<br />
               Sábado: 9:00 AM - 1:00 PM
             </p>
