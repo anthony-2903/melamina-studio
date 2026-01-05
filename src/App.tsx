@@ -9,7 +9,6 @@ import Login from "./pages/login";
 import Admin from "./pages/admin";
 
 const queryClient = new QueryClient();
-
 const App = () => (
   <BrowserRouter>
     <QueryClientProvider client={queryClient}>
@@ -26,5 +25,6 @@ const App = () => (
     </QueryClientProvider>
   </BrowserRouter>
 );
+
 
 export default App;
