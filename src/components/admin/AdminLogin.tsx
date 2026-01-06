@@ -1,43 +1,74 @@
 "use client";
 
 import { useState } from "react";
-import { Input } from "@/components/ui/input";
+import { supabase } from "@/lib/supabaseClient";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 
-interface AdminLoginProps {
+type Props = {
   onLoginSuccess: () => void;
-}
+};
 
-const AdminLogin = ({ onLoginSuccess }: AdminLoginProps) => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+const AdminLogin = ({ onLoginSuccess }: Props) => {
   const { toast } = useToast();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
 
-    // Aquí validas credenciales (temporal hardcode)
-    if (username === "admin" && password === "123456") {
-      toast({ title: "¡Bienvenido admin!" });
-      onLoginSuccess();
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (error) {
+      toast({
+        title: "❌ Error de autenticación",
+        description: "Credenciales incorrectas",
+      });
     } else {
-      toast({ title: "Error", description: "Usuario o contraseña incorrectos" });
+      toast({ title: "✅ Bienvenido administrador" });
+      onLoginSuccess();
     }
+
+    setLoading(false);
   };
 
   return (
-    <form onSubmit={handleLogin} className="max-w-md mx-auto p-8 bg-card rounded-lg shadow-lg space-y-4">
-      <h2 className="text-2xl font-bold text-center">Login Admin</h2>
+    <form
+      onSubmit={handleLogin}
+      className="space-y-4 bg-card p-6 rounded-lg shadow w-full max-w-sm"
+    >
+      <h2 className="text-xl font-bold text-center">Login Admin</h2>
+
       <div className="space-y-2">
-        <label>Usuario</label>
-        <Input value={username} onChange={(e) => setUsername(e.target.value)} required />
+        <Label>Email</Label>
+        <Input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
       </div>
+
       <div className="space-y-2">
-        <label>Contraseña</label>
-        <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+        <Label>Password</Label>
+        <Input
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
       </div>
-      <Button type="submit" className="w-full">Ingresar</Button>
+
+      <Button type="submit" className="w-full" disabled={loading}>
+        {loading ? "Validando..." : "Ingresar"}
+      </Button>
     </form>
   );
 };
