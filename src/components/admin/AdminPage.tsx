@@ -73,6 +73,14 @@ const AdminPage = () => {
                 </div>
 
                 <nav className="space-y-2">
+                   <button
+                    onClick={() => setTab("categories")}
+                    className={`w-full text-left px-3 py-2 rounded ${
+                      tab === "categories" ? "bg-orange-200" : ""
+                    }`}
+                  >
+                    Categorías
+                  </button>
                   <button
                     onClick={() => setTab("portfolio")}
                     className={`w-full text-left px-3 py-2 rounded ${
@@ -82,14 +90,7 @@ const AdminPage = () => {
                     Portafolio
                   </button>
 
-                  <button
-                    onClick={() => setTab("categories")}
-                    className={`w-full text-left px-3 py-2 rounded ${
-                      tab === "categories" ? "bg-orange-200" : ""
-                    }`}
-                  >
-                    Categorías
-                  </button>
+                 
                 </nav>
               </div>
             </motion.aside>

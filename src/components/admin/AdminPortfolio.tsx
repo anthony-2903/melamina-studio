@@ -19,11 +19,8 @@ type Portfolio = {
   title: string;
   description: string;
   image_url: string;
-  categories: {
-    name: string;
-  }[]; // 👈 ES ARRAY
+  categories: { name: string }[] | null;
 };
-
 
 const AdminPortfolio = () => {
   const { toast } = useToast();
@@ -33,70 +30,72 @@ const AdminPortfolio = () => {
   const [imageFile, setImageFile] = useState<File | null>(null);
 
   const [categories, setCategories] = useState<Category[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState<string>("");
+  const [selectedCategory, setSelectedCategory] = useState("");
 
   const [portfolios, setPortfolios] = useState<Portfolio[]>([]);
 
-  // ─────────────────────────────────────
+  // ─────────────────────────────
   // MOUNT
-  // ─────────────────────────────────────
+  // ─────────────────────────────
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  // ─────────────────────────────────────
-  // FETCH CATEGORIES + PORTFOLIOS
-  // ─────────────────────────────────────
   useEffect(() => {
     if (!mounted) return;
-
     fetchCategories();
     fetchPortfolios();
   }, [mounted]);
 
+  // ─────────────────────────────
+  // FETCH
+  // ─────────────────────────────
   const fetchCategories = async () => {
     const { data } = await supabase
       .from("categories")
       .select("id, name")
       .order("created_at", { ascending: false });
 
-    if (data && data.length > 0) {
+    if (data?.length) {
       setCategories(data);
       setSelectedCategory(data[0].id);
     }
   };
 
   const fetchPortfolios = async () => {
-    const { data, error } = await supabase
+    const { data } = await supabase
       .from("portfolios")
-      .select(`
+      .select(
+        `
         id,
         title,
         description,
         image_url,
         categories ( name )
-      `)
+      `
+      )
       .order("created_at", { ascending: false });
 
-    if (!error && data) {
-      setPortfolios(data as Portfolio[]);
-    }
+    const safeData = (data ?? []).map((p: any) => ({
+      ...p,
+      categories: Array.isArray(p.categories) ? p.categories : [],
+    }));
+
+    setPortfolios(safeData);
   };
 
   if (!mounted) return null;
 
-  // ─────────────────────────────────────
+  // ─────────────────────────────
   // IMAGE
-  // ─────────────────────────────────────
+  // ─────────────────────────────
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files?.[0]) {
-      setImageFile(e.target.files[0]);
-    }
+    if (e.target.files?.[0]) setImageFile(e.target.files[0]);
   };
 
-  // ─────────────────────────────────────
-  // CREATE PORTFOLIO
-  // ─────────────────────────────────────
+  // ─────────────────────────────
+  // CREATE
+  // ─────────────────────────────
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -134,36 +133,45 @@ const AdminPortfolio = () => {
 
       if (error) throw error;
 
-      toast({ title: "✅ Portafolio agregado" });
+      toast({
+        title: "Portafolio creado",
+        description: "Se agregó correctamente",
+        className: "bg-green-100 text-green-900 border-green-300",
+      });
 
       e.currentTarget.reset();
       setImageFile(null);
       fetchPortfolios();
-    } catch (err) {
+    } catch {
       toast({
-        title: "❌ Error",
+        title: "Error",
         description: "No se pudo guardar",
+        variant: "destructive",
       });
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  // ─────────────────────────────────────
+  // ─────────────────────────────
   // DELETE
-  // ─────────────────────────────────────
+  // ─────────────────────────────
   const handleDelete = async (id: string) => {
-    const ok = confirm("¿Eliminar este proyecto?");
-    if (!ok) return;
-
     await supabase.from("portfolios").delete().eq("id", id);
+
+    toast({
+      title: "Portafolio eliminado",
+      description: "El registro fue borrado",
+      variant: "destructive",
+    });
+
     fetchPortfolios();
   };
 
   return (
-    <section className="space-y-10">
+    <section className="space-y-12 px-2 sm:px-4">
       {/* ───────── FORM ───────── */}
-      <div className="max-w-2xl">
+      <div className="max-w-2xl mx-auto">
         <h2 className="text-2xl font-bold mb-4">Nuevo Portafolio</h2>
 
         <form
@@ -200,7 +208,7 @@ const AdminPortfolio = () => {
             <Input type="file" accept="image/*" onChange={handleImageChange} />
           </div>
 
-          <Button disabled={isSubmitting}>
+          <Button className="w-full sm:w-auto" disabled={isSubmitting}>
             {isSubmitting ? "Guardando..." : "Agregar"}
           </Button>
         </form>
@@ -210,32 +218,33 @@ const AdminPortfolio = () => {
       <div>
         <h2 className="text-2xl font-bold mb-4">Portafolios</h2>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {portfolios.map((p) => (
             <div
               key={p.id}
               className="rounded-xl overflow-hidden bg-card shadow hover:shadow-xl transition"
             >
-              <img
-                src={p.image_url}
-                className="h-48 w-full object-cover"
-              />
+              {p.image_url && (
+                <img
+                  src={p.image_url}
+                  className="w-full aspect-[4/3] object-cover"
+                />
+              )}
 
               <div className="p-4 space-y-2">
                 <h3 className="font-bold text-lg">{p.title}</h3>
 
-                {p.categories.length > 0 && (
-                  <span className="text-xs bg-orange-200 px-2 py-1 rounded">
-                    {p.categories[0].name}
+                {(p.categories?.length ?? 0) > 0 && (
+                  <span className="inline-block text-xs bg-orange-200 px-2 py-1 rounded">
+                    {p.categories![0].name}
                   </span>
                 )}
 
-
-                <p className="text-sm text-muted-foreground">
+                <p className="text-sm text-muted-foreground line-clamp-3">
                   {p.description}
                 </p>
 
-                <div className="flex justify-end gap-2 pt-2">
+                <div className="flex justify-end gap-2 pt-3">
                   <Button size="icon" variant="outline">
                     <Pencil className="w-4 h-4" />
                   </Button>
