@@ -19,7 +19,7 @@ type Portfolio = {
   title: string;
   description: string;
   image_url: string;
-  categories: { name: string }[] | null;
+  categories: { name: string }[];
 };
 
 const AdminPortfolio = () => {
@@ -31,12 +31,9 @@ const AdminPortfolio = () => {
 
   const [categories, setCategories] = useState<Category[]>([]);
   const [selectedCategory, setSelectedCategory] = useState("");
-
   const [portfolios, setPortfolios] = useState<Portfolio[]>([]);
 
-  // ─────────────────────────────
-  // MOUNT
-  // ─────────────────────────────
+  // ───────── MOUNT ─────────
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -47,9 +44,7 @@ const AdminPortfolio = () => {
     fetchPortfolios();
   }, [mounted]);
 
-  // ─────────────────────────────
-  // FETCH
-  // ─────────────────────────────
+  // ───────── FETCH ─────────
   const fetchCategories = async () => {
     const { data } = await supabase
       .from("categories")
@@ -76,7 +71,7 @@ const AdminPortfolio = () => {
       )
       .order("created_at", { ascending: false });
 
-    const safeData = (data ?? []).map((p: any) => ({
+    const safeData: Portfolio[] = (data ?? []).map((p: any) => ({
       ...p,
       categories: Array.isArray(p.categories) ? p.categories : [],
     }));
@@ -86,16 +81,14 @@ const AdminPortfolio = () => {
 
   if (!mounted) return null;
 
-  // ─────────────────────────────
-  // IMAGE
-  // ─────────────────────────────
+  // ───────── IMAGE ─────────
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files?.[0]) setImageFile(e.target.files[0]);
+    if (e.target.files?.[0]) {
+      setImageFile(e.target.files[0]);
+    }
   };
 
-  // ─────────────────────────────
-  // CREATE
-  // ─────────────────────────────
+  // ───────── CREATE ─────────
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -107,23 +100,30 @@ const AdminPortfolio = () => {
     try {
       let imageUrl = "";
 
+      // 🔹 SUBIDA DE IMAGEN SEGURA
       if (imageFile) {
         const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
         const uploadPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
 
-        const data = new FormData();
-        data.append("file", imageFile);
-        data.append("upload_preset", uploadPreset);
+        const imgData = new FormData();
+        imgData.append("file", imageFile);
+        imgData.append("upload_preset", uploadPreset);
 
         const res = await fetch(
           `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
-          { method: "POST", body: data }
+          { method: "POST", body: imgData }
         );
 
         const file = await res.json();
+
+        if (!file.secure_url) {
+          throw new Error("Error al subir imagen");
+        }
+
         imageUrl = file.secure_url;
       }
 
+      // 🔹 INSERT SUPABASE
       const { error } = await supabase.from("portfolios").insert({
         title,
         description,
@@ -133,6 +133,7 @@ const AdminPortfolio = () => {
 
       if (error) throw error;
 
+      // ✅ TODO OK
       toast({
         title: "Portafolio creado",
         description: "Se agregó correctamente",
@@ -141,11 +142,13 @@ const AdminPortfolio = () => {
 
       e.currentTarget.reset();
       setImageFile(null);
-      fetchPortfolios();
-    } catch {
+
+      // 🔥 RECARGA AUTOMÁTICA (SIN F5)
+      await fetchPortfolios();
+    } catch (err) {
       toast({
         title: "Error",
-        description: "No se pudo guardar",
+        description: "No se pudo guardar el portafolio",
         variant: "destructive",
       });
     } finally {
@@ -153,19 +156,20 @@ const AdminPortfolio = () => {
     }
   };
 
-  // ─────────────────────────────
-  // DELETE
-  // ─────────────────────────────
+  // ───────── DELETE ─────────
   const handleDelete = async (id: string) => {
-    await supabase.from("portfolios").delete().eq("id", id);
+    const { error } = await supabase.from("portfolios").delete().eq("id", id);
 
-    toast({
-      title: "Portafolio eliminado",
-      description: "El registro fue borrado",
-      variant: "destructive",
-    });
+    if (!error) {
+      toast({
+        title: "Portafolio eliminado",
+        description: "El registro fue borrado",
+        variant: "destructive",
+      });
 
-    fetchPortfolios();
+      // 🔥 REFRESH INMEDIATO
+      setPortfolios((prev) => prev.filter((p) => p.id !== id));
+    }
   };
 
   return (
@@ -208,7 +212,7 @@ const AdminPortfolio = () => {
             <Input type="file" accept="image/*" onChange={handleImageChange} />
           </div>
 
-          <Button className="w-full sm:w-auto" disabled={isSubmitting}>
+          <Button disabled={isSubmitting} className="w-full sm:w-auto">
             {isSubmitting ? "Guardando..." : "Agregar"}
           </Button>
         </form>
@@ -234,9 +238,9 @@ const AdminPortfolio = () => {
               <div className="p-4 space-y-2">
                 <h3 className="font-bold text-lg">{p.title}</h3>
 
-                {(p.categories?.length ?? 0) > 0 && (
+                {p.categories.length > 0 && (
                   <span className="inline-block text-xs bg-orange-200 px-2 py-1 rounded">
-                    {p.categories![0].name}
+                    {p.categories[0].name}
                   </span>
                 )}
 
