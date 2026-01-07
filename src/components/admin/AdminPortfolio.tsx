@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,7 +19,7 @@ type Portfolio = {
   title: string;
   description: string;
   image_url: string;
-  categories: { name: string }[];
+  categories: { name: string }[] | null;
 };
 
 const AdminPortfolio = () => {
@@ -31,9 +31,14 @@ const AdminPortfolio = () => {
 
   const [categories, setCategories] = useState<Category[]>([]);
   const [selectedCategory, setSelectedCategory] = useState("");
+
   const [portfolios, setPortfolios] = useState<Portfolio[]>([]);
 
-  // ───────── MOUNT ─────────
+  const formRef = useRef<HTMLFormElement>(null); // Ref to reset form
+
+  // ─────────────────────────────
+  // MOUNT
+  // ─────────────────────────────
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -44,7 +49,9 @@ const AdminPortfolio = () => {
     fetchPortfolios();
   }, [mounted]);
 
-  // ───────── FETCH ─────────
+  // ─────────────────────────────
+  // FETCH
+  // ─────────────────────────────
   const fetchCategories = async () => {
     const { data } = await supabase
       .from("categories")
@@ -71,7 +78,7 @@ const AdminPortfolio = () => {
       )
       .order("created_at", { ascending: false });
 
-    const safeData: Portfolio[] = (data ?? []).map((p: any) => ({
+    const safeData = (data ?? []).map((p: any) => ({
       ...p,
       categories: Array.isArray(p.categories) ? p.categories : [],
     }));
@@ -81,14 +88,16 @@ const AdminPortfolio = () => {
 
   if (!mounted) return null;
 
-  // ───────── IMAGE ─────────
+  // ─────────────────────────────
+  // IMAGE
+  // ─────────────────────────────
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files?.[0]) {
-      setImageFile(e.target.files[0]);
-    }
+    if (e.target.files?.[0]) setImageFile(e.target.files[0]);
   };
 
-  // ───────── CREATE ─────────
+  // ─────────────────────────────
+  // CREATE
+  // ─────────────────────────────
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -100,30 +109,23 @@ const AdminPortfolio = () => {
     try {
       let imageUrl = "";
 
-      // 🔹 SUBIDA DE IMAGEN SEGURA
       if (imageFile) {
         const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
         const uploadPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
 
-        const imgData = new FormData();
-        imgData.append("file", imageFile);
-        imgData.append("upload_preset", uploadPreset);
+        const data = new FormData();
+        data.append("file", imageFile);
+        data.append("upload_preset", uploadPreset);
 
         const res = await fetch(
           `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
-          { method: "POST", body: imgData }
+          { method: "POST", body: data }
         );
 
         const file = await res.json();
-
-        if (!file.secure_url) {
-          throw new Error("Error al subir imagen");
-        }
-
         imageUrl = file.secure_url;
       }
 
-      // 🔹 INSERT SUPABASE
       const { error } = await supabase.from("portfolios").insert({
         title,
         description,
@@ -133,22 +135,22 @@ const AdminPortfolio = () => {
 
       if (error) throw error;
 
-      // ✅ TODO OK
       toast({
         title: "Portafolio creado",
         description: "Se agregó correctamente",
         className: "bg-green-100 text-green-900 border-green-300",
       });
 
-      e.currentTarget.reset();
+      // Reset form and states
+      formRef.current?.reset();
       setImageFile(null);
+      setSelectedCategory(categories[0]?.id ?? "");
 
-      // 🔥 RECARGA AUTOMÁTICA (SIN F5)
-      await fetchPortfolios();
-    } catch (err) {
+      fetchPortfolios();
+    } catch {
       toast({
         title: "Error",
-        description: "No se pudo guardar el portafolio",
+        description: "No se pudo guardar",
         variant: "destructive",
       });
     } finally {
@@ -156,20 +158,19 @@ const AdminPortfolio = () => {
     }
   };
 
-  // ───────── DELETE ─────────
+  // ─────────────────────────────
+  // DELETE
+  // ─────────────────────────────
   const handleDelete = async (id: string) => {
-    const { error } = await supabase.from("portfolios").delete().eq("id", id);
+    await supabase.from("portfolios").delete().eq("id", id);
 
-    if (!error) {
-      toast({
-        title: "Portafolio eliminado",
-        description: "El registro fue borrado",
-        variant: "destructive",
-      });
+    toast({
+      title: "Portafolio eliminado",
+      description: "El registro fue borrado",
+      variant: "destructive",
+    });
 
-      // 🔥 REFRESH INMEDIATO
-      setPortfolios((prev) => prev.filter((p) => p.id !== id));
-    }
+    fetchPortfolios();
   };
 
   return (
@@ -179,6 +180,7 @@ const AdminPortfolio = () => {
         <h2 className="text-2xl font-bold mb-4">Nuevo Portafolio</h2>
 
         <form
+          ref={formRef}
           onSubmit={handleSubmit}
           className="space-y-4 bg-card p-6 rounded-xl shadow"
         >
@@ -212,7 +214,7 @@ const AdminPortfolio = () => {
             <Input type="file" accept="image/*" onChange={handleImageChange} />
           </div>
 
-          <Button disabled={isSubmitting} className="w-full sm:w-auto">
+          <Button className="w-full sm:w-auto" disabled={isSubmitting}>
             {isSubmitting ? "Guardando..." : "Agregar"}
           </Button>
         </form>
@@ -238,9 +240,9 @@ const AdminPortfolio = () => {
               <div className="p-4 space-y-2">
                 <h3 className="font-bold text-lg">{p.title}</h3>
 
-                {p.categories.length > 0 && (
+                {(p.categories?.length ?? 0) > 0 && (
                   <span className="inline-block text-xs bg-orange-200 px-2 py-1 rounded">
-                    {p.categories[0].name}
+                    {p.categories![0].name}
                   </span>
                 )}
 
