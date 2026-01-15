@@ -44,7 +44,7 @@ const Header = () => {
                 initial={{ y: -10, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.1 * i, duration: 0.4 }}
-                whileHover={{ scale: 1.1, color: "#6366F1" }} // color hover animado
+                whileHover={{ scale: 1.1, color: "#ffffff" }} // color hover animado
                 className="text-sm font-medium text-foreground transition-colors"
               >
                 {link.name}
@@ -85,7 +85,7 @@ const Header = () => {
                     key={link.name}
                     href={link.href}
                     onClick={() => setIsMenuOpen(false)}
-                    whileHover={{ scale: 1.05, color: "#6366F1" }}
+                    whileHover={{ scale: 1.05, color: "#ffffff" }}
                     className="text-sm font-medium text-foreground py-2 transition-colors"
                   >
                     {link.name}
@@ -94,7 +94,7 @@ const Header = () => {
                 <motion.a
                   href="/login"
                   onClick={() => setIsMenuOpen(false)}
-                  whileHover={{ scale: 1.05, color: "#6366F1" }}
+                  whileHover={{ scale: 1.05, color: "#ffffff" }}
                   className="text-sm font-medium text-foreground py-2 transition-colors"
                 >
                   Iniciar Sesión

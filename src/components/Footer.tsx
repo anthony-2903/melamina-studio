@@ -11,7 +11,7 @@ const Footer = () => {
   const bottomVariants = { hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0, transition: { duration: 0.8 } } };
 
   return (
-    <footer className="bg-[#F59E0B] text-white">
+    <footer className="bg-[#F59E0b] text-white">
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Company Info */}
@@ -70,8 +70,8 @@ const Footer = () => {
             <ul className="space-y-3">
               <li className="flex items-center space-x-2">
                 <Phone className="w-4 h-4 text-secondary" />
-                <a href="tel:+51999999999" className="text-white/80 hover:text-secondary transition-colors">
-                  +51 999 999 999
+                <a href="tel:+51979923148" className="text-white/80 hover:text-secondary transition-colors">
+                  +51 979 923 148
                 </a>
               </li>
               <li className="flex items-center space-x-2">
