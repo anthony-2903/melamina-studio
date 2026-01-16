@@ -6,7 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { Pencil, Trash2 } from "lucide-react";
+import { Pencil, Trash2, FolderPlus, Tag, Check, X, Loader2, AlertCircle } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 import {
   AlertDialog,
@@ -19,244 +20,233 @@ import {
   AlertDialogAction,
 } from "@/components/ui/alert-dialog";
 
-type Category = {
-  id: string;
-  name: string;
-};
+type Category = { id: string; name: string; };
 
 const AdminCategory = () => {
   const { toast } = useToast();
-
   const [name, setName] = useState("");
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(false);
-
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingName, setEditingName] = useState("");
-
   const [deleteId, setDeleteId] = useState<string | null>(null);
 
-  // ========================
-  // FETCH
-  // ========================
   const fetchCategories = async () => {
     const { data, error } = await supabase
       .from("categories")
       .select("id, name")
-      .order("created_at", { ascending: false });
-
+      .order("name", { ascending: true });
     if (error) {
-      toast({
-        title: "❌ Error",
-        description: "No se pudieron cargar las categorías",
-      });
+      toast({ title: "Error", description: "No se pudieron cargar los datos.", variant: "destructive" });
       return;
     }
-
     setCategories(data || []);
   };
 
-  useEffect(() => {
-    fetchCategories();
-  }, []);
+  useEffect(() => { fetchCategories(); }, []);
 
-  // ========================
-  // CREATE
-  // ========================
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    if (!name.trim()) {
-      toast({
-        title: "⚠️ Campo requerido",
-        description: "El nombre es obligatorio",
-      });
-      return;
-    }
-
+    if (!name.trim()) return;
     setLoading(true);
-
-    const { error } = await supabase.from("categories").insert({
-      name: name.trim(),
-    });
-
+    const { error } = await supabase.from("categories").insert({ name: name.trim() });
+    
     if (error) {
-      toast({
-        title: "❌ Error",
-        description: error.message.includes("duplicate")
-          ? "La categoría ya existe"
-          : "No se pudo crear",
-      });
+      toast({ title: "Error", description: "Esta categoría ya existe o hubo un problema.", variant: "destructive" });
     } else {
-      toast({
-        title: "✅ Categoría creada",
-        description: "Se agregó correctamente",
-        className: "bg-green-100 text-green-900",
-      });
+      toast({ title: "¡Lista!", description: "Categoría añadida con éxito.", className: "bg-slate-900 text-white" });
       setName("");
       fetchCategories();
     }
-
     setLoading(false);
   };
 
-  // ========================
-  // EDIT
-  // ========================
   const handleEdit = async (id: string) => {
-    if (!editingName.trim()) return;
-
-    const { error } = await supabase
-      .from("categories")
-      .update({ name: editingName.trim() })
-      .eq("id", id);
-
+    if (!editingName.trim()) { setEditingId(null); return; }
+    const { error } = await supabase.from("categories").update({ name: editingName.trim() }).eq("id", id);
     if (error) {
-      toast({
-        title: "❌ Error",
-        description: "No se pudo editar",
-      });
+      toast({ title: "Error", description: "No se pudo actualizar.", variant: "destructive" });
     } else {
-      toast({
-        title: "✏️ Categoría editada",
-        description: "Cambios guardados",
-        className: "bg-blue-100 text-blue-900",
-      });
       setEditingId(null);
-      setEditingName("");
       fetchCategories();
     }
   };
 
-  // ========================
-  // DELETE
-  // ========================
   const handleDelete = async () => {
     if (!deleteId) return;
-
-    const { error } = await supabase
-      .from("categories")
-      .delete()
-      .eq("id", deleteId);
-
+    const { error } = await supabase.from("categories").delete().eq("id", deleteId);
     if (error) {
-      toast({
-        title: "❌ Error",
-        description: "No se pudo eliminar",
-      });
+      toast({ title: "Error", description: "Asegúrate de que no tenga proyectos asociados.", variant: "destructive" });
     } else {
-      toast({
-        title: "🗑️ Categoría eliminada",
-        description: "Eliminada correctamente",
-        className: "bg-red-100 text-red-900",
-      });
+      toast({ title: "Eliminada", description: "La categoría ha sido borrada.", variant: "destructive" });
       fetchCategories();
     }
-
     setDeleteId(null);
   };
 
   return (
-    <section className="py-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* ================= FORM ================= */}
-        <form
-          onSubmit={handleCreate}
-          className="space-y-4 bg-card p-6 rounded-lg shadow"
+    <div className="space-y-8 max-w-5xl mx-auto pb-20">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+        
+        {/* ================= FORMULARIO (4 COLS) ================= */}
+        <motion.div 
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          className="lg:col-span-5"
         >
-          <h3 className="text-lg font-bold">Crear Categoría</h3>
+          <div className="bg-white rounded-[2.5rem] p-8 border border-slate-200 shadow-sm sticky top-28">
+            <div className="flex items-center gap-4 mb-8">
+              <div className="w-12 h-12 bg-orange-600 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-orange-600/20">
+                <FolderPlus size={24} />
+              </div>
+              <div>
+                <h3 className="text-xl font-bold text-slate-900">Nueva Categoría</h3>
+                <p className="text-sm text-slate-400 font-medium">Organiza tus proyectos</p>
+              </div>
+            </div>
 
-          <div className="space-y-2">
-            <Label>Nombre</Label>
-            <Input
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="Ej: Muebles"
-            />
+            <form onSubmit={handleCreate} className="space-y-6">
+              <div className="space-y-2">
+                <Label className="text-xs font-bold uppercase tracking-widest text-slate-500 ml-1">Nombre Comercial</Label>
+                <div className="relative">
+                  <Tag className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
+                  <Input
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder="Ej: Cocinas Modernas"
+                    className="h-14 pl-12 rounded-2xl border-slate-100 bg-slate-50 focus:bg-white focus:ring-orange-600 transition-all text-lg"
+                  />
+                </div>
+              </div>
+
+              <Button 
+                type="submit" 
+                disabled={loading || !name} 
+                className="w-full h-14 rounded-2xl bg-slate-950 hover:bg-orange-600 text-white font-bold text-lg transition-all"
+              >
+                {loading ? <Loader2 className="animate-spin" /> : "Registrar Categoría"}
+              </Button>
+            </form>
+          </div>
+        </motion.div>
+
+        {/* ================= LISTADO (7 COLS) ================= */}
+        <div className="lg:col-span-7 space-y-6">
+          <div className="flex items-center justify-between px-4">
+            <h3 className="text-xl font-bold text-slate-900 flex items-center gap-2">
+              Categorías Existentes 
+              <span className="text-sm font-normal text-slate-400 ml-2">({categories.length})</span>
+            </h3>
           </div>
 
-          <Button type="submit" disabled={loading}>
-            {loading ? "Creando..." : "Crear Categoría"}
-          </Button>
-        </form>
-
-        {/* ================= LIST ================= */}
-        <div className="bg-card p-6 rounded-lg shadow">
-          <h3 className="text-lg font-bold mb-4">Categorías</h3>
-
-          {categories.length === 0 ? (
-            <p className="text-muted-foreground">
-              No hay categorías aún
-            </p>
-          ) : (
-            <ul className="space-y-2">
-              {categories.map((cat) => (
-                <li
-                  key={cat.id}
-                  className="flex items-center justify-between p-3 border rounded bg-background"
+          <div className="grid grid-cols-1 gap-3">
+            <AnimatePresence mode="popLayout">
+              {categories.length === 0 ? (
+                <motion.div 
+                  initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+                  className="p-20 text-center bg-slate-50 rounded-[2.5rem] border-2 border-dashed border-slate-200"
                 >
-                  {editingId === cat.id ? (
-                    <Input
-                      value={editingName}
-                      onChange={(e) => setEditingName(e.target.value)}
-                      onBlur={() => handleEdit(cat.id)}
-                      autoFocus
-                    />
-                  ) : (
-                    <span className="font-medium">{cat.name}</span>
-                  )}
+                  <AlertCircle className="mx-auto text-slate-300 mb-2" size={40} />
+                  <p className="text-slate-500 font-medium">No hay categorías registradas aún.</p>
+                </motion.div>
+              ) : (
+                categories.map((cat, index) => (
+                  <motion.div
+                    key={cat.id}
+                    layout
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    transition={{ delay: index * 0.05 }}
+                    className={`group p-4 rounded-2xl border transition-all duration-300 flex items-center justify-between ${
+                      editingId === cat.id 
+                      ? "bg-white border-orange-500 shadow-xl shadow-orange-500/10 ring-2 ring-orange-500/20" 
+                      : "bg-white border-slate-100 hover:border-slate-300 hover:shadow-md"
+                    }`}
+                  >
+                    <div className="flex items-center gap-4 flex-1">
+                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${
+                        editingId === cat.id ? "bg-orange-600 text-white" : "bg-slate-50 text-slate-400"
+                      }`}>
+                        <Tag size={18} />
+                      </div>
+                      
+                      {editingId === cat.id ? (
+                        <div className="flex items-center gap-2 flex-1">
+                          <Input
+                            value={editingName}
+                            onChange={(e) => setEditingName(e.target.value)}
+                            onKeyDown={(e) => e.key === "Enter" && handleEdit(cat.id)}
+                            className="h-10 rounded-lg border-orange-200 focus:ring-orange-500"
+                            autoFocus
+                          />
+                          <Button size="icon" onClick={() => handleEdit(cat.id)} className="bg-emerald-500 hover:bg-emerald-600 rounded-lg h-10 w-10 shrink-0">
+                            <Check size={18} />
+                          </Button>
+                          <Button size="icon" variant="ghost" onClick={() => setEditingId(null)} className="rounded-lg h-10 w-10 text-slate-400">
+                            <X size={18} />
+                          </Button>
+                        </div>
+                      ) : (
+                        <span className="font-bold text-slate-700 tracking-tight">{cat.name}</span>
+                      )}
+                    </div>
 
-                  <div className="flex gap-2">
-                    <Button
-                      size="icon"
-                      variant="ghost"
-                      onClick={() => {
-                        setEditingId(cat.id);
-                        setEditingName(cat.name);
-                      }}
-                    >
-                      <Pencil className="w-4 h-4 text-blue-500" />
-                    </Button>
-
-                    <Button
-                      size="icon"
-                      variant="ghost"
-                      onClick={() => setDeleteId(cat.id)}
-                    >
-                      <Trash2 className="w-4 h-4 text-red-500" />
-                    </Button>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          )}
+                    {!editingId && (
+                      <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <Button
+                          size="icon"
+                          variant="ghost"
+                          className="h-9 w-9 rounded-lg hover:bg-slate-100 text-slate-500"
+                          onClick={() => { setEditingId(cat.id); setEditingName(cat.name); }}
+                        >
+                          <Pencil size={16} />
+                        </Button>
+                        <Button
+                          size="icon"
+                          variant="ghost"
+                          className="h-9 w-9 rounded-lg hover:bg-red-50 text-red-500"
+                          onClick={() => setDeleteId(cat.id)}
+                        >
+                          <Trash2 size={16} />
+                        </Button>
+                      </div>
+                    )}
+                  </motion.div>
+                ))
+              )}
+            </AnimatePresence>
+          </div>
         </div>
       </div>
 
-      {/* ================= MODAL DELETE ================= */}
+      {/* ================= DIÁLOGO DE ELIMINACIÓN ================= */}
       <AlertDialog open={!!deleteId} onOpenChange={() => setDeleteId(null)}>
-        <AlertDialogContent>
+        <AlertDialogContent className="rounded-[2rem] border-none p-8">
           <AlertDialogHeader>
-            <AlertDialogTitle className="text-red-600">
-              ¿Eliminar categoría?
+            <div className="w-16 h-16 bg-red-100 text-red-600 rounded-2xl flex items-center justify-center mb-4">
+              <Trash2 size={32} />
+            </div>
+            <AlertDialogTitle className="text-2xl font-bold text-slate-900">
+              ¿Confirmar eliminación?
             </AlertDialogTitle>
-            <AlertDialogDescription>
-              Esta acción no se puede deshacer.
+            <AlertDialogDescription className="text-slate-500 text-lg">
+              Estás a punto de borrar esta categoría. Si tiene proyectos vinculados, es posible que el sistema no lo permita por seguridad.
             </AlertDialogDescription>
           </AlertDialogHeader>
 
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+          <AlertDialogFooter className="mt-8 gap-3">
+            <AlertDialogCancel className="h-12 rounded-xl border-slate-200 font-bold">Cancelar</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDelete}
-              className="bg-red-600 hover:bg-red-700"
+              className="h-12 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold px-8"
             >
-              Eliminar
+              Sí, eliminar ahora
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </section>
+    </div>
   );
 };
 
