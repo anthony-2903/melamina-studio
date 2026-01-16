@@ -145,7 +145,7 @@ const AdminPage = () => {
                   <h1 className="text-xl font-bold text-slate-900 capitalize">
                     {tab === "portfolio" ? "Gestión de Portafolio" : "Gestión de Categorías"}
                   </h1>
-                  <p className="text-xs text-slate-400">Panel de administración v2.0</p>
+                  
                 </div>
               </div>
 
