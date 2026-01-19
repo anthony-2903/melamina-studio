@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Menu, X, User, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence, useScroll, useMotionValueEvent } from "framer-motion";
@@ -10,7 +10,6 @@ const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const { scrollY } = useScroll();
 
-  // Cambiar estilo del header al hacer scroll
   useMotionValueEvent(scrollY, "change", (latest) => {
     if (latest > 50) setIsScrolled(true);
     else setIsScrolled(false);
@@ -33,46 +32,52 @@ const Header = () => {
       }`}
     >
       <div className="container mx-auto px-4 flex justify-center">
-        {/* Nav Container con efecto Glassmorphism */}
+        {/* Nav Container con estética Premium */}
         <nav 
           className={`flex items-center justify-between w-full max-w-6xl px-6 transition-all duration-500 rounded-[2rem] border ${
             isScrolled 
-              ? "h-16 bg-white/80 backdrop-blur-xl border-slate-200 shadow-lg shadow-slate-200/50" 
+              ? "h-16 bg-white/90 backdrop-blur-xl border-[#DBD8D3] shadow-xl shadow-[#524F4A]/5" 
               : "h-20 bg-transparent border-transparent"
           }`}
         >
-          {/* Logo con escala dinámica */}
-          <a href="/" className="flex items-center group">
+          {/* Logo Rectangular Ajustado */}
+          <a href="/" className="flex items-center group overflow-hidden">
             <motion.img
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
               src={logo}
-              alt="Husheniid"
-              className={`w-auto transition-all duration-500 ${
-                isScrolled ? "h-10" : "h-12 md:h-14"
+              alt="Husheniid - Muebles de Melamina"
+              className={`w-auto object-contain transition-all duration-500 filter group-hover:brightness-110 ${
+                isScrolled 
+                  ? "h-11 md:h-12" 
+                  : "h-14 md:h-18 lg:h-20" 
               }`}
             />
           </a>
 
-          {/* Desktop Navigation - Links con indicador inferior */}
+          {/* Desktop Navigation - Acento Dorado Arena */}
           <div className="hidden md:flex items-center space-x-1">
             {navLinks.map((link) => (
               <a
                 key={link.name}
                 href={link.href}
-                className="relative px-4 py-2 text-sm font-bold text-slate-600 hover:text-orange-600 transition-colors group"
+                className={`relative px-4 py-2 text-sm font-bold transition-colors group ${
+                  isScrolled ? "text-[#524F4A]" : "text-[#524F4A]" 
+                } hover:text-[#BB9E7A]`}
               >
                 {link.name}
-                <span className="absolute bottom-0 left-1/2 w-0 h-1 bg-orange-600 transition-all duration-300 -translate-x-1/2 rounded-full group-hover:w-4" />
+                <span className="absolute bottom-0 left-1/2 w-0 h-1 bg-[#BB9E7A] transition-all duration-300 -translate-x-1/2 rounded-full group-hover:w-4" />
               </a>
             ))}
           </div>
 
-          {/* Actions: Login + Menu Mobile */}
+          {/* Actions: Estilo Gris Carbón y Dorado */}
           <div className="flex items-center gap-3">
             <div className="hidden md:block">
               <Button 
                 asChild 
                 variant="ghost" 
-                className="rounded-full font-bold hover:bg-orange-50 hover:text-orange-600"
+                className="rounded-full font-bold hover:bg-[#DBD8D3]/30 hover:text-[#BB9E7A] text-[#524F4A]"
               >
                 <a href="/login" className="flex items-center gap-2">
                   <User size={18} />
@@ -83,7 +88,7 @@ const Header = () => {
 
             <Button 
               asChild 
-              className="hidden lg:flex rounded-full bg-slate-950 hover:bg-orange-600 text-white px-6 transition-all group"
+              className="hidden lg:flex rounded-full bg-[#524F4A] hover:bg-[#BB9E7A] text-white px-8 transition-all duration-500 group shadow-lg shadow-[#524F4A]/10"
             >
               <a href="#contacto" className="flex items-center gap-2">
                 Cotizar ahora
@@ -93,7 +98,7 @@ const Header = () => {
 
             {/* Mobile Toggle */}
             <button
-              className="md:hidden p-2 text-slate-900 bg-slate-100 rounded-xl hover:bg-orange-100 transition-colors"
+              className="md:hidden p-3 text-[#524F4A] bg-[#DBD8D3]/50 rounded-2xl hover:bg-[#BB9E7A] hover:text-white transition-all"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             >
               {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
@@ -102,14 +107,14 @@ const Header = () => {
         </nav>
       </div>
 
-      {/* Mobile Menu Fullscreen Overlay */}
+      {/* Mobile Menu Overlay - Coherencia Bicolor */}
       <AnimatePresence>
         {isMenuOpen && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-white/95 backdrop-blur-2xl border-b border-slate-100 overflow-hidden"
+            className="md:hidden bg-white/98 backdrop-blur-3xl border-b border-[#DBD8D3] overflow-hidden"
           >
             <div className="container mx-auto px-8 py-12 flex flex-col space-y-6">
               {navLinks.map((link, i) => (
@@ -120,17 +125,17 @@ const Header = () => {
                   animate={{ x: 0, opacity: 1 }}
                   transition={{ delay: i * 0.1 }}
                   onClick={() => setIsMenuOpen(false)}
-                  className="text-3xl font-bold text-slate-900 hover:text-orange-600 transition-colors"
+                  className="text-3xl font-bold text-[#524F4A] hover:text-[#BB9E7A] transition-colors font-serif italic"
                 >
                   {link.name}
                 </motion.a>
               ))}
-              <hr className="border-slate-100" />
-              <div className="flex flex-col gap-4">
-                <Button asChild variant="outline" className="h-14 rounded-2xl border-slate-200 text-lg font-bold">
+              <hr className="border-[#DBD8D3]" />
+              <div className="flex flex-col gap-4 pb-8">
+                <Button asChild variant="outline" className="h-14 rounded-2xl border-[#524F4A] text-[#524F4A] text-lg font-bold">
                   <a href="/login">Área de Clientes</a>
                 </Button>
-                <Button asChild className="h-14 rounded-2xl bg-orange-600 text-lg font-bold">
+                <Button asChild className="h-14 rounded-2xl bg-[#524F4A] hover:bg-[#BB9E7A] text-white text-lg font-bold transition-all">
                   <a href="#contacto">Solicitar Presupuesto</a>
                 </Button>
               </div>

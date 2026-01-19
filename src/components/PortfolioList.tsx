@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import { motion, Variants, AnimatePresence } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
@@ -14,28 +14,21 @@ interface PortfolioItem {
   created_at?: string;
 }
 
-// Variantes para la aparición inicial de la lista
-const containerVariants: Variants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.1 }
-  }
-};
-
-// Variantes de la tarjeta con transiciones suaves (In/Out)
-const cardVariants: Variants = {
-  hidden: { opacity: 0, y: 30 },
+const itemVariants: Variants = {
+  hidden: { opacity: 0, y: 20 },
   visible: { 
     opacity: 1, 
     y: 0,
-    transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } // Custom cubic-bezier para fluidez
+    transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] }
   }
 };
 
 export default function PortfolioList() {
   const [portfolio, setPortfolio] = useState<PortfolioItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [constraints, setConstraints] = useState({ left: 0, right: 0 });
+  const containerRef = useRef<HTMLDivElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const fetchPortfolio = async () => {
@@ -51,82 +44,102 @@ export default function PortfolioList() {
     fetchPortfolio();
   }, []);
 
+  // Calculamos los límites del arrastre dinámicamente según el tamaño de la pantalla
+  useEffect(() => {
+    if (!loading && scrollRef.current && containerRef.current) {
+      const scrollWidth = scrollRef.current.offsetWidth;
+      const containerWidth = containerRef.current.offsetWidth;
+      setConstraints({ left: -(scrollWidth - containerWidth + 40), right: 0 });
+    }
+  }, [loading, portfolio]);
+
   if (loading) {
     return (
       <div className="flex h-96 items-center justify-center">
-        <Loader2 className="w-8 h-8 text-orange-600 animate-spin" />
+        <Loader2 className="w-8 h-8 text-[#BB9E7A] animate-spin" />
       </div>
     );
   }
 
   return (
-    <section className="py-24 bg-white">
-      <div className="container mx-auto px-6">
-        
-        <header className="mb-20 text-center md:text-left flex flex-col md:flex-row md:items-end justify-between gap-6">
+    <section className="py-24 bg-[#DBD8D3]/10 overflow-hidden w-full select-none">
+      <div className="container mx-auto px-6 mb-16">
+        <header className="flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div>
-            <h2 className="text-5xl md:text-7xl font-bold tracking-tighter text-slate-950">
-              Galería de <span className="text-orange-600 italic">Autor</span>
+            <span className="text-[#BB9E7A] font-bold tracking-[0.4em] uppercase text-[10px] mb-4 block">
+              Curaduría de Proyectos
+            </span>
+            <h2 className="text-5xl md:text-7xl font-bold tracking-tighter text-[#524F4A]">
+              Galería de <span className="text-[#BB9E7A] italic font-serif">Autor</span>
             </h2>
-            <p className="text-slate-500 mt-6 text-xl max-w-xl border-l-2 border-orange-500 pl-6">
-              Proyectos de alta gama fabricados con precisión artesanal en Huancayo.
+            <p className="text-slate-400 text-xs mt-4 uppercase tracking-widest md:hidden">
+              ← Desliza para explorar →
             </p>
           </div>
         </header>
+      </div>
 
-        <motion.div 
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10"
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
+      {/* Contenedor del Visor */}
+      <div ref={containerRef} className="relative w-full px-6 cursor-grab active:cursor-grabbing">
+        <motion.div
+          ref={scrollRef}
+          drag="x"
+          dragConstraints={constraints}
+          dragElastic={0.1} // Efecto rebote al llegar al final
+          dragTransition={{ bounceStiffness: 100, bounceDamping: 10 }}
+          className="flex gap-8 w-max"
         >
           <AnimatePresence>
             {portfolio.map((item) => (
               <motion.div
                 key={item.id}
-                variants={cardVariants}
-                whileHover={{ 
-                  y: -15,
-                  transition: { duration: 0.4, ease: "easeOut" } 
+                variants={itemVariants}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+                // Evitamos que el click se dispare mientras arrastramos
+                onPointerDown={(e) => e.currentTarget.setAttribute('data-drag', 'false')}
+                onPointerMove={(e) => e.currentTarget.setAttribute('data-drag', 'true')}
+                onClick={(e) => {
+                  if (e.currentTarget.getAttribute('data-drag') === 'true') {
+                    e.preventDefault();
+                    e.stopPropagation();
+                  }
                 }}
-                className="group cursor-pointer"
+                whileHover={{ y: -10 }}
+                className="group w-[300px] md:w-[450px] lg:w-[550px] pointer-events-auto"
               >
-                {/* Contenedor de Imagen con Esquinas Redondeadas Suaves */}
-                <div className="relative aspect-square overflow-hidden rounded-[2.5rem] bg-slate-100 shadow-sm transition-shadow duration-500 group-hover:shadow-2xl group-hover:shadow-orange-600/20">
+                <div className="relative aspect-[16/10] overflow-hidden rounded-[2.5rem] bg-[#DBD8D3] shadow-sm transition-all duration-700 group-hover:shadow-2xl group-hover:shadow-[#524F4A]/10">
                   {item.image_url ? (
-                    <motion.img
+                    <img
                       src={item.image_url}
                       alt={item.title}
-                      className="w-full h-full object-cover transition-transform duration-1000 ease-in-out group-hover:scale-110"
+                      draggable="false" // Importante para que no interfiera con el drag de framer
+                      className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
                     />
                   ) : (
-                    <div className="flex h-full w-full items-center justify-center text-slate-300">Sin Imagen</div>
+                    <div className="flex h-full w-full items-center justify-center text-[#524F4A]/30 font-serif italic uppercase text-xs tracking-widest">Sin registro visual</div>
                   )}
 
-                  {/* Overlay Gradiente Dinámico */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-8">
-                    <div className="flex items-center gap-3 text-white transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
-                      <span className="font-bold text-lg uppercase tracking-widest">Ver Proyecto</span>
-                      <ArrowUpRight size={24} className="text-orange-500" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#524F4A]/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-8">
+                    <div className="flex items-center gap-4 text-white">
+                      <div className="h-10 w-10 rounded-full border border-[#BB9E7A]/50 flex items-center justify-center backdrop-blur-sm">
+                         <ArrowUpRight size={18} className="text-[#BB9E7A]" />
+                      </div>
+                      <span className="font-bold text-[10px] uppercase tracking-[0.3em]">Detalles</span>
                     </div>
                   </div>
                 </div>
 
-                {/* Info Textual Fuera de la Imagen para Limpieza Visual */}
-                <div className="mt-8 px-2">
-                  <div className="flex items-center gap-3 mb-3">
-                    <Badge variant="outline" className="border-orange-200 text-orange-700 bg-orange-50 rounded-full text-[10px] py-0 px-3 uppercase font-black">
-                      {item.type}
-                    </Badge>
-                    <div className="h-[1px] flex-grow bg-slate-100 group-hover:bg-orange-200 transition-colors duration-500" />
+                <div className="mt-8 px-4 transition-all duration-500 group-hover:translate-x-3">
+                  <div className="flex items-center gap-3 mb-2">
+                     <span className="text-[#BB9E7A] text-[10px] font-bold uppercase tracking-widest">{item.type}</span>
+                     <div className="h-[1px] w-12 bg-[#BB9E7A]/30 group-hover:w-20 transition-all duration-500" />
                   </div>
-                  
-                  <h3 className="text-2xl font-bold text-slate-900 group-hover:text-orange-600 transition-colors duration-300 tracking-tight">
+                  <h3 className="text-2xl md:text-3xl font-bold text-[#524F4A] tracking-tight group-hover:text-[#BB9E7A] transition-colors duration-500">
                     {item.title}
                   </h3>
-                  
-                  <p className="mt-2 text-slate-500 leading-relaxed text-sm line-clamp-2">
+                  <p className="mt-3 text-slate-500/70 font-light text-sm line-clamp-1 italic max-w-sm">
                     {item.description}
                   </p>
                 </div>
@@ -134,13 +147,15 @@ export default function PortfolioList() {
             ))}
           </AnimatePresence>
         </motion.div>
-
-        {portfolio.length === 0 && (
-          <div className="text-center py-40 border-2 border-dashed border-slate-100 rounded-[3rem]">
-             <p className="text-slate-400 font-medium">No se encontraron proyectos registrados.</p>
-          </div>
-        )}
       </div>
+
+      {portfolio.length === 0 && (
+        <div className="container mx-auto px-6 mt-10">
+          <div className="text-center py-20 border border-dashed border-[#DBD8D3] rounded-[3rem]">
+             <p className="text-[#524F4A]/40 font-light tracking-[0.3em] uppercase text-[10px]">Esperando curaduría...</p>
+          </div>
+        </div>
+      )}
     </section>
   );
 }

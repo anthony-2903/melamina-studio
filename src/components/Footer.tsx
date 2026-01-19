@@ -22,11 +22,11 @@ const Footer = () => {
   };
 
   return (
-    <footer className="bg-slate-950 text-white pt-24 pb-12 overflow-hidden relative">
-      {/* Elemento Decorativo: Gradiente de esquina */}
-      <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-orange-600/10 rounded-full blur-[120px] pointer-events-none" />
+    <footer className="bg-[#524F4A] text-white pt-24 pb-12 overflow-hidden relative border-t border-[#BB9E7A]/10">
+      {/* Elemento Decorativo: Gradiente de esquina en Dorado Arena */}
+      <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-[#BB9E7A]/5 rounded-full blur-[140px] pointer-events-none" />
 
-      <div className="container mx-auto px-6">
+      <div className="container mx-auto px-6 relative z-10">
         <motion.div 
           className="grid grid-cols-1 md:grid-cols-12 gap-16 mb-20"
           variants={containerVariants}
@@ -36,53 +36,44 @@ const Footer = () => {
         >
           {/* COLUMNA 1: BRANDING */}
           <motion.div variants={itemVariants} className="md:col-span-5 space-y-8">
-            <h3 className="text-4xl font-bold tracking-tighter italic">
-              estudio <span className="text-orange-600">husheniid</span>
+            <h3 className="text-4xl font-bold tracking-tighter italic font-serif">
+              estudio <span className="text-[#BB9E7A]">husheniid</span>
             </h3>
-            <p className="text-slate-400 text-lg leading-relaxed max-w-sm">
+            <p className="text-[#DBD8D3]/70 text-lg leading-relaxed max-w-sm font-light">
               Elevamos el estándar de la carpintería en melamina. Diseño de autor para espacios que inspiran en Huancayo.
             </p>
             
-            {/* Redes Sociales Actualizadas */}
+            {/* Redes Sociales con estilo Minimal Dorado */}
             <div className="flex gap-4">
-              <a 
-                href="https://www.facebook.com/profile.php?id=61551909329314#" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="w-12 h-12 rounded-full border border-slate-800 flex items-center justify-center transition-all duration-500 hover:border-orange-600 hover:text-orange-600 hover:-translate-y-2"
-              >
-                <Facebook size={20} />
-              </a>
-              <a 
-                href="https://www.instagram.com/hugocaldeton/" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="w-12 h-12 rounded-full border border-slate-800 flex items-center justify-center transition-all duration-500 hover:border-orange-600 hover:text-orange-600 hover:-translate-y-2"
-              >
-                <Instagram size={20} />
-              </a>
-              <a 
-                href="https://www.tiktok.com/@husheniid?lang=es-419" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="w-12 h-12 rounded-full border border-slate-800 flex items-center justify-center transition-all duration-500 hover:border-orange-600 hover:text-orange-600 hover:-translate-y-2"
-              >
-                <Music2 size={20} /> {/* Music2 es el icono estándar para TikTok en Lucide */}
-              </a>
+              {[
+                { icon: Facebook, href: "https://www.facebook.com/profile.php?id=61551909329314#" },
+                { icon: Instagram, href: "https://www.instagram.com/hugocaldeton/" },
+                { icon: Music2, href: "https://www.tiktok.com/@husheniid" }
+              ].map((social, index) => (
+                <a 
+                  key={index}
+                  href={social.href} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="w-12 h-12 rounded-full border border-[#DBD8D3]/20 flex items-center justify-center transition-all duration-500 hover:border-[#BB9E7A] hover:text-[#BB9E7A] hover:-translate-y-2 bg-white/5"
+                >
+                  <social.icon size={20} />
+                </a>
+              ))}
             </div>
           </motion.div>
 
           {/* COLUMNA 2: NAVEGACIÓN */}
           <motion.div variants={itemVariants} className="md:col-span-3 space-y-6">
-            <h4 className="text-sm font-bold uppercase tracking-[0.3em] text-orange-600">Navegación</h4>
+            <h4 className="text-xs font-bold uppercase tracking-[0.4em] text-[#BB9E7A]">Explorar</h4>
             <ul className="space-y-4">
               {["Portafolio", "Servicios", "Conócenos", "Contacto"].map((link) => (
                 <li key={link}>
                   <a 
                     href={`#${link.toLowerCase()}`} 
-                    className="text-slate-400 hover:text-white flex items-center gap-2 group transition-colors"
+                    className="text-[#DBD8D3]/60 hover:text-white flex items-center gap-2 group transition-colors text-sm font-medium"
                   >
-                    <span className="w-0 group-hover:w-4 h-[1px] bg-orange-600 transition-all duration-300" />
+                    <span className="w-0 group-hover:w-4 h-[1px] bg-[#BB9E7A] transition-all duration-300" />
                     {link}
                   </a>
                 </li>
@@ -92,19 +83,19 @@ const Footer = () => {
 
           {/* COLUMNA 3: CONTACTO */}
           <motion.div variants={itemVariants} className="md:col-span-4 space-y-6">
-            <h4 className="text-sm font-bold uppercase tracking-[0.3em] text-orange-600">Ubicación</h4>
-            <div className="space-y-6 text-slate-400">
+            <h4 className="text-xs font-bold uppercase tracking-[0.4em] text-[#BB9E7A]">Ubicación</h4>
+            <div className="space-y-6 text-[#DBD8D3]/60 text-sm">
               <div className="flex gap-4">
-                <MapPin className="text-orange-600 shrink-0" size={20} />
-                <p>AV Coronel Parra, ref Cruce de Pilcomayo,<br />Huancayo, Perú</p>
+                <MapPin className="text-[#BB9E7A] shrink-0" size={18} />
+                <p className="leading-relaxed font-light">AV Coronel Parra, ref Cruce de Pilcomayo,<br />Huancayo, Perú</p>
               </div>
               <div className="flex gap-4">
-                <Phone className="text-orange-600 shrink-0" size={20} />
+                <Phone className="text-[#BB9E7A] shrink-0" size={18} />
                 <a href="tel:+51979923148" className="hover:text-white transition-colors">+51 979 923 148</a>
               </div>
               <div className="flex gap-4">
-                <Mail className="text-orange-600 shrink-0" size={20} />
-                <a href="mailto:contacto@husheniid.com" className="hover:text-white transition-colors">contacto@husheniid.com</a>
+                <Mail className="text-[#BB9E7A] shrink-0" size={18} />
+                <a href="mailto:contacto@husheniid.com" className="hover:text-white transition-colors font-light">contacto@husheniid.com</a>
               </div>
             </div>
           </motion.div>
@@ -112,26 +103,26 @@ const Footer = () => {
 
         {/* BOTTOM BAR */}
         <motion.div 
-          className="pt-10 border-t border-slate-900 flex flex-col md:flex-row justify-between items-center gap-6"
+          className="pt-10 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           transition={{ delay: 0.5 }}
         >
-          <p className="text-slate-500 text-sm">
-            © {currentYear} <span className="font-bold text-slate-300 uppercase">Estudio Husheniid</span>.
+          <p className="text-[#DBD8D3]/30 text-[11px] font-medium tracking-wide">
+            © {currentYear} <span className="font-bold text-[#DBD8D3]/50">ESTUDIO HUSHENIID</span>.
           </p>
-          <div className="flex gap-8 text-[10px] font-bold uppercase tracking-widest text-slate-500">
-            <a href="https://wa.me/51979923148" target="_blank" className="flex items-center gap-1 text-orange-600 hover:text-orange-500 transition-colors">
-              Solicitar Cotización <ArrowUpRight size={12} />
+          <div className="flex gap-8 text-[10px] font-bold uppercase tracking-[0.2em] text-[#DBD8D3]/50">
+            <a href="https://wa.me/51979923148" target="_blank" className="flex items-center gap-2 text-[#BB9E7A] hover:brightness-125 transition-all">
+              Solicitar Cotización <ArrowUpRight size={14} />
             </a>
           </div>
         </motion.div>
       </div>
 
-      {/* TEXTO DE FONDO */}
-      <div className="absolute -bottom-10 left-0 w-full overflow-hidden opacity-[0.02] pointer-events-none select-none">
-        <h2 className="text-[15rem] font-bold leading-none whitespace-nowrap -mb-10">
-          MELAMINA DE ALTA GAMA
+      {/* TEXTO DE FONDO GIGANTE (MÁS SUTIL) */}
+      <div className="absolute -bottom-12 left-0 w-full overflow-hidden opacity-[0.03] pointer-events-none select-none">
+        <h2 className="text-[14rem] font-bold leading-none whitespace-nowrap -mb-10 text-white font-serif">
+          ESTILO & CALIDAD
         </h2>
       </div>
     </footer>
