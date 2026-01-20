@@ -54,7 +54,7 @@ const AdminCategory = () => {
     if (error) {
       toast({ title: "Error", description: "Esta categoría ya existe o hubo un problema.", variant: "destructive" });
     } else {
-      toast({ title: "¡Lista!", description: "Categoría añadida con éxito.", className: "bg-slate-900 text-white" });
+      toast({ title: "¡Lista!", description: "Categoría añadida con éxito.", className: "bg-[#524F4A] text-white border-none" });
       setName("");
       fetchCategories();
     }
@@ -94,27 +94,27 @@ const AdminCategory = () => {
           animate={{ opacity: 1, x: 0 }}
           className="lg:col-span-5"
         >
-          <div className="bg-white rounded-[2.5rem] p-8 border border-slate-200 shadow-sm sticky top-28">
+          <div className="bg-white rounded-[2.5rem] p-8 border border-[#DBD8D3]/50 shadow-sm sticky top-28">
             <div className="flex items-center gap-4 mb-8">
-              <div className="w-12 h-12 bg-orange-600 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-orange-600/20">
+              <div className="w-12 h-12 bg-[#BB9E7A] rounded-2xl flex items-center justify-center text-white shadow-lg shadow-[#BB9E7A]/20">
                 <FolderPlus size={24} />
               </div>
               <div>
-                <h3 className="text-xl font-bold text-slate-900">Nueva Categoría</h3>
+                <h3 className="text-xl font-bold text-[#524F4A]">Nueva Categoría</h3>
                 <p className="text-sm text-slate-400 font-medium">Organiza tus proyectos</p>
               </div>
             </div>
 
             <form onSubmit={handleCreate} className="space-y-6">
               <div className="space-y-2">
-                <Label className="text-xs font-bold uppercase tracking-widest text-slate-500 ml-1">Nombre Comercial</Label>
+                <Label className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500 ml-1">Nombre Comercial</Label>
                 <div className="relative">
                   <Tag className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
                   <Input
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder="Ej: Cocinas Modernas"
-                    className="h-14 pl-12 rounded-2xl border-slate-100 bg-slate-50 focus:bg-white focus:ring-orange-600 transition-all text-lg"
+                    className="h-14 pl-12 rounded-2xl border-[#DBD8D3] bg-[#DBD8D3]/10 focus:bg-white focus:ring-[#BB9E7A] focus:border-[#BB9E7A] transition-all text-lg"
                   />
                 </div>
               </div>
@@ -122,7 +122,7 @@ const AdminCategory = () => {
               <Button 
                 type="submit" 
                 disabled={loading || !name} 
-                className="w-full h-14 rounded-2xl bg-slate-950 hover:bg-orange-600 text-white font-bold text-lg transition-all"
+                className="w-full h-14 rounded-2xl bg-[#524F4A] hover:bg-[#BB9E7A] text-white font-bold text-lg transition-all duration-300"
               >
                 {loading ? <Loader2 className="animate-spin" /> : "Registrar Categoría"}
               </Button>
@@ -133,9 +133,9 @@ const AdminCategory = () => {
         {/* ================= LISTADO (7 COLS) ================= */}
         <div className="lg:col-span-7 space-y-6">
           <div className="flex items-center justify-between px-4">
-            <h3 className="text-xl font-bold text-slate-900 flex items-center gap-2">
+            <h3 className="text-xl font-bold text-[#524F4A] flex items-center gap-2 font-serif italic">
               Categorías Existentes 
-              <span className="text-sm font-normal text-slate-400 ml-2">({categories.length})</span>
+              <span className="text-sm font-normal text-slate-400 ml-2 not-italic font-sans">({categories.length})</span>
             </h3>
           </div>
 
@@ -144,10 +144,10 @@ const AdminCategory = () => {
               {categories.length === 0 ? (
                 <motion.div 
                   initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-                  className="p-20 text-center bg-slate-50 rounded-[2.5rem] border-2 border-dashed border-slate-200"
+                  className="p-20 text-center bg-[#DBD8D3]/10 rounded-[2.5rem] border border-dashed border-[#DBD8D3]"
                 >
-                  <AlertCircle className="mx-auto text-slate-300 mb-2" size={40} />
-                  <p className="text-slate-500 font-medium">No hay categorías registradas aún.</p>
+                  <AlertCircle className="mx-auto text-[#DBD8D3] mb-2" size={40} />
+                  <p className="text-slate-400 font-medium tracking-wide">No hay categorías registradas aún.</p>
                 </motion.div>
               ) : (
                 categories.map((cat, index) => (
@@ -160,13 +160,13 @@ const AdminCategory = () => {
                     transition={{ delay: index * 0.05 }}
                     className={`group p-4 rounded-2xl border transition-all duration-300 flex items-center justify-between ${
                       editingId === cat.id 
-                      ? "bg-white border-orange-500 shadow-xl shadow-orange-500/10 ring-2 ring-orange-500/20" 
-                      : "bg-white border-slate-100 hover:border-slate-300 hover:shadow-md"
+                      ? "bg-white border-[#BB9E7A] shadow-xl shadow-[#BB9E7A]/10 ring-1 ring-[#BB9E7A]/20" 
+                      : "bg-white border-[#DBD8D3]/50 hover:border-[#BB9E7A]/50 hover:shadow-md"
                     }`}
                   >
                     <div className="flex items-center gap-4 flex-1">
                       <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${
-                        editingId === cat.id ? "bg-orange-600 text-white" : "bg-slate-50 text-slate-400"
+                        editingId === cat.id ? "bg-[#BB9E7A] text-white" : "bg-[#DBD8D3]/20 text-slate-400 group-hover:bg-[#BB9E7A]/10 group-hover:text-[#BB9E7A]"
                       }`}>
                         <Tag size={18} />
                       </div>
@@ -177,7 +177,7 @@ const AdminCategory = () => {
                             value={editingName}
                             onChange={(e) => setEditingName(e.target.value)}
                             onKeyDown={(e) => e.key === "Enter" && handleEdit(cat.id)}
-                            className="h-10 rounded-lg border-orange-200 focus:ring-orange-500"
+                            className="h-10 rounded-lg border-[#BB9E7A]/50 focus:ring-[#BB9E7A] focus:border-[#BB9E7A]"
                             autoFocus
                           />
                           <Button size="icon" onClick={() => handleEdit(cat.id)} className="bg-emerald-500 hover:bg-emerald-600 rounded-lg h-10 w-10 shrink-0">
@@ -188,7 +188,7 @@ const AdminCategory = () => {
                           </Button>
                         </div>
                       ) : (
-                        <span className="font-bold text-slate-700 tracking-tight">{cat.name}</span>
+                        <span className="font-bold text-[#524F4A] tracking-tight group-hover:text-[#BB9E7A] transition-colors">{cat.name}</span>
                       )}
                     </div>
 
@@ -197,7 +197,7 @@ const AdminCategory = () => {
                         <Button
                           size="icon"
                           variant="ghost"
-                          className="h-9 w-9 rounded-lg hover:bg-slate-100 text-slate-500"
+                          className="h-9 w-9 rounded-lg hover:bg-[#DBD8D3]/20 text-slate-500 hover:text-[#524F4A]"
                           onClick={() => { setEditingId(cat.id); setEditingName(cat.name); }}
                         >
                           <Pencil size={16} />
@@ -222,24 +222,24 @@ const AdminCategory = () => {
 
       {/* ================= DIÁLOGO DE ELIMINACIÓN ================= */}
       <AlertDialog open={!!deleteId} onOpenChange={() => setDeleteId(null)}>
-        <AlertDialogContent className="rounded-[2rem] border-none p-8">
+        <AlertDialogContent className="rounded-[2.5rem] border-none p-10 shadow-2xl">
           <AlertDialogHeader>
-            <div className="w-16 h-16 bg-red-100 text-red-600 rounded-2xl flex items-center justify-center mb-4">
+            <div className="w-16 h-16 bg-red-50 text-red-500 rounded-2xl flex items-center justify-center mb-6">
               <Trash2 size={32} />
             </div>
-            <AlertDialogTitle className="text-2xl font-bold text-slate-900">
+            <AlertDialogTitle className="text-2xl font-bold text-[#524F4A]">
               ¿Confirmar eliminación?
             </AlertDialogTitle>
-            <AlertDialogDescription className="text-slate-500 text-lg">
-              Estás a punto de borrar esta categoría. Si tiene proyectos vinculados, es posible que el sistema no lo permita por seguridad.
+            <AlertDialogDescription className="text-slate-500 text-lg font-light leading-relaxed">
+              Estás a punto de borrar esta categoría. Si tiene proyectos vinculados, es posible que el sistema no lo permita por seguridad estructural.
             </AlertDialogDescription>
           </AlertDialogHeader>
 
-          <AlertDialogFooter className="mt-8 gap-3">
-            <AlertDialogCancel className="h-12 rounded-xl border-slate-200 font-bold">Cancelar</AlertDialogCancel>
+          <AlertDialogFooter className="mt-10 gap-3">
+            <AlertDialogCancel className="h-12 rounded-xl border-[#DBD8D3] font-bold text-slate-500 hover:bg-[#DBD8D3]/10">Cancelar</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDelete}
-              className="h-12 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold px-8"
+              className="h-12 rounded-xl bg-red-500 hover:bg-red-600 text-white font-bold px-8 shadow-lg shadow-red-200"
             >
               Sí, eliminar ahora
             </AlertDialogAction>
