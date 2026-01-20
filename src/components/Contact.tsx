@@ -8,7 +8,8 @@ import {
   MessageCircle, 
   Instagram, 
   Facebook, 
-  ArrowUpRight 
+  ArrowUpRight, 
+  Music2Icon
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion, Variants } from "framer-motion";
@@ -118,10 +119,40 @@ const Contact = () => {
                 <div className="w-12 h-12 rounded-xl bg-[#DBD8D3]/20 flex items-center justify-center text-[#524F4A]">
                   <MapPin size={22} />
                 </div>
-                <div className="flex gap-2">
-                   <a href="#" className="p-3 bg-[#DBD8D3]/20 rounded-xl hover:bg-[#BB9E7A] hover:text-white transition-all text-[#524F4A]"><Instagram size={18} /></a>
-                   <a href="#" className="p-3 bg-[#DBD8D3]/20 rounded-xl hover:bg-[#BB9E7A] hover:text-white transition-all text-[#524F4A]"><Facebook size={18} /></a>
-                </div>
+               <div className="flex gap-3">
+  {/* Instagram */}
+  <a 
+    href="https://www.instagram.com/hugocaldeton/" 
+    target="_blank" 
+    rel="noopener noreferrer"
+    className="p-3 bg-[#DBD8D3]/20 rounded-xl hover:bg-[#BB9E7A] hover:text-white transition-all text-[#524F4A]"
+    title="Síguenos en Instagram"
+  >
+    <Instagram size={18} />
+  </a>
+
+  {/* Facebook */}
+  <a 
+    href="https://www.facebook.com/profile.php?id=61551909329314#" 
+    target="_blank" 
+    rel="noopener noreferrer"
+    className="p-3 bg-[#DBD8D3]/20 rounded-xl hover:bg-[#BB9E7A] hover:text-white transition-all text-[#524F4A]"
+    title="Síguenos en Facebook"
+  >
+    <Facebook size={18} />
+  </a>
+
+  {/* TikTok */}
+  <a 
+    href="https://www.tiktok.com/@husheniid" 
+    target="_blank" 
+    rel="noopener noreferrer"
+    className="p-3 bg-[#DBD8D3]/20 rounded-xl hover:bg-[#BB9E7A] hover:text-white transition-all text-[#524F4A]"
+    title="Síguenos en TikTok"
+  >
+    <Music2Icon size={18} />
+  </a>
+</div>
               </div>
               <div className="relative z-10">
                 <h4 className="text-[10px] font-bold text-[#BB9E7A] uppercase tracking-[0.2em] mb-2">Estudio Físico</h4>

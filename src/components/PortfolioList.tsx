@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import { motion, AnimatePresence } from "framer-motion";
-import { Loader2, Sparkles } from "lucide-react";
+import { Loader2,} from "lucide-react";
 
 interface PortfolioItem {
   id: string;

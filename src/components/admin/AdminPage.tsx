@@ -10,7 +10,7 @@ import {
   FolderTree, 
   Settings,
   Bell,
-  Sparkles
+  
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import AdminLogin from "./AdminLogin";
@@ -179,10 +179,8 @@ const AdminPage = () => {
               >
                 {/* Banner de Bienvenida o Contexto */}
                 <div className="mb-10 p-8 rounded-[2rem] bg-gradient-to-r from-[#524F4A] to-[#6a6660] text-white relative overflow-hidden shadow-2xl shadow-[#524F4A]/10">
-                   <Sparkles className="absolute right-10 top-1/2 -translate-y-1/2 text-white/10 w-32 h-32" />
                    <div className="relative z-10">
-                      <h3 className="text-2xl font-bold font-serif italic mb-1">Editor de Curaduría</h3>
-                      <p className="text-[#DBD8D3]/70 text-sm max-w-md">Actualiza el catálogo visual del estudio para mantener la galería alineada con la visión actual.</p>
+                      <h3 className="text-2xl font-bold font-serif italic mb-1">Agregar Proyecto</h3>
                    </div>
                 </div>
 

@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { 
   Pencil, Trash2, Plus, Upload, Image as ImageIcon, 
-  Loader2, X, Sparkles, Save 
+  Loader2, X, Save 
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -184,7 +184,7 @@ const AdminPortfolio = () => {
               <Textarea name="description" rows={4} className="rounded-2xl border-[#DBD8D3] bg-[#DBD8D3]/10" />
             </div>
             <Button disabled={isSubmitting} className="w-full h-14 rounded-2xl bg-[#524F4A] hover:bg-[#BB9E7A] text-white font-bold transition-all duration-500">
-              {isSubmitting ? <Loader2 className="animate-spin" /> : "Publicar Obra"}
+              {isSubmitting ? <Loader2 className="animate-spin" /> : "Publicar Proyecto"}
             </Button>
           </div>
 
@@ -212,7 +212,7 @@ const AdminPortfolio = () => {
       {/* GRID DE TRABAJOS */}
       <div className="space-y-8">
         <div className="flex items-end justify-between px-4">
-          <h2 className="text-3xl font-bold text-[#524F4A] tracking-tighter flex items-center gap-3">Catálogo <Sparkles className="text-[#BB9E7A]" size={20} /></h2>
+          <h2 className="text-3xl font-bold text-[#524F4A] tracking-tighter flex items-center gap-3">Catálogo </h2>
           <span className="px-6 py-2 bg-[#524F4A] text-white rounded-full text-[10px] font-bold uppercase tracking-widest">{portfolios.length} Proyectos</span>
         </div>
 
@@ -252,7 +252,7 @@ const AdminPortfolio = () => {
         <DialogContent className="sm:max-w-[500px] rounded-[2.5rem] border-[#DBD8D3] bg-white p-0 overflow-hidden shadow-2xl">
           <DialogHeader className="p-8 bg-[#524F4A] text-white">
             <DialogTitle className="text-2xl font-serif italic flex items-center gap-2">
-              <Pencil size={20} className="text-[#BB9E7A]" /> Editar Obra
+              <Pencil size={20} className="text-[#BB9E7A]" /> Editar 
             </DialogTitle>
             <DialogDescription className="text-[#DBD8D3]/70 uppercase text-[10px] tracking-widest font-bold">
               Modifica los detalles del proyecto seleccionado
