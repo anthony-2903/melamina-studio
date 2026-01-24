@@ -19,6 +19,7 @@ const Header = () => {
     { name: "Inicio", href: "/" },
     { name: "Conócenos", href: "#conocenos" },
     { name: "Portafolio", href: "#portafolio" },
+    { name: "Materiales", href: "#materiales" }, // Nueva opción agregada
     { name: "Servicios", href: "#servicios" },
     { name: "Contáctenos", href: "#contacto" },
   ];
@@ -136,7 +137,7 @@ const Header = () => {
                   <a href="/login">Área de Clientes</a>
                 </Button>
                 <Button asChild className="h-14 rounded-2xl bg-[#524F4A] hover:bg-[#BB9E7A] text-white text-lg font-bold transition-all">
-                  <a href="#contacto">Solicitar Presupuesto</a>
+                  <a href="#contacto">Consultenos</a>
                 </Button>
               </div>
             </div>
