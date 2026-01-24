@@ -399,15 +399,8 @@ export default function MaterialCatalog() {
     </section>
   );
 }
-
-// Sub-componente Card para mantener el código limpio
-function MaterialCard({
-  item,
-  isGrid = false,
-}: {
-  item: any;
-  isGrid?: boolean;
-}) {
+// Sub-componente Card Modernizado y Adaptable
+function MaterialCard({ item, isGrid = false }: { item: any; isGrid?: boolean }) {
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -416,7 +409,7 @@ function MaterialCard({
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           whileHover={{ y: -10 }}
-          className={`relative flex-shrink-0 group cursor-pointer overflow-hidden rounded-[2.5rem] bg-white border border-slate-200 shadow-md transition-all
+          className={`relative flex-shrink-0 group cursor-pointer overflow-hidden rounded-[2rem] bg-white border border-slate-200 shadow-sm transition-all
             ${isGrid ? "w-full aspect-[4/5]" : "w-[280px] md:w-[350px] aspect-[4/5]"}
           `}
         >
@@ -425,55 +418,71 @@ function MaterialCard({
             alt={item.name}
             className="w-full h-full object-cover transition-transform duration-[1.5s] group-hover:scale-110"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#524F4A]/90 via-transparent to-transparent opacity-80 group-hover:opacity-100 transition-opacity" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity" />
 
-          <div className="absolute bottom-0 left-0 right-0 p-8">
-            <Badge className="bg-[#BB9E7A]/20 text-[#BB9E7A] border-none mb-3 backdrop-blur-md text-[9px] uppercase tracking-widest font-bold">
+          <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8">
+            <Badge className="bg-[#BB9E7A] text-white border-none mb-3 text-[9px] uppercase tracking-[0.2em] font-bold">
               {item.folder}
             </Badge>
-            <h4 className="text-white text-2xl font-serif italic leading-none">
+            <h4 className="text-white text-2xl md:text-3xl font-serif italic leading-tight">
               {item.name}
             </h4>
-            <div className="h-[2px] w-0 bg-[#BB9E7A] mt-4 group-hover:w-12 transition-all duration-500" />
           </div>
         </motion.div>
       </DialogTrigger>
 
-      <DialogContent className="max-w-5xl w-[94vw] bg-white rounded-[2rem] md:rounded-[4rem] p-0 overflow-hidden border-none shadow-[0_0_100px_rgba(0,0,0,0.1)]">
-        <DialogClose className="absolute right-8 top-8 z-50 p-3 bg-white/80 hover:bg-[#BB9E7A] hover:text-white rounded-full transition-all shadow-xl backdrop-blur-md">
-          <X size={24} />
+      {/* MODAL MODERNIZADO */}
+      <DialogContent className="max-w-6xl w-[95vw] md:w-[90vw] p-0 overflow-hidden border-none bg-white rounded-[2.5rem] shadow-2xl">
+        {/* Único botón de cerrar estilizado */}
+        <DialogClose className="absolute right-6 top-6 z-50 p-3 bg-white/20 hover:bg-white text-white hover:text-[#524F4A] rounded-full transition-all duration-300 backdrop-blur-xl border border-white/30 shadow-xl">
+          <X size={20} />
         </DialogClose>
 
-        <div className="flex flex-col md:grid md:grid-cols-2">
-          <div className="h-[350px] md:h-[700px] overflow-hidden">
+        <div className="flex flex-col md:flex-row h-full max-h-[90vh] overflow-y-auto md:overflow-hidden">
+          {/* Lado de la Imagen */}
+          <div className="w-full md:w-1/2 h-[300px] md:h-[auto] relative">
             <motion.img
-              initial={{ scale: 1.2 }}
-              animate={{ scale: 1 }}
-              transition={{ duration: 1 }}
+              initial={{ scale: 1.1, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
               src={item.src}
               className="w-full h-full object-cover"
               alt={item.name}
             />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/40 md:hidden" />
           </div>
 
-          <div className="p-12 md:p-20 flex flex-col justify-center relative bg-white">
-            <Badge className="w-fit bg-[#BB9E7A] text-white mb-8 uppercase tracking-[0.3em] text-[10px] px-6 py-2 rounded-full border-none shadow-lg shadow-[#BB9E7A]/20">
-              Colección {item.folder}
-            </Badge>
+          {/* Lado del Contenido */}
+          <div className="w-full md:w-1/2 p-8 md:p-16 flex flex-col justify-center bg-white">
+            <motion.div
+              initial={{ x: 20, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ delay: 0.2 }}
+            >
+              <span className="text-[#BB9E7A] text-xs font-black uppercase tracking-[0.4em] mb-4 block">
+                Catálogo Exclusivo
+              </span>
+              
+              <h3 className="text-4xl md:text-7xl font-serif italic text-[#524F4A] mb-2 leading-[0.9] tracking-tighter">
+                {item.name}
+              </h3>
+              
+              <div className="flex items-center gap-4 mb-8">
+                <div className="h-[1px] w-12 bg-[#BB9E7A]" />
+                <p className="text-[#BB9E7A] font-medium text-sm tracking-widest uppercase">
+                  Ref. {item.ref}
+                </p>
+              </div>
 
-            <h3 className="text-5xl md:text-7xl font-serif italic text-[#524F4A] mb-4 leading-[0.9] tracking-tighter">
-              {item.name}
-            </h3>
-            <p className="text-[#BB9E7A] font-black text-xs uppercase tracking-widest mb-10 border-b border-slate-100 pb-6">
-              Ref ID: {item.ref}
-            </p>
+              <div className="space-y-5 mb-10">
+                <DataRow label="Formato" value="1.22 x 2.80 m" />
+                <DataRow label="Espesor" value="18 mm" />
+                <DataRow label="Acabado" value={item.finish} />
+                <DataRow label="Colección" value={item.folder} />
+              </div>
 
-            <div className="grid grid-cols-1 gap-6 mb-12">
-              <DataRow label="Formato Panel" value="1.22 x 2.80 m" />
-              <DataRow label="Grosor Núcleo" value="18 mm" />
-              <DataRow label="Acabado Final" value={item.finish} />
-              <DataRow label="Resistencia" value="Alta Tensión / Rayado" />
-            </div>
+            
+            </motion.div>
           </div>
         </div>
       </DialogContent>
@@ -483,11 +492,11 @@ function MaterialCard({
 
 function DataRow({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex justify-between items-center group">
-      <span className="text-slate-400 text-[10px] uppercase font-black tracking-widest">
+    <div className="flex justify-between items-end border-b border-slate-100 pb-2 group">
+      <span className="text-slate-400 text-[9px] uppercase font-black tracking-widest group-hover:text-[#BB9E7A] transition-colors">
         {label}
       </span>
-      <span className="text-[#524F4A] font-bold text-sm italic group-hover:text-[#BB9E7A] transition-colors">
+      <span className="text-[#524F4A] font-bold text-base italic">
         {value}
       </span>
     </div>
