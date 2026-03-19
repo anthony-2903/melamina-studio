@@ -18,15 +18,15 @@ import {
 } from "lucide-react";
 
 // --- MOTOR DE IMÁGENES RECURSIVO ---
-const ASSET_IMAGES = import.meta.glob("/src/assets/**/*.{jpg,jpeg,png}", {
+const ASSET_IMAGES = import.meta.glob("/src/assets/**/*.{jpg,jpeg,png,webp}", {
   eager: true,
   import: "default",
 });
 
 const resolveImagePath = (originalPath: string) => {
   const normalizedSearch = originalPath.replace(/\\/g, "/").toLowerCase();
-  const foundPath = Object.keys(ASSET_IMAGES).find((key) => 
-    key.toLowerCase().includes(normalizedSearch) || 
+  const foundPath = Object.keys(ASSET_IMAGES).find((key) =>
+    key.toLowerCase().includes(normalizedSearch) ||
     normalizedSearch.includes(key.toLowerCase().replace("/src/assets/", ""))
   );
   return foundPath ? (ASSET_IMAGES[foundPath] as string) : "";
@@ -38,12 +38,12 @@ const RAW_HIGH_GLOSS = [
   { id: 2, name: "Carbon", folder: "Color Entero", src: "highi gloss/entero/carbon-entero.jpg", ref: "JC381", finish: "MT / HG" },
   { id: 3, name: "Celeste", folder: "Color Entero", src: "highi gloss/entero/celeste-entero.jpg", ref: "JC829", finish: "MT / HG" },
   { id: 4, name: "Mocaccino", folder: "Color Entero", src: "highi gloss/entero/mocaccino-entero.jpg", ref: "JC204", finish: "MT / HG" },
-  { id: 5, name: "Negro", folder: "Color Entero", src: "highi gloss/entero/negro-entero.jpg", ref: "JC006", finish: "MT / HG" },
-  { id: 6, name: "Plomo", folder: "Color Entero", src: "highi gloss/entero/plomo-entero.jpg", ref: "JC209", finish: "MT / HG" },
-  { id: 7, name: "Rojo", folder: "Color Entero", src: "highi gloss/entero/rojo-entero.jpg", ref: "JC010", finish: "MT / HG" },
-  { id: 8, name: "Rosado", folder: "Color Entero", src: "highi gloss/entero/rosado-entero.jpg", ref: "JC052", finish: "MT / HG" },
-  { id: 9, name: "Taupe", folder: "Color Entero", src: "highi gloss/entero/taupe-entero.jpg", ref: "JC858", finish: "MT / HG" },
-  { id: 10, name: "Verde", folder: "Color Entero", src: "highi gloss/entero/verde-entero.jpg", ref: "JC825", finish: "MT / HG" },
+  { id: 5, name: "Negro", folder: "Color Entero", src: "highi gloss/entero/negro-entero.webp", ref: "JC006", finish: "MT / HG" },
+  { id: 6, name: "Plomo", folder: "Color Entero", src: "highi gloss/entero/plomo-entero.webp", ref: "JC209", finish: "MT / HG" },
+  { id: 7, name: "Rojo", folder: "Color Entero", src: "highi gloss/entero/rojo-entero.webp", ref: "JC010", finish: "MT / HG" },
+  { id: 8, name: "Rosado", folder: "Color Entero", src: "highi gloss/entero/rosado-entero.webp", ref: "JC052", finish: "MT / HG" },
+  { id: 9, name: "Taupe", folder: "Color Entero", src: "highi gloss/entero/taupe-entero.webp", ref: "JC858", finish: "MT / HG" },
+  { id: 10, name: "Verde", folder: "Color Entero", src: "highi gloss/entero/verde-entero.webp", ref: "JC825", finish: "MT / HG" },
   { id: 11, name: "Mármol Amazonic", folder: "Mármol", src: "highi gloss/marmol/amazonic-marmol.jpg", ref: "JC1210", finish: "MT / HG" },
   { id: 12, name: "Calacatta Mármol", folder: "Mármol", src: "highi gloss/marmol/calacatta-marmol.jpg", ref: "JC984", finish: "MT / HG" },
   { id: 13, name: "Calacatta Negro", folder: "Mármol", src: "highi gloss/marmol/calatta negro-marmol.jpg", ref: "JC766", finish: "MT / HG" },
@@ -52,8 +52,8 @@ const RAW_HIGH_GLOSS = [
   { id: 16, name: "Mármol Gris", folder: "Mármol", src: "highi gloss/marmol/gris-marmol.jpg", ref: "JC1184", finish: "MT / HG" },
   { id: 17, name: "Mármol Oro", folder: "Mármol", src: "highi gloss/marmol/oro-marmol.jpg", ref: "JC1183", finish: "MT / HG" },
   { id: 18, name: "Mármol Oscuro", folder: "Mármol", src: "highi gloss/marmol/oscuro-marmol.jpg", ref: "JC1008", finish: "MT / HG" },
-  { id: 19, name: "Sebra JC104", folder: "Amaderado", src: "highi gloss/amaderado/sebra-amaderado.jpg", ref: "JC104", finish: "MT" },
-  { id: 20, name: "Caramelo JC604", folder: "Amaderado", src: "highi gloss/amaderado/caramelo-amaderado.jpg", ref: "JC604", finish: "MT" },
+  { id: 19, name: "Sebra JC104", folder: "Amaderado", src: "highi gloss/amaderado/sebra-amaderado.webp", ref: "JC104", finish: "MT" },
+  { id: 20, name: "Caramelo JC604", folder: "Amaderado", src: "highi gloss/amaderado/caramelo-amaderado.webp", ref: "JC604", finish: "MT" },
   { id: 21, name: "Gris Holográfico", folder: "Holográfico", src: "highi gloss/holografico/gris-holografico.jpg", ref: "JC040D", finish: "MT / HG" },
   { id: 22, name: "Blanco Holográfico", folder: "Holográfico", src: "highi gloss/holografico/blanco-holografico.jpg", ref: "JC143D", finish: "MT / HG" },
   { id: 23, name: "Beige Holográfico", folder: "Holográfico", src: "highi gloss/holografico/beige-holografico.jpg", ref: "JC857D", finish: "MT / HG" },
@@ -156,7 +156,7 @@ export default function MaterialCatalog() {
 
   return (
     <section id="materiales" className="py-24 bg-[#F8F7F4] overflow-hidden relative space-y-32">
-      
+
       {/* SECCIÓN 1: HIGH GLOSS */}
       <div className="container mx-auto px-6">
         <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 mb-12">
