@@ -42,8 +42,37 @@ const Contact = () => {
           <motion.span variants={itemVariants} className="text-[#BB9E7A] font-bold tracking-[0.4em] uppercase text-[10px] mb-6 block">
             Contacto Exclusivo
           </motion.span>
-          <motion.h2 variants={itemVariants} className="text-6xl md:text-8xl font-bold tracking-tighter text-[#524F4A] mb-8 leading-[0.9]">
-            ¿Listo para elevar tu <span className="text-[#BB9E7A] italic font-serif">espacio?</span>
+          <motion.h2 className="text-6xl md:text-8xl font-bold tracking-tighter text-[#524F4A] mb-8 leading-[0.9] flex flex-wrap justify-center">
+            {["¿Listo", "para", "elevar", "tu"].map((word, i) => (
+              <span key={i} className="overflow-hidden inline-block pb-4 -mb-4 mr-[0.25em]">
+                <motion.span 
+                  className="inline-block"
+                  variants={{
+                    hidden: { y: "110%", opacity: 0 },
+                    visible: { y: 0, opacity: 1, transition: { duration: 0.9, ease: [0.16, 1, 0.3, 1] } }
+                  }}
+                >
+                  {word}
+                </motion.span>
+              </span>
+            ))}
+            <span className="overflow-hidden inline-block pb-4 -mb-4">
+              <motion.span 
+                className="text-[#BB9E7A] italic font-serif inline-block origin-bottom-left"
+                variants={{
+                  hidden: { y: "120%", opacity: 0, rotateZ: 10, scale: 0.8 },
+                  visible: { 
+                    y: 0, 
+                    opacity: 1, 
+                    rotateZ: 0, 
+                    scale: 1, 
+                    transition: { duration: 1.1, ease: [0.16, 1, 0.3, 1] } 
+                  }
+                }}
+              >
+                espacio?
+              </motion.span>
+            </span>
           </motion.h2>
           <motion.p variants={itemVariants} className="text-slate-500 text-xl max-w-2xl mx-auto font-light leading-relaxed">
             Eliminamos las barreras. Comunicación directa para proyectos extraordinarios de melamina en Huancayo.

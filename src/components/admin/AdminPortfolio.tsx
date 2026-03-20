@@ -75,10 +75,25 @@ const AdminPortfolio = () => {
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      // Validar peso: 10MB máximo para videos, 5MB para imágenes
+      const isVideo = file.type.startsWith("video/");
+      const maxSize = isVideo ? 10 * 1024 * 1024 : 5 * 1024 * 1024;
+      
+      if (file.size > maxSize) {
+        toast({
+          title: "Archivo muy pesado",
+          description: isVideo 
+            ? "Para óptimo rendimiento, los videos deben pesar máx 10MB (ideal 5 segundos)." 
+            : "Las imágenes deben pesar menos de 5MB.",
+          variant: "destructive"
+        });
+        e.target.value = ""; // reset input
+        return;
+      }
+
       setImageFile(file);
-      const reader = new FileReader();
-      reader.onloadend = () => setImagePreview(reader.result as string);
-      reader.readAsDataURL(file);
+      // Usar objectURL es más rápido y no satura memoria con videos
+      setImagePreview(URL.createObjectURL(file));
     }
   };
 
@@ -101,7 +116,7 @@ const AdminPortfolio = () => {
       data.append("file", imageFile);
       data.append("upload_preset", uploadPreset);
 
-      const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, { method: "POST", body: data });
+      const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/auto/upload`, { method: "POST", body: data });
       const file = await res.json();
       
       const { error } = await supabase.from("portfolios").insert({
@@ -191,7 +206,11 @@ const AdminPortfolio = () => {
           <div className="relative group border-2 border-dashed rounded-[2.5rem] flex items-center justify-center min-h-[350px] overflow-hidden border-[#DBD8D3] bg-[#DBD8D3]/5">
             {imagePreview ? (
               <>
-                <img src={imagePreview} className="w-full h-full absolute inset-0 object-cover" />
+                {imageFile?.type.startsWith("video/") ? (
+                  <video src={imagePreview} autoPlay loop muted playsInline className="w-full h-full absolute inset-0 object-cover" />
+                ) : (
+                  <img src={imagePreview} className="w-full h-full absolute inset-0 object-cover" />
+                )}
                 <div className="absolute inset-0 bg-[#524F4A]/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-sm">
                   <Button type="button" variant="destructive" onClick={() => {setImagePreview(null); setImageFile(null);}} className="rounded-full">
                     <X size={16} className="mr-2" /> Descartar
@@ -201,8 +220,8 @@ const AdminPortfolio = () => {
             ) : (
               <div className="text-center p-12">
                 <Upload size={32} className="mx-auto mb-4 text-[#DBD8D3]" />
-                <p className="text-sm font-bold text-[#524F4A]">Seleccionar imagen</p>
-                <input type="file" accept="image/*" onChange={handleImageChange} className="absolute inset-0 opacity-0 cursor-pointer" />
+                <p className="text-sm font-bold text-[#524F4A]">Seleccionar imagen o video corto</p>
+                <input type="file" accept="image/*,video/mp4,video/quicktime,video/webm" onChange={handleImageChange} className="absolute inset-0 opacity-0 cursor-pointer" />
               </div>
             )}
           </div>
@@ -220,7 +239,11 @@ const AdminPortfolio = () => {
           {portfolios.map((p) => (
             <div key={p.id} className="group bg-white rounded-[2.5rem] border border-[#DBD8D3]/40 overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-700">
               <div className="relative aspect-[4/5] overflow-hidden">
-                <img src={p.image_url} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" />
+                {p.image_url.match(/\.(mp4|mov|webm)$/i) ? (
+                  <video src={p.image_url} autoPlay loop muted playsInline className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" />
+                ) : (
+                  <img src={p.image_url} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" />
+                )}
                 <div className="absolute inset-0 bg-gradient-to-t from-[#524F4A]/90 via-transparent to-transparent opacity-60 group-hover:opacity-100 transition-all duration-500" />
                 
                 <div className="absolute bottom-8 left-8 right-8 translate-y-4 group-hover:translate-y-0 transition-all duration-500">

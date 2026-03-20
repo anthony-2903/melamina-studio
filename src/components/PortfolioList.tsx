@@ -62,12 +62,23 @@ export default function PortfolioList() {
                 transition={{ duration: 0.8, delay: index * 0.1 }}
                 className="group relative aspect-[3/4] overflow-hidden rounded-[2.5rem] cursor-pointer"
               >
-                {/* IMAGEN DE FONDO: Ocupa toda la carta */}
-                <img 
-                  src={p.image_url} 
-                  alt={p.title}
-                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-[2s] cubic-bezier(0.25, 1, 0.5, 1) group-hover:scale-110" 
-                />
+                {/* FONDO: Soporta tanto Imágenes como Videos de alto rendimiento */}
+                {p.image_url.match(/\.(mp4|mov|webm)$/i) ? (
+                  <video 
+                    src={p.image_url} 
+                    autoPlay 
+                    loop 
+                    muted 
+                    playsInline 
+                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-[2s] cubic-bezier(0.25, 1, 0.5, 1) group-hover:scale-110" 
+                  />
+                ) : (
+                  <img 
+                    src={p.image_url} 
+                    alt={p.title}
+                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-[2s] cubic-bezier(0.25, 1, 0.5, 1) group-hover:scale-110" 
+                  />
+                )}
                 
                 {/* OVERLAY: Gradiente sutil para que el texto resalte */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent opacity-80 group-hover:opacity-90 transition-opacity duration-500" />
