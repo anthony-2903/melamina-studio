@@ -19,10 +19,10 @@ import {
 
 // --- DATOS HIGH GLOSS ---
 const RAW_HIGH_GLOSS = [
-  { id: 1, name: "Blanco", folder: "Color Entero", src: "highi gloss/entero/blanco-entero.jpg", ref: "JC007", finish: "MT / HG" },
-  { id: 2, name: "Carbon", folder: "Color Entero", src: "highi gloss/entero/carbon-entero.jpg", ref: "JC381", finish: "MT / HG" },
-  { id: 3, name: "Celeste", folder: "Color Entero", src: "highi gloss/entero/celeste-entero.jpg", ref: "JC829", finish: "MT / HG" },
-  { id: 4, name: "Mocaccino", folder: "Color Entero", src: "highi gloss/entero/mocaccino-entero.jpg", ref: "JC204", finish: "MT / HG" },
+  { id: 1, name: "Blanco", folder: "Color Entero", src: "highi gloss/entero/blanco-entero.webp", ref: "JC007", finish: "MT / HG" },
+  { id: 2, name: "Carbon", folder: "Color Entero", src: "highi gloss/entero/carbon-entero.webp", ref: "JC381", finish: "MT / HG" },
+  { id: 3, name: "Celeste", folder: "Color Entero", src: "highi gloss/entero/celeste-entero.webp", ref: "JC829", finish: "MT / HG" },
+  { id: 4, name: "Mocaccino", folder: "Color Entero", src: "highi gloss/entero/mocaccino-entero.webp", ref: "JC204", finish: "MT / HG" },
   { id: 5, name: "Negro", folder: "Color Entero", src: "highi gloss/entero/negro-entero.webp", ref: "JC006", finish: "MT / HG" },
   { id: 6, name: "Plomo", folder: "Color Entero", src: "highi gloss/entero/plomo-entero.webp", ref: "JC209", finish: "MT / HG" },
   { id: 7, name: "Rojo", folder: "Color Entero", src: "highi gloss/entero/rojo-entero.webp", ref: "JC010", finish: "MT / HG" },
@@ -252,11 +252,11 @@ function InfiniteCarousel({ items, direction = "left", speed = 40 }: { items: an
     controls.stop();
     const el = trackRef.current;
     if (!el || items.length === 0) return;
-    
+
     // El arreglo tiene 4 copias para el loop
     const moveDistance = el.scrollWidth / 4;
     const xParams = direction === "left" ? [0, -moveDistance] : [-moveDistance, 0];
-    
+
     controls.start({
       x: xParams,
       transition: { x: { repeat: Infinity, repeatType: "loop", ease: "linear", duration: speed } }
