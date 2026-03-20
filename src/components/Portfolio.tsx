@@ -171,11 +171,22 @@ function ProjectCard({ project, isGrid = false }: { project: any; isGrid?: boole
           whileHover={{ y: -12 }}
           className={`relative flex-shrink-0 group cursor-pointer overflow-hidden rounded-[2.5rem] md:rounded-[3.5rem] bg-slate-100 border border-slate-100 shadow-xl transition-all ${isGrid ? "w-full aspect-[3/4]" : "w-[300px] md:w-[480px] aspect-[3/4]"}`}
         >
-          <img 
-            src={project.image_url} 
-            alt={project.title} 
-            className="w-full h-full object-cover transition-transform duration-[3s] group-hover:scale-110" 
-          />
+          {project.image_url.match(/\.(mp4|mov|webm)$/i) ? (
+            <video 
+              src={project.image_url} 
+              autoPlay 
+              loop 
+              muted 
+              playsInline 
+              className="w-full h-full object-cover transition-transform duration-[3s] group-hover:scale-110 pointer-events-none" 
+            />
+          ) : (
+            <img 
+              src={project.image_url} 
+              alt={project.title} 
+              className="w-full h-full object-cover transition-transform duration-[3s] group-hover:scale-110" 
+            />
+          )}
           <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-70 group-hover:opacity-90 transition-opacity" />
           
           <div className="absolute inset-0 p-8 md:p-12 flex flex-col justify-end z-10">
@@ -197,10 +208,14 @@ function ProjectCard({ project, isGrid = false }: { project: any; isGrid?: boole
         <DialogTitle className="sr-only">{project.title}</DialogTitle>
         
         <div className="flex flex-col md:flex-row h-full max-h-[92vh] overflow-y-auto md:overflow-hidden">
-          {/* Imagen Lateral */}
-          <div className="w-full md:w-[55%] h-[350px] md:h-auto relative overflow-hidden">
-            <img src={project.image_url} className="w-full h-full object-cover" alt={project.title} />
-            <div className="absolute inset-0 shadow-[inset_0_0_100px_rgba(0,0,0,0.1)]" />
+          {/* Multimedia Lateral */}
+          <div className="w-full md:w-[55%] h-[350px] md:h-auto relative overflow-hidden bg-slate-100">
+            {project.image_url.match(/\.(mp4|mov|webm)$/i) ? (
+              <video src={project.image_url} autoPlay loop muted playsInline className="w-full h-full object-cover pointer-events-none" />
+            ) : (
+              <img src={project.image_url} className="w-full h-full object-cover" alt={project.title} />
+            )}
+            <div className="absolute inset-0 shadow-[inset_0_0_100px_rgba(0,0,0,0.1)] pointer-events-none" />
           </div>
 
           {/* Contenido Textual */}
