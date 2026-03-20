@@ -17,21 +17,6 @@ import {
   Infinity as InfinityIcon,
 } from "lucide-react";
 
-// --- MOTOR DE IMÁGENES RECURSIVO ---
-const ASSET_IMAGES = import.meta.glob("/src/assets/**/*.{jpg,jpeg,png,webp}", {
-  eager: true,
-  import: "default",
-});
-
-const resolveImagePath = (originalPath: string) => {
-  const normalizedSearch = originalPath.replace(/\\/g, "/").toLowerCase();
-  const foundPath = Object.keys(ASSET_IMAGES).find((key) =>
-    key.toLowerCase().includes(normalizedSearch) ||
-    normalizedSearch.includes(key.toLowerCase().replace("/src/assets/", ""))
-  );
-  return foundPath ? (ASSET_IMAGES[foundPath] as string) : "";
-};
-
 // --- DATOS HIGH GLOSS ---
 const RAW_HIGH_GLOSS = [
   { id: 1, name: "Blanco", folder: "Color Entero", src: "highi gloss/entero/blanco-entero.jpg", ref: "JC007", finish: "MT / HG" },
@@ -108,21 +93,17 @@ const RAW_PELIKANO = [
 ];
 
 
-const LOCAL_HIGH_GLOSS = RAW_HIGH_GLOSS.map(m => ({ ...m, resolvedSrc: resolveImagePath(m.src) }));
-const LOCAL_PELIKANO = RAW_PELIKANO.map(m => ({ ...m, resolvedSrc: resolveImagePath(m.src) }));
+const LOCAL_HIGH_GLOSS = RAW_HIGH_GLOSS.map(m => ({ ...m, resolvedSrc: `/${m.src}` }));
+const LOCAL_PELIKANO = RAW_PELIKANO.map(m => ({ ...m, resolvedSrc: `/${m.src}` }));
 
 export default function MaterialCatalog() {
   // Estados HG
   const [hgFolder, setHgFolder] = useState("all");
   const [hgView, setHgView] = useState<"carousel" | "grid">("carousel");
-  const trackRefHg = useRef<HTMLDivElement | null>(null);
-  const controlsHg = useAnimation();
 
   // Estados PK
   const [pkFolder, setPkFolder] = useState("all");
   const [pkView, setPkView] = useState<"carousel" | "grid">("carousel");
-  const trackRefPk = useRef<HTMLDivElement | null>(null);
-  const controlsPk = useAnimation();
 
   // Lógica HG
   const hgFolders = useMemo(() => Array.from(new Set(LOCAL_HIGH_GLOSS.map(m => m.folder))), []);
@@ -133,26 +114,6 @@ export default function MaterialCatalog() {
   const pkFolders = useMemo(() => Array.from(new Set(LOCAL_PELIKANO.map(m => m.folder))), []);
   const pkFiltered = useMemo(() => pkFolder === "all" ? LOCAL_PELIKANO : LOCAL_PELIKANO.filter(m => m.folder === pkFolder), [pkFolder]);
   const pkDuplicated = useMemo(() => pkView === "grid" ? pkFiltered : [...pkFiltered, ...pkFiltered, ...pkFiltered, ...pkFiltered], [pkFiltered, pkView]);
-
-  // Animaciones
-  const startHgAnim = useCallback(async () => {
-    if (hgView === "grid" || hgDuplicated.length === 0) return;
-    const el = trackRefHg.current;
-    if (!el) return;
-    const moveDistance = el.scrollWidth / 4;
-    await controlsHg.start({ x: [-moveDistance, 0], transition: { x: { repeat: Infinity, repeatType: "loop", ease: "linear", duration: 40 } } });
-  }, [hgDuplicated.length, hgView, controlsHg]);
-
-  const startPkAnim = useCallback(async () => {
-    if (pkView === "grid" || pkDuplicated.length === 0) return;
-    const el = trackRefPk.current;
-    if (!el) return;
-    const moveDistance = el.scrollWidth / 4;
-    await controlsPk.start({ x: [0, -moveDistance], transition: { x: { repeat: Infinity, repeatType: "loop", ease: "linear", duration: 45 } } });
-  }, [pkDuplicated.length, pkView, controlsPk]);
-
-  useEffect(() => { controlsHg.stop(); startHgAnim(); }, [hgFolder, hgView, startHgAnim]);
-  useEffect(() => { controlsPk.stop(); startPkAnim(); }, [pkFolder, pkView, startPkAnim]);
 
   return (
     <section id="materiales" className="py-24 bg-[#F8F7F4] overflow-hidden relative space-y-32">
@@ -180,14 +141,16 @@ export default function MaterialCatalog() {
         <div className="relative min-h-[500px]">
           <AnimatePresence mode="wait">
             {hgView === "carousel" ? (
-              <motion.div key="hg-car" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-                <motion.div ref={trackRefHg} animate={controlsHg} className="flex gap-8 px-4">
-                  {hgDuplicated.map((item, idx) => <MaterialCard key={`hg-car-${item.id}-${idx}`} item={item} />)}
-                </motion.div>
+              <motion.div key={`hg-car-${hgFolder}`} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} transition={{ duration: 0.3 }}>
+                <InfiniteCarousel items={hgDuplicated} direction="right" speed={40} />
               </motion.div>
             ) : (
-              <motion.div key="hg-grid" initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                {hgFiltered.map((item) => <MaterialCard key={`hg-grid-${item.id}`} item={item} isGrid />)}
+              <motion.div key={`hg-grid-${hgFolder}`} initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 40 }} transition={{ duration: 0.3 }} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                {hgFiltered.length > 0 ? (
+                  hgFiltered.map((item) => <MaterialCard key={`hg-grid-${item.id}`} item={item} isGrid />)
+                ) : (
+                  <div className="col-span-full py-20 text-center text-slate-400 font-medium italic">No hay resultados en esta colección</div>
+                )}
               </motion.div>
             )}
           </AnimatePresence>
@@ -217,14 +180,16 @@ export default function MaterialCatalog() {
         <div className="relative min-h-[500px]">
           <AnimatePresence mode="wait">
             {pkView === "carousel" ? (
-              <motion.div key="pk-car" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-                <motion.div ref={trackRefPk} animate={controlsPk} className="flex gap-8 px-4">
-                  {pkDuplicated.map((item, idx) => <MaterialCard key={`pk-car-${item.id}-${idx}`} item={item} />)}
-                </motion.div>
+              <motion.div key={`pk-car-${pkFolder}`} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} transition={{ duration: 0.3 }}>
+                <InfiniteCarousel items={pkDuplicated} direction="left" speed={45} />
               </motion.div>
             ) : (
-              <motion.div key="pk-grid" initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                {pkFiltered.map((item) => <MaterialCard key={`pk-grid-${item.id}`} item={item} isGrid />)}
+              <motion.div key={`pk-grid-${pkFolder}`} initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 40 }} transition={{ duration: 0.3 }} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                {pkFiltered.length > 0 ? (
+                  pkFiltered.map((item) => <MaterialCard key={`pk-grid-${item.id}`} item={item} isGrid />)
+                ) : (
+                  <div className="col-span-full py-20 text-center text-slate-400 font-medium italic">No hay resultados en esta colección</div>
+                )}
               </motion.div>
             )}
           </AnimatePresence>
@@ -239,7 +204,7 @@ function MaterialCard({ item, isGrid = false }: { item: any; isGrid?: boolean })
     <Dialog>
       <DialogTrigger asChild>
         <motion.div layout whileHover={{ y: -10 }} className={`relative flex-shrink-0 group cursor-pointer overflow-hidden rounded-[2rem] bg-white border border-slate-200 shadow-sm transition-all ${isGrid ? "w-full aspect-[4/5]" : "w-[280px] md:w-[350px] aspect-[4/5]"}`}>
-          <img src={item.resolvedSrc} alt={item.name} className="w-full h-full object-cover transition-transform duration-[1.5s] group-hover:scale-110" />
+          <img src={item.resolvedSrc} alt={item.name} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-[1.5s] group-hover:scale-110" />
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity" />
           <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8">
             <Badge className="bg-[#BB9E7A] text-white border-none mb-3 text-[9px] uppercase tracking-[0.2em] font-bold">{item.folder}</Badge>
@@ -251,7 +216,7 @@ function MaterialCard({ item, isGrid = false }: { item: any; isGrid?: boolean })
       <DialogContent className="max-w-6xl w-[95vw] md:w-[90vw] p-0 overflow-hidden border-none bg-white rounded-[2.5rem] shadow-2xl [&>button]:hidden">
         <DialogClose className="absolute right-6 top-6 z-50 p-3 bg-white/20 hover:bg-white text-white hover:text-[#524F4A] rounded-full transition-all duration-300 backdrop-blur-xl border border-white/30 shadow-xl"><X size={20} /></DialogClose>
         <div className="flex flex-col md:flex-row h-full max-h-[90vh] overflow-y-auto md:overflow-hidden">
-          <div className="w-full md:w-1/2 h-[300px] md:h-auto relative"><img src={item.resolvedSrc} className="w-full h-full object-cover" alt={item.name} /></div>
+          <div className="w-full md:w-1/2 h-[300px] md:h-auto relative"><img src={item.resolvedSrc} className="w-full h-full object-cover" alt={item.name} loading="lazy" decoding="async" /></div>
           <div className="w-full md:w-1/2 p-8 md:p-16 flex flex-col justify-center bg-white">
             <span className="text-[#BB9E7A] text-xs font-black uppercase tracking-[0.4em] mb-4 block">Catálogo Exclusivo</span>
             <h3 className="text-4xl md:text-7xl font-serif italic text-[#524F4A] mb-2 leading-[0.9] tracking-tighter">{item.name}</h3>
@@ -276,5 +241,31 @@ function DataRow({ label, value }: { label: string; value: string }) {
       <span className="text-slate-400 text-[9px] uppercase font-black tracking-widest group-hover:text-[#BB9E7A] transition-colors">{label}</span>
       <span className="text-[#524F4A] font-bold text-base italic">{value}</span>
     </div>
+  );
+}
+
+function InfiniteCarousel({ items, direction = "left", speed = 40 }: { items: any[], direction?: "left" | "right", speed?: number }) {
+  const trackRef = useRef<HTMLDivElement | null>(null);
+  const controls = useAnimation();
+
+  useEffect(() => {
+    controls.stop();
+    const el = trackRef.current;
+    if (!el || items.length === 0) return;
+    
+    // El arreglo tiene 4 copias para el loop
+    const moveDistance = el.scrollWidth / 4;
+    const xParams = direction === "left" ? [0, -moveDistance] : [-moveDistance, 0];
+    
+    controls.start({
+      x: xParams,
+      transition: { x: { repeat: Infinity, repeatType: "loop", ease: "linear", duration: speed } }
+    });
+  }, [controls, items, direction, speed]);
+
+  return (
+    <motion.div ref={trackRef} animate={controls} className="flex gap-8 px-4 w-max">
+      {items.map((item, idx) => <MaterialCard key={`car-${item.id}-${idx}`} item={item} />)}
+    </motion.div>
   );
 }

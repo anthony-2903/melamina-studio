@@ -10,19 +10,20 @@ import {
   FolderTree, 
   Settings,
   Bell,
-  
+  LayoutDashboard,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import AdminLogin from "./AdminLogin";
 import AdminPortfolio from "./AdminPortfolio";
 import AdminCategory from "./AdminCategory";
+import AdminDashboard from "./AdminDashboard";
 import { supabase } from "@/lib/supabaseClient";
 import { Button } from "@/components/ui/button";
 
 const AdminPage = () => {
   const [mounted, setMounted] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [tab, setTab] = useState<"portfolio" | "categories">("portfolio");
+  const [tab, setTab] = useState<"dashboard" | "portfolio" | "categories">("dashboard");
   const [sidebarVisible, setSidebarVisible] = useState(true);
 
   useEffect(() => {
@@ -93,6 +94,18 @@ const AdminPage = () => {
                     <p className="text-[10px] font-bold text-[#DBD8D3]/30 uppercase tracking-[0.3em] mb-4 ml-2">Menú de Gestión</p>
                     
                     <button
+                      onClick={() => setTab("dashboard")}
+                      className={`w-full flex items-center gap-3 px-4 py-4 rounded-2xl transition-all duration-500 group ${
+                        tab === "dashboard" 
+                        ? "bg-[#BB9E7A] text-white shadow-xl shadow-[#BB9E7A]/20" 
+                        : "text-[#DBD8D3]/60 hover:bg-white/5 hover:text-[#BB9E7A]"
+                      }`}
+                    >
+                      <LayoutDashboard size={18} className={tab === "dashboard" ? "text-white" : "group-hover:scale-110 transition-transform"} />
+                      <span className="text-sm font-bold tracking-tight">Dashboard</span>
+                    </button>
+
+                    <button
                       onClick={() => setTab("portfolio")}
                       className={`w-full flex items-center gap-3 px-4 py-4 rounded-2xl transition-all duration-500 group ${
                         tab === "portfolio" 
@@ -147,7 +160,7 @@ const AdminPage = () => {
                 )}
                 <div className="flex flex-col">
                   <h1 className="text-xl font-bold text-[#524F4A] tracking-tighter">
-                    {tab === "portfolio" ? "Gestión de Portafolio" : "Gestión de Categorías"}
+                    {tab === "dashboard" ? "Resumen General" : tab === "portfolio" ? "Gestión de Portafolio" : "Gestión de Categorías"}
                   </h1>
                   <p className="text-[10px] text-slate-400 uppercase tracking-widest font-medium">Estudio de Diseño e Interiorismo</p>
                 </div>
@@ -177,14 +190,20 @@ const AdminPage = () => {
                 transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
                 className="max-w-7xl mx-auto"
               >
-                {/* Banner de Bienvenida o Contexto */}
-                <div className="mb-10 p-8 rounded-[2rem] bg-gradient-to-r from-[#524F4A] to-[#6a6660] text-white relative overflow-hidden shadow-2xl shadow-[#524F4A]/10">
-                   <div className="relative z-10">
-                      <h3 className="text-2xl font-bold font-serif italic mb-1">Agregar Proyecto</h3>
-                   </div>
-                </div>
+                {/* Banner de Contexto (ocultar en Dashboard) */}
+                {tab !== "dashboard" && (
+                  <div className="mb-10 p-8 rounded-[2rem] bg-gradient-to-r from-[#524F4A] to-[#6a6660] text-white relative overflow-hidden shadow-2xl shadow-[#524F4A]/10">
+                     <div className="relative z-10">
+                        <h3 className="text-2xl font-bold font-serif italic mb-1">
+                          {tab === "portfolio" ? "Agregar Proyecto" : "Agregar Categoría"}
+                        </h3>
+                     </div>
+                  </div>
+                )}
 
-                {tab === "portfolio" ? <AdminPortfolio /> : <AdminCategory />}
+                {tab === "dashboard" && <AdminDashboard />}
+                {tab === "portfolio" && <AdminPortfolio />}
+                {tab === "categories" && <AdminCategory />}
               </motion.div>
             </div>
           </main>
