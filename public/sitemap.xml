@@ -3,30 +3,16 @@
 
   <url>
     <loc>https://husheniid.com/</loc>
-    <lastmod>2026-01-19</lastmod>
+    <lastmod>2026-03-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
 
   <url>
-    <loc>https://husheniid.com/servicios/cocinas-integrales</loc>
-    <lastmod>2026-01-19</lastmod>
+    <loc>https://husheniid.com/login</loc>
+    <lastmod>2026-03-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
 
-  <url>
-    <loc>https://husheniid.com/proyectos/libreros-minimalistas</loc>
-    <lastmod>2026-01-19</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-
-  <url>
-    <loc>https://husheniid.com/#contacto</loc>
-    <lastmod>2026-01-19</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url>
-
-</urlset>
+</urlset>

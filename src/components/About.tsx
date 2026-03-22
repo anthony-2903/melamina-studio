@@ -84,14 +84,14 @@ const About = () => {
                 , diseñamos experiencias que transforman tu forma de vivir.
               </p>
               <p className="text-slate-500 leading-relaxed font-light">
-                con mas de 10 años de experiencia ,con garantia en nuestros
-                trabajos contamos con local fisico en Huancayo _Pilcomayo A.V
-                CORONEL PARRA (cruze de Pilcomayo)donde podra ver fisicamente la
-                calidad y diseño de nuestros muebles .realizamos el diseño de
-                interiores con wall paber ,pvc ,decoraciones novedosas para tu
-                hogar y negocio ofrecemos: Diseños en 3D para tus
-                muebles,Empotrados de cocina,closet(walking closet);centro de
-                entretenimiento,stan,escritorios ,repisas flotantes ,muebles
+                Con más de 10 años de experiencia y garantía en nuestros
+                trabajos, contamos con local físico en Huancayo, Pilcomayo Av.
+                Coronel Parra (cruce de Pilcomayo), donde podrá ver físicamente la
+                calidad y diseño de nuestros muebles. Realizamos el diseño de
+                interiores con wallpaper, PVC, decoraciones novedosas para tu
+                hogar y negocio. Ofrecemos: Diseños en 3D para tus
+                muebles, empotrados de cocina, clóset (walk-in closet), centro de
+                entretenimiento, stands, escritorios, repisas flotantes y muebles
                 para todo tipo de negocio.
               </p>
             </motion.div>
