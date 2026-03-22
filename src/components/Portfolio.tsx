@@ -11,7 +11,8 @@ import {
   DialogClose,
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
-import { ChevronDown, X, Instagram, Facebook, Music2, LayoutGrid, Infinity as InfinityIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { ChevronDown, X, Instagram, Facebook, Music2, LayoutGrid, Infinity as InfinityIcon, MessageCircle } from "lucide-react";
 
 export default function Portfolio() {
   const [portfolio, setPortfolio] = useState<any[]>([]);
@@ -240,12 +241,29 @@ function ProjectCard({ project, isGrid = false }: { project: any; isGrid?: boole
             </p>
 
 
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
               <div className="flex gap-3">
                  <SocialLink icon={<Instagram size={18} />} href="https://www.instagram.com/hugocaldeton/" />
                  <SocialLink icon={<Facebook size={18} />} href="https://www.facebook.com/profile.php?id=61551909329314#" />
                  <SocialLink icon={<Music2 size={18} />} href="https://www.tiktok.com/@husheniid" />
               </div>
+              
+              <Button 
+                asChild
+                className="w-full sm:w-auto rounded-2xl bg-[#25D366] hover:bg-[#128C7E] text-white px-8 h-12 transition-all duration-300 shadow-lg shadow-[#25D366]/20 group"
+              >
+                <a 
+                  href={`https://wa.me/51979923148?text=${encodeURIComponent(`Hola Husheniid, me interesa el proyecto "${project.title}". ¿Podrían brindarme más información?`)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2"
+                >
+                  <MessageCircle size={18} className="fill-white/20" />
+                  Consultar Proyecto
+                </a>
+              </Button>
+            </div>
+            <div className="mt-8 text-center md:text-right">
               <span className="text-[8px] uppercase tracking-[0.4em] text-slate-300 font-black">Husheniid Design</span>
             </div>
           </div>

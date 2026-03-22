@@ -15,7 +15,9 @@ import {
   X,
   LayoutGrid,
   Infinity as InfinityIcon,
+  MessageCircle,
 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 // --- DATOS HIGH GLOSS ---
 const RAW_HIGH_GLOSS = [
@@ -223,11 +225,26 @@ function MaterialCard({ item, isGrid = false }: { item: any; isGrid?: boolean })
             <div className="flex items-center gap-4 mb-8">
               <div className="h-[1px] w-12 bg-[#BB9E7A]" /><p className="text-[#BB9E7A] font-medium text-sm tracking-widest uppercase">Ref. {item.ref}</p>
             </div>
-            <div className="space-y-5">
+            <div className="space-y-5 mb-10">
               <DataRow label="Acabado" value={item.finish} />
               <DataRow label="Colección" value={item.folder} />
               <DataRow label="Formato" value="1.22 x 2.80 m" />
             </div>
+
+            <Button 
+              asChild
+              className="w-full rounded-2xl bg-[#25D366] hover:bg-[#128C7E] text-white h-14 text-lg font-bold transition-all duration-300 shadow-xl shadow-[#25D366]/20 group"
+            >
+              <a 
+                href={`https://wa.me/51979923148?text=${encodeURIComponent(`Hola Husheniid, me interesa el acabado "${item.name}" de la colección "${item.folder}". ¿Lo tienen disponible para un proyecto?`)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center gap-3"
+              >
+                <MessageCircle size={22} className="fill-white/20" />
+                Consultar Disponibilidad
+              </a>
+            </Button>
           </div>
         </div>
       </DialogContent>
