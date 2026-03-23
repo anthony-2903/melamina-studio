@@ -59,39 +59,39 @@ const RAW_PELIKANO = [
   { id: 104, name: "Toquilla", folder: "cuero", src: "pelikano/cuero/toquilla-cuero.webp", ref: "P-CU04", finish: "cuero" },
 
   // ===== MATE =====
-  { id: 201, name: "Arupo", folder: "mate", src: "pelikano/mate/arupo-mate.jpg", ref: "P-MA01", finish: "mate" },
+  { id: 201, name: "Arupo", folder: "mate", src: "pelikano/mate/arupo-mate.webp", ref: "P-MA01", finish: "mate" },
   { id: 202, name: "Avellana", folder: "mate", src: "pelikano/mate/avellana-mate.webp", ref: "P-MA02", finish: "mate" },
   { id: 203, name: "Burdeos", folder: "mate", src: "pelikano/mate/burdeos-mate.webp", ref: "P-MA03", finish: "mate" },
   { id: 204, name: "Ceniza", folder: "mate", src: "pelikano/mate/ceniza-mate.webp", ref: "P-MA04", finish: "mate" },
-  { id: 205, name: "Manzano", folder: "mate", src: "pelikano/mate/manzano-mate.jpg", ref: "P-MA05", finish: "mate" },
-  { id: 206, name: "Nazca", folder: "mate", src: "pelikano/mate/nazca-mate.jpg", ref: "P-MA06", finish: "mate" },
-  { id: 207, name: "Rovere", folder: "mate", src: "pelikano/mate/rovere-mate.jpg", ref: "P-MA07", finish: "mate" },
+  { id: 205, name: "Manzano", folder: "mate", src: "pelikano/mate/manzano-mate.webp", ref: "P-MA05", finish: "mate" },
+  { id: 206, name: "Nazca", folder: "mate", src: "pelikano/mate/nazca-mate.webp", ref: "P-MA06", finish: "mate" },
+  { id: 207, name: "Rovere", folder: "mate", src: "pelikano/mate/rovere-mate.webp", ref: "P-MA07", finish: "mate" },
 
   // ===== METAL =====
-  { id: 301, name: "Ámbar", folder: "metal", src: "pelikano/metal/ambar-metal.jpg", ref: "P-ME01", finish: "metal" },
-  { id: 302, name: "Inox", folder: "metal", src: "pelikano/metal/inox-metal.jpg", ref: "P-ME02", finish: "metal" },
+  { id: 301, name: "Ámbar", folder: "metal", src: "pelikano/metal/ambar-metal.webp", ref: "P-ME01", finish: "metal" },
+  { id: 302, name: "Inox", folder: "metal", src: "pelikano/metal/inox-metal.webp", ref: "P-ME02", finish: "metal" },
 
   // ===== PORO =====
-  { id: 401, name: "Caramelo", folder: "poro", src: "pelikano/poro/caramelo-poro.jpg", ref: "P-PO01", finish: "poro" },
-  { id: 402, name: "Coñac", folder: "poro", src: "pelikano/poro/coñac-poro.jpg", ref: "P-PO02", finish: "poro" },
-  { id: 403, name: "Duna", folder: "poro", src: "pelikano/poro/duna-poro.jpg", ref: "P-PO03", finish: "poro" },
-  { id: 404, name: "Espresso", folder: "poro", src: "pelikano/poro/espresso-poro.jpg", ref: "P-PO04", finish: "poro" },
-  { id: 405, name: "Gales", folder: "poro", src: "pelikano/poro/gales-poro.jpg", ref: "P-PO05", finish: "poro" },
-  { id: 406, name: "Miel", folder: "poro", src: "pelikano/poro/miel-poro.jpg", ref: "P-PO06", finish: "poro" },
-  { id: 407, name: "Niebla", folder: "poro", src: "pelikano/poro/niebla-poro.jpg", ref: "P-PO07", finish: "poro" },
+  { id: 401, name: "Caramelo", folder: "poro", src: "pelikano/poro/caramelo-poro.webp", ref: "P-PO01", finish: "poro" },
+  { id: 402, name: "Coñac", folder: "poro", src: "pelikano/poro/coñac-poro.webp", ref: "P-PO02", finish: "poro" },
+  { id: 403, name: "Duna", folder: "poro", src: "pelikano/poro/duna-poro.webp", ref: "P-PO03", finish: "poro" },
+  { id: 404, name: "Espresso", folder: "poro", src: "pelikano/poro/espresso-poro.webp", ref: "P-PO04", finish: "poro" },
+  { id: 405, name: "Gales", folder: "poro", src: "pelikano/poro/gales-poro.webp", ref: "P-PO05", finish: "poro" },
+  { id: 406, name: "Miel", folder: "poro", src: "pelikano/poro/miel-poro.webp", ref: "P-PO06", finish: "poro" },
+  { id: 407, name: "Niebla", folder: "poro", src: "pelikano/poro/niebla-poro.webp", ref: "P-PO07", finish: "poro" },
 
   // ===== SYNCHRO =====
-  { id: 501, name: "Bardolino", folder: "synchro", src: "pelikano/synchro/bardolino-synchro.jpg", ref: "P-SY01", finish: "synchro" },
-  { id: 502, name: "Bellota", folder: "synchro", src: "pelikano/synchro/bellota-synchro.jpg", ref: "P-SY02", finish: "synchro" },
-  { id: 503, name: "Cartagena", folder: "synchro", src: "pelikano/synchro/cartagena-synchro.jpg", ref: "P-SY03", finish: "synchro" },
-  { id: 504, name: "Castaño", folder: "synchro", src: "pelikano/synchro/castaño-synchro.jpg", ref: "P-SY04", finish: "synchro" },
-  { id: 505, name: "Fumé", folder: "synchro", src: "pelikano/synchro/fume-synchro.jpg", ref: "P-SY05", finish: "synchro" },
-  { id: 506, name: "Macadamia", folder: "synchro", src: "pelikano/synchro/macadamia-synchro.jpg", ref: "P-SY06", finish: "synchro" },
-  { id: 507, name: "Milan", folder: "synchro", src: "pelikano/synchro/milan-synchro.jpg", ref: "P-SY07", finish: "synchro" },
-  { id: 508, name: "Nacar", folder: "synchro", src: "pelikano/synchro/nacar-synchro.jpg", ref: "P-SY08", finish: "synchro" },
-  { id: 509, name: "Panela", folder: "synchro", src: "pelikano/synchro/panela-synchro.jpg", ref: "P-SY09", finish: "synchro" },
-  { id: 510, name: "Positado", folder: "synchro", src: "pelikano/synchro/positado-synchro.jpg", ref: "P-SY10", finish: "synchro" },
-  { id: 511, name: "Roble Negro", folder: "synchro", src: "pelikano/roble negro-roble.jpg", ref: "P-SY11", finish: "synchro" },
+  { id: 501, name: "Bardolino", folder: "synchro", src: "pelikano/synchro/bardolino-synchro.webp", ref: "P-SY01", finish: "synchro" },
+  { id: 502, name: "Bellota", folder: "synchro", src: "pelikano/synchro/bellota-synchro.webp", ref: "P-SY02", finish: "synchro" },
+  { id: 503, name: "Cartagena", folder: "synchro", src: "pelikano/synchro/cartagena-synchro.webp", ref: "P-SY03", finish: "synchro" },
+  { id: 504, name: "Castaño", folder: "synchro", src: "pelikano/synchro/castaño-synchro.webp", ref: "P-SY04", finish: "synchro" },
+  { id: 505, name: "Fumé", folder: "synchro", src: "pelikano/synchro/fume-synchro.webp", ref: "P-SY05", finish: "synchro" },
+  { id: 506, name: "Macadamia", folder: "synchro", src: "pelikano/synchro/macadamia-synchro.webp", ref: "P-SY06", finish: "synchro" },
+  { id: 507, name: "Milan", folder: "synchro", src: "pelikano/synchro/milan-synchro.webp", ref: "P-SY07", finish: "synchro" },
+  { id: 508, name: "Nacar", folder: "synchro", src: "pelikano/synchro/nacar-synchro.webp", ref: "P-SY08", finish: "synchro" },
+  { id: 509, name: "Panela", folder: "synchro", src: "pelikano/synchro/panela-synchro.webp", ref: "P-SY09", finish: "synchro" },
+  { id: 510, name: "Positado", folder: "synchro", src: "pelikano/synchro/positado-synchro.webp", ref: "P-SY10", finish: "synchro" },
+  { id: 511, name: "Roble Negro", folder: "synchro", src: "pelikano/roble negro-roble.webp", ref: "P-SY11", finish: "synchro" },
 ];
 
 
@@ -231,11 +231,11 @@ function MaterialCard({ item, isGrid = false }: { item: any; isGrid?: boolean })
               <DataRow label="Formato" value="1.22 x 2.80 m" />
             </div>
 
-            <Button 
+            <Button
               asChild
               className="w-full rounded-2xl bg-[#25D366] hover:bg-[#128C7E] text-white h-14 text-lg font-bold transition-all duration-300 shadow-xl shadow-[#25D366]/20 group"
             >
-              <a 
+              <a
                 href={`https://wa.me/51979923148?text=${encodeURIComponent(`Hola Husheniid, me interesa el acabado "${item.name}" de la colección "${item.folder}". ¿Lo tienen disponible para un proyecto?`)}`}
                 target="_blank"
                 rel="noopener noreferrer"
