@@ -79,7 +79,7 @@ const Services = () => {
             className="text-5xl md:text-6xl font-bold text-[#524F4A] tracking-tighter mb-6"
             variants={itemVariants}
           >
-            Soluciones en <span className="text-[#BB9E7A] italic font-serif">Melamina</span>
+            Muebles de <span className="text-[#BB9E7A] italic font-serif">Melamina</span> a Medida
           </motion.h2>
           <motion.div 
             variants={itemVariants}

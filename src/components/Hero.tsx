@@ -111,6 +111,7 @@ const Hero = () => {
           {/* Título Principal: Mezcla de Sans y Serif */}
           <motion.div variants={itemVariants} style={{ x: useTransform(springX, [0, 1000], [-10, 10]) }}>
             <h1 className="text-6xl sm:text-7xl md:text-9xl lg:text-[11rem] font-bold tracking-tighter leading-[0.85] sm:leading-[0.8] text-[#524F4A] relative">
+              <span className="sr-only">Muebles de Melamina en Huancayo - </span>
               estudio <br />
               <span className="relative inline-block">
                 <span className="text-[#BB9E7A] italic font-serif">husheniid</span>
