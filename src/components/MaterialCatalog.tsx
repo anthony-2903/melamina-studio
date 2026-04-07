@@ -99,6 +99,8 @@ const RAW_PELIKANO = [
 const LOCAL_HIGH_GLOSS = RAW_HIGH_GLOSS.map(m => ({ ...m, resolvedSrc: `/${m.src}` }));
 const LOCAL_PELIKANO = RAW_PELIKANO.map(m => ({ ...m, resolvedSrc: `/${m.src}` }));
 
+import { Skeleton } from "@/components/ui/skeleton";
+
 export default function MaterialCatalog() {
   // Estados HG
   const [hgFolder, setHgFolder] = useState("all");
@@ -107,6 +109,14 @@ export default function MaterialCatalog() {
   // Estados PK
   const [pkFolder, setPkFolder] = useState("all");
   const [pkView, setPkView] = useState<"carousel" | "grid">("carousel");
+
+  // Estado de carga inicial simulado para mostrar skeletons y mejorar la percepción de velocidad
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoading(false), 800);
+    return () => clearTimeout(timer);
+  }, []);
 
   // Lógica HG
   const hgFolders = useMemo(() => Array.from(new Set(LOCAL_HIGH_GLOSS.map(m => m.folder))), []);
@@ -142,21 +152,32 @@ export default function MaterialCatalog() {
         </div>
 
         <div className="relative min-h-[500px]">
-          <AnimatePresence mode="wait">
-            {hgView === "carousel" ? (
-              <motion.div key={`hg-car-${hgFolder}`} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} transition={{ duration: 0.3 }}>
+          {isLoading ? (
+            <div 
+              key="hg-loading"
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8"
+            >
+              {[1, 2, 4, 4].map((n, i) => (
+                <div key={i} className="w-full aspect-[4/5] rounded-[2rem] bg-white border border-slate-200 overflow-hidden relative">
+                  <Skeleton className="w-full h-full" />
+                </div>
+              ))}
+            </div>
+          ) : (
+            hgView === "carousel" ? (
+              <div key={`hg-car-${hgFolder}`}>
                 <InfiniteCarousel items={hgDuplicated} direction="right" speed={40} />
-              </motion.div>
+              </div>
             ) : (
-              <motion.div key={`hg-grid-${hgFolder}`} initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 40 }} transition={{ duration: 0.3 }} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+              <div key={`hg-grid-${hgFolder}`} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                 {hgFiltered.length > 0 ? (
                   hgFiltered.map((item) => <MaterialCard key={`hg-grid-${item.id}`} item={item} isGrid />)
                 ) : (
                   <div className="col-span-full py-20 text-center text-slate-400 font-medium italic">No hay resultados en esta colección</div>
                 )}
-              </motion.div>
-            )}
-          </AnimatePresence>
+              </div>
+            )
+          )}
         </div>
       </div>
 
@@ -181,21 +202,32 @@ export default function MaterialCatalog() {
         </div>
 
         <div className="relative min-h-[500px]">
-          <AnimatePresence mode="wait">
-            {pkView === "carousel" ? (
-              <motion.div key={`pk-car-${pkFolder}`} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} transition={{ duration: 0.3 }}>
+          {isLoading ? (
+            <div 
+              key="pk-loading"
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8"
+            >
+              {[1, 2, 4, 4].map((n, i) => (
+                <div key={i} className="w-full aspect-[4/5] rounded-[2rem] bg-white border border-slate-200 overflow-hidden relative">
+                  <Skeleton className="w-full h-full" />
+                </div>
+              ))}
+            </div>
+          ) : (
+            pkView === "carousel" ? (
+              <div key={`pk-car-${pkFolder}`}>
                 <InfiniteCarousel items={pkDuplicated} direction="left" speed={45} />
-              </motion.div>
+              </div>
             ) : (
-              <motion.div key={`pk-grid-${pkFolder}`} initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 40 }} transition={{ duration: 0.3 }} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+              <div key={`pk-grid-${pkFolder}`} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                 {pkFiltered.length > 0 ? (
                   pkFiltered.map((item) => <MaterialCard key={`pk-grid-${item.id}`} item={item} isGrid />)
                 ) : (
                   <div className="col-span-full py-20 text-center text-slate-400 font-medium italic">No hay resultados en esta colección</div>
                 )}
-              </motion.div>
-            )}
-          </AnimatePresence>
+              </div>
+            )
+          )}
         </div>
       </div>
     </section>
@@ -208,7 +240,7 @@ function MaterialCard({ item, isGrid = false }: { item: any; isGrid?: boolean })
       <DialogTrigger asChild>
         <motion.div layout whileHover={{ y: -10 }} className={`relative flex-shrink-0 group cursor-pointer overflow-hidden rounded-[2rem] bg-white border border-slate-200 shadow-sm transition-all ${isGrid ? "w-full aspect-[4/5]" : "w-[280px] md:w-[350px] aspect-[4/5]"}`}>
           <img 
-            src={getOptimizedUrl(item.resolvedSrc, 600)} 
+            src={getOptimizedUrl(item.resolvedSrc, 500)} 
             alt={item.name} 
             loading="lazy" 
             decoding="async" 
@@ -280,7 +312,17 @@ function InfiniteCarousel({ items, direction = "left", speed = 40 }: { items: an
   const trackRef = useRef<HTMLDivElement | null>(null);
   const controls = useAnimation();
 
+  const [isReady, setIsReady] = useState(false);
+
   useEffect(() => {
+    // Pequeño delay para asegurar que el DOM se ha pintado
+    const timer = setTimeout(() => setIsReady(true), 150);
+    return () => clearTimeout(timer);
+  }, [items]);
+
+  useEffect(() => {
+    if (!isReady) return;
+    
     controls.stop();
     const el = trackRef.current;
     if (!el || items.length === 0) return;
@@ -293,10 +335,10 @@ function InfiniteCarousel({ items, direction = "left", speed = 40 }: { items: an
       x: xParams,
       transition: { x: { repeat: Infinity, repeatType: "loop", ease: "linear", duration: speed } }
     });
-  }, [controls, items, direction, speed]);
+  }, [controls, items, direction, speed, isReady]);
 
   return (
-    <motion.div ref={trackRef} animate={controls} className="flex gap-8 px-4 w-max">
+    <motion.div ref={trackRef} animate={controls} className="flex gap-8 px-4 w-fit">
       {items.map((item, idx) => <MaterialCard key={`car-${item.id}-${idx}`} item={item} />)}
     </motion.div>
   );

@@ -63,6 +63,12 @@ const Hero = () => {
           animate={{ scale: 1, filter: "blur(0px)" }}
           transition={{ duration: 2, ease: "easeOut" }}
           src={getOptimizedUrl(heroImage, 1920)}
+          srcSet={`
+            ${getOptimizedUrl(heroImage, 640)} 640w,
+            ${getOptimizedUrl(heroImage, 1280)} 1280w,
+            ${getOptimizedUrl(heroImage, 1920)} 1920w
+          `}
+          sizes="100vw"
           alt="Cocina de melamina moderna"
           className="w-full h-full object-cover"
         />

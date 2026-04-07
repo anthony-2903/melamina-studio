@@ -15,17 +15,21 @@ import { Button } from "@/components/ui/button";
 import { getOptimizedUrl } from "@/lib/cloudinary";
 import { ChevronDown, X, Instagram, Facebook, Music2, LayoutGrid, Infinity as InfinityIcon, MessageCircle } from "lucide-react";
 
+import { Skeleton } from "@/components/ui/skeleton";
+
 export default function Portfolio() {
   const [portfolio, setPortfolio] = useState<any[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [viewMode, setViewMode] = useState<"carousel" | "grid">("carousel");
+  const [isLoading, setIsLoading] = useState(true);
 
   const trackRef = useRef<HTMLDivElement | null>(null);
   const controls = useAnimation();
 
   const fetchAll = useCallback(async () => {
     try {
+      setIsLoading(true);
       const { data: catData } = await supabase.from("categories").select("*");
       setCategories(catData ?? []);
       
@@ -41,6 +45,8 @@ export default function Portfolio() {
       setPortfolio(mapped);
     } catch (error) {
       console.error("Error fetching data:", error);
+    } finally {
+      setIsLoading(false);
     }
   }, []);
 
@@ -60,7 +66,7 @@ export default function Portfolio() {
   }, [filtered, viewMode]);
 
   const startAnimation = useCallback(async () => {
-    if (viewMode === "grid" || duplicated.length === 0) return;
+    if (viewMode === "grid" || duplicated.length === 0 || isLoading) return;
     const el = trackRef.current;
     if (!el) return;
     
@@ -77,12 +83,18 @@ export default function Portfolio() {
         duration: 50, // Un poco más lento para elegancia
       },
     });
-  }, [controls, duplicated.length, viewMode]);
+  }, [controls, duplicated.length, viewMode, isLoading]);
 
   useEffect(() => {
-    controls.stop();
-    startAnimation();
-  }, [selectedCategory, viewMode, startAnimation, controls]);
+    if (!isLoading && viewMode === "carousel" && filtered.length > 0) {
+      // Pequeño delay para asegurar que el DOM se ha pintado y el scrollWidth es correcto
+      const timer = setTimeout(() => {
+        controls.stop();
+        startAnimation();
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [selectedCategory, viewMode, startAnimation, controls, isLoading, filtered.length]);
 
   return (
     <section id="portafolio" className="py-24 bg-white overflow-hidden relative">
@@ -133,33 +145,43 @@ export default function Portfolio() {
       </div>
 
       <div className="relative min-h-[550px]">
-        <AnimatePresence mode="wait">
-          {viewMode === "carousel" ? (
-            <motion.div 
-              key={`carousel-${selectedCategory}`} 
-              initial={{ opacity: 0 }} 
-              animate={{ opacity: 1 }} 
-              exit={{ opacity: 0 }}
-            >
-              <motion.div ref={trackRef} animate={controls} className="flex gap-8 px-4">
+        {isLoading ? (
+          <div key="loading" className="container mx-auto px-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[1, 2, 3].map((n) => (
+              <div key={n} className="w-full aspect-[3/4] rounded-[3.5rem] bg-slate-100 overflow-hidden relative">
+                <Skeleton className="w-full h-full" />
+              </div>
+            ))}
+          </div>
+        ) : (
+          viewMode === "carousel" ? (
+            <div key={`carousel-${selectedCategory}`}>
+              <motion.div 
+                ref={trackRef} 
+                animate={controls} 
+                className="flex gap-8 px-4 w-max h-full"
+                style={{ display: "flex", flexWrap: "nowrap" }}
+              >
                 {duplicated.map((project, idx) => (
                   <ProjectCard key={`car-${project.id}-${idx}`} project={project} />
                 ))}
               </motion.div>
-            </motion.div>
+            </div>
           ) : (
-            <motion.div 
+            <div 
               key="grid" 
-              initial={{ opacity: 0, y: 40 }} 
-              animate={{ opacity: 1, y: 0 }} 
               className="container mx-auto px-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"
             >
-              {filtered.map((project) => (
-                <ProjectCard key={`grid-${project.id}`} project={project} isGrid />
-              ))}
-            </motion.div>
-          )}
-        </AnimatePresence>
+              {filtered.length > 0 ? (
+                filtered.map((project) => (
+                  <ProjectCard key={`grid-${project.id}`} project={project} isGrid />
+                ))
+              ) : (
+                <div className="col-span-full py-20 text-center text-slate-400 font-medium italic">No hay proyectos en esta categoría</div>
+              )}
+            </div>
+          )
+        )}
       </div>
     </section>
   );
