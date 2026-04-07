@@ -18,6 +18,7 @@ import {
   MessageCircle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { getOptimizedUrl } from "@/lib/cloudinary";
 
 // --- DATOS HIGH GLOSS ---
 const RAW_HIGH_GLOSS = [
@@ -206,7 +207,13 @@ function MaterialCard({ item, isGrid = false }: { item: any; isGrid?: boolean })
     <Dialog>
       <DialogTrigger asChild>
         <motion.div layout whileHover={{ y: -10 }} className={`relative flex-shrink-0 group cursor-pointer overflow-hidden rounded-[2rem] bg-white border border-slate-200 shadow-sm transition-all ${isGrid ? "w-full aspect-[4/5]" : "w-[280px] md:w-[350px] aspect-[4/5]"}`}>
-          <img src={item.resolvedSrc} alt={item.name} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-[1.5s] group-hover:scale-110" />
+          <img 
+            src={getOptimizedUrl(item.resolvedSrc, 600)} 
+            alt={item.name} 
+            loading="lazy" 
+            decoding="async" 
+            className="w-full h-full object-cover transition-transform duration-[1.5s] group-hover:scale-110" 
+          />
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity" />
           <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8">
             <Badge className="bg-[#BB9E7A] text-white border-none mb-3 text-[9px] uppercase tracking-[0.2em] font-bold">{item.folder}</Badge>
@@ -218,7 +225,15 @@ function MaterialCard({ item, isGrid = false }: { item: any; isGrid?: boolean })
       <DialogContent className="max-w-6xl w-[95vw] md:w-[90vw] p-0 overflow-hidden border-none bg-white rounded-[2.5rem] shadow-2xl [&>button]:hidden">
         <DialogClose className="absolute right-6 top-6 z-50 p-3 bg-white/20 hover:bg-white text-white hover:text-[#524F4A] rounded-full transition-all duration-300 backdrop-blur-xl border border-white/30 shadow-xl"><X size={20} /></DialogClose>
         <div className="flex flex-col md:flex-row h-full max-h-[90vh] overflow-y-auto md:overflow-hidden">
-          <div className="w-full md:w-1/2 h-[300px] md:h-auto relative"><img src={item.resolvedSrc} className="w-full h-full object-cover" alt={item.name} loading="lazy" decoding="async" /></div>
+          <div className="w-full md:w-1/2 h-[300px] md:h-auto relative">
+            <img 
+              src={getOptimizedUrl(item.resolvedSrc, 1200)} 
+              className="w-full h-full object-cover" 
+              alt={item.name} 
+              loading="lazy" 
+              decoding="async" 
+            />
+          </div>
           <div className="w-full md:w-1/2 p-8 md:p-16 flex flex-col justify-center bg-white">
             <span className="text-[#BB9E7A] text-xs font-black uppercase tracking-[0.4em] mb-4 block">Catálogo Exclusivo</span>
             <h3 className="text-4xl md:text-7xl font-serif italic text-[#524F4A] mb-2 leading-[0.9] tracking-tighter">{item.name}</h3>

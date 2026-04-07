@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { getOptimizedUrl } from "@/lib/cloudinary";
 import { ChevronDown, X, Instagram, Facebook, Music2, LayoutGrid, Infinity as InfinityIcon, MessageCircle } from "lucide-react";
 
 export default function Portfolio() {
@@ -183,7 +184,7 @@ function ProjectCard({ project, isGrid = false }: { project: any; isGrid?: boole
             />
           ) : (
             <img 
-              src={project.image_url} 
+              src={getOptimizedUrl(project.image_url, 800)} 
               alt={project.title} 
               className="w-full h-full object-cover transition-transform duration-[3s] group-hover:scale-110" 
             />
@@ -214,7 +215,7 @@ function ProjectCard({ project, isGrid = false }: { project: any; isGrid?: boole
             {project.image_url.match(/\.(mp4|mov|webm)$/i) ? (
               <video src={project.image_url} autoPlay loop muted playsInline className="w-full h-full object-cover pointer-events-none" />
             ) : (
-              <img src={project.image_url} className="w-full h-full object-cover" alt={project.title} />
+              <img src={getOptimizedUrl(project.image_url, 1200)} className="w-full h-full object-cover" alt={project.title} />
             )}
             <div className="absolute inset-0 shadow-[inset_0_0_100px_rgba(0,0,0,0.1)] pointer-events-none" />
           </div>

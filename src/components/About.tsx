@@ -1,6 +1,7 @@
 import { Award, Users, Target, Heart } from "lucide-react";
 import workshopImage from "@/assets/about-workshop.jpg";
 import { motion, Variants, useScroll, useTransform } from "framer-motion";
+import { getOptimizedUrl } from "@/lib/cloudinary";
 import { useRef } from "react";
 
 const values = [
@@ -189,7 +190,7 @@ const About = () => {
                 className="overflow-hidden rounded-[2.8rem] shadow-2xl relative border-4 border-white"
               >
                 <img
-                  src={workshopImage}
+                  src={getOptimizedUrl(workshopImage, 1000)}
                   alt="Nuestro taller de carpintería"
                   className="w-full object-cover aspect-[4/5] lg:aspect-[3/4] transition-transform duration-[2s] group-hover:scale-105"
                 />

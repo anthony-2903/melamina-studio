@@ -4,6 +4,7 @@ import { Menu, X, User, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence, useScroll, useMotionValueEvent } from "framer-motion";
 import logo from "@/assets/logo-husheniid.png";
+import { getOptimizedUrl } from "@/lib/cloudinary";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -48,7 +49,7 @@ const Header = () => {
             <motion.img
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
-              src={logo}
+              src={getOptimizedUrl(logo, 300)}
               alt="Husheniid - Muebles de Melamina a Medida"
               className={`w-auto object-contain transition-all duration-500 filter group-hover:brightness-110 ${
                 isScrolled 

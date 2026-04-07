@@ -4,6 +4,7 @@ import { ArrowRight, ChevronDown } from "lucide-react";
 import { useEffect } from "react";
 // Asegúrate de que la ruta de tu imagen sea correcta
 import heroImage from "@/assets/hero-kitchen.jpg";
+import { getOptimizedUrl } from "@/lib/cloudinary";
 
 const Hero = () => {
   const mouseX = useMotionValue(0);
@@ -61,7 +62,7 @@ const Hero = () => {
           initial={{ scale: 1.1, filter: "blur(10px)" }}
           animate={{ scale: 1, filter: "blur(0px)" }}
           transition={{ duration: 2, ease: "easeOut" }}
-          src={heroImage}
+          src={getOptimizedUrl(heroImage, 1920)}
           alt="Cocina de melamina moderna"
           className="w-full h-full object-cover"
         />
