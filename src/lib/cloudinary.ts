@@ -42,3 +42,31 @@ export function getOptimizedUrl(src: string, width?: number): string {
   // Usamos el API de Fetch de Cloudinary para imágenes externas o locales en producción
   return `https://res.cloudinary.com/${CLOUD_NAME}/image/fetch/${transformations}/${encodeURIComponent(fullUrl)}`;
 }
+
+export function getOptimizedSrcSet(src: string, widths: number[]): string {
+  return widths.map((width) => `${getOptimizedUrl(src, width)} ${width}w`).join(", ");
+}
+
+export function getVideoPosterUrl(src: string, width = 800): string | undefined {
+  if (!src.includes("res.cloudinary.com") || !src.includes("/video/upload/")) {
+    return undefined;
+  }
+
+  const posterUrl = src.replace(
+    "/video/upload/",
+    `/video/upload/so_0,f_auto,q_auto,w_${width},c_limit/`,
+  );
+
+  return posterUrl.replace(/\.[a-z0-9]+(?:\?.*)?$/i, ".jpg");
+}
+
+export function getOptimizedVideoUrl(src: string, width = 1280): string {
+  if (!src.includes("res.cloudinary.com") || !src.includes("/video/upload/")) {
+    return src;
+  }
+
+  return src.replace(
+    "/video/upload/",
+    `/video/upload/f_auto,q_auto:eco,vc_auto,w_${width},c_limit/`,
+  );
+}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -31,7 +31,7 @@ const AdminCategory = () => {
   const [editingName, setEditingName] = useState("");
   const [deleteId, setDeleteId] = useState<string | null>(null);
 
-  const fetchCategories = async () => {
+  const fetchCategories = useCallback(async () => {
     const { data, error } = await supabase
       .from("categories")
       .select("id, name")
@@ -41,9 +41,9 @@ const AdminCategory = () => {
       return;
     }
     setCategories(data || []);
-  };
+  }, [toast]);
 
-  useEffect(() => { fetchCategories(); }, []);
+  useEffect(() => { fetchCategories(); }, [fetchCategories]);
 
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();

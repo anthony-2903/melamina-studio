@@ -1,5 +1,3 @@
-"use client";
-
 import { useEffect, useState, useRef, useCallback, useMemo } from "react";
 import { motion, useAnimation, AnimatePresence } from "framer-motion";
 import {
@@ -18,7 +16,7 @@ import {
   MessageCircle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { getOptimizedUrl } from "@/lib/cloudinary";
+import { getOptimizedSrcSet, getOptimizedUrl } from "@/lib/cloudinary";
 
 // --- DATOS HIGH GLOSS ---
 const RAW_HIGH_GLOSS = [
@@ -96,12 +94,24 @@ const RAW_PELIKANO = [
 ];
 
 
-const LOCAL_HIGH_GLOSS = RAW_HIGH_GLOSS.map(m => ({ ...m, resolvedSrc: `/${m.src}` }));
-const LOCAL_PELIKANO = RAW_PELIKANO.map(m => ({ ...m, resolvedSrc: `/${m.src}` }));
+const LOCAL_HIGH_GLOSS = RAW_HIGH_GLOSS.map(m => ({ ...m, resolvedSrc: `/materials/${m.src}` }));
+const LOCAL_PELIKANO = RAW_PELIKANO.map(m => ({ ...m, resolvedSrc: `/materials/${m.src}` }));
 
 import { Skeleton } from "@/components/ui/skeleton";
+import { useMediaPreferences } from "@/hooks/use-media-preferences";
+
+type Material = {
+  id: number;
+  name: string;
+  folder: string;
+  src: string;
+  ref: string;
+  finish: string;
+  resolvedSrc: string;
+};
 
 export default function MaterialCatalog() {
+  const { isMobile, reduceMotion } = useMediaPreferences();
   // Estados HG
   const [hgFolder, setHgFolder] = useState("all");
   const [hgView, setHgView] = useState<"carousel" | "grid">("carousel");
@@ -111,22 +121,17 @@ export default function MaterialCatalog() {
   const [pkView, setPkView] = useState<"carousel" | "grid">("carousel");
 
   // Estado de carga inicial simulado para mostrar skeletons y mejorar la percepción de velocidad
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const timer = setTimeout(() => setIsLoading(false), 800);
-    return () => clearTimeout(timer);
-  }, []);
+  const isLoading = false;
 
   // Lógica HG
   const hgFolders = useMemo(() => Array.from(new Set(LOCAL_HIGH_GLOSS.map(m => m.folder))), []);
   const hgFiltered = useMemo(() => hgFolder === "all" ? LOCAL_HIGH_GLOSS : LOCAL_HIGH_GLOSS.filter(m => m.folder === hgFolder), [hgFolder]);
-  const hgDuplicated = useMemo(() => hgView === "grid" ? hgFiltered : [...hgFiltered, ...hgFiltered, ...hgFiltered, ...hgFiltered], [hgFiltered, hgView]);
+  const hgDuplicated = useMemo(() => hgView === "grid" || isMobile || reduceMotion ? hgFiltered : [...hgFiltered, ...hgFiltered], [hgFiltered, hgView, isMobile, reduceMotion]);
 
   // Lógica PK (Corregida la referencia a pkFiltered)
   const pkFolders = useMemo(() => Array.from(new Set(LOCAL_PELIKANO.map(m => m.folder))), []);
   const pkFiltered = useMemo(() => pkFolder === "all" ? LOCAL_PELIKANO : LOCAL_PELIKANO.filter(m => m.folder === pkFolder), [pkFolder]);
-  const pkDuplicated = useMemo(() => pkView === "grid" ? pkFiltered : [...pkFiltered, ...pkFiltered, ...pkFiltered, ...pkFiltered], [pkFiltered, pkView]);
+  const pkDuplicated = useMemo(() => pkView === "grid" || isMobile || reduceMotion ? pkFiltered : [...pkFiltered, ...pkFiltered], [pkFiltered, pkView, isMobile, reduceMotion]);
 
   return (
     <section id="materiales" className="py-24 bg-[#F8F7F4] overflow-hidden relative space-y-32">
@@ -166,7 +171,7 @@ export default function MaterialCatalog() {
           ) : (
             hgView === "carousel" ? (
               <div key={`hg-car-${hgFolder}`}>
-                <InfiniteCarousel items={hgDuplicated} direction="right" speed={40} />
+                <InfiniteCarousel items={hgDuplicated} direction="right" speed={40} isStatic={isMobile || reduceMotion} />
               </div>
             ) : (
               <div key={`hg-grid-${hgFolder}`} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -216,7 +221,7 @@ export default function MaterialCatalog() {
           ) : (
             pkView === "carousel" ? (
               <div key={`pk-car-${pkFolder}`}>
-                <InfiniteCarousel items={pkDuplicated} direction="left" speed={45} />
+                <InfiniteCarousel items={pkDuplicated} direction="left" speed={45} isStatic={isMobile || reduceMotion} />
               </div>
             ) : (
               <div key={`pk-grid-${pkFolder}`} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -234,13 +239,15 @@ export default function MaterialCatalog() {
   );
 }
 
-function MaterialCard({ item, isGrid = false }: { item: any; isGrid?: boolean }) {
+function MaterialCard({ item, isGrid = false, mobileSnap = false }: { item: Material; isGrid?: boolean; mobileSnap?: boolean }) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <motion.div layout whileHover={{ y: -10 }} className={`relative flex-shrink-0 group cursor-pointer overflow-hidden rounded-[2rem] bg-white border border-slate-200 shadow-sm transition-all ${isGrid ? "w-full aspect-[4/5]" : "w-[280px] md:w-[350px] aspect-[4/5]"}`}>
+        <motion.div layout whileHover={{ y: -10 }} className={`relative flex-shrink-0 group cursor-pointer overflow-hidden rounded-[2rem] bg-white border border-slate-200 shadow-sm transition-all ${isGrid ? "w-full aspect-[4/5]" : "w-[78vw] max-w-[350px] md:w-[350px] aspect-[4/5]"} ${mobileSnap ? "snap-center" : ""}`}>
           <img 
             src={getOptimizedUrl(item.resolvedSrc, 500)} 
+            srcSet={getOptimizedSrcSet(item.resolvedSrc, [320, 500, 700])}
+            sizes={isGrid ? "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw" : "(max-width: 768px) 280px, 350px"}
             alt={item.name} 
             loading="lazy" 
             decoding="async" 
@@ -260,6 +267,8 @@ function MaterialCard({ item, isGrid = false }: { item: any; isGrid?: boolean })
           <div className="w-full md:w-1/2 h-[300px] md:h-auto relative">
             <img 
               src={getOptimizedUrl(item.resolvedSrc, 1200)} 
+              srcSet={getOptimizedSrcSet(item.resolvedSrc, [640, 900, 1200])}
+              sizes="(max-width: 768px) 100vw, 50vw"
               className="w-full h-full object-cover" 
               alt={item.name} 
               loading="lazy" 
@@ -308,7 +317,7 @@ function DataRow({ label, value }: { label: string; value: string }) {
   );
 }
 
-function InfiniteCarousel({ items, direction = "left", speed = 40 }: { items: any[], direction?: "left" | "right", speed?: number }) {
+function InfiniteCarousel({ items, direction = "left", speed = 40, isStatic = false }: { items: Material[]; direction?: "left" | "right"; speed?: number; isStatic?: boolean }) {
   const trackRef = useRef<HTMLDivElement | null>(null);
   const controls = useAnimation();
 
@@ -321,25 +330,24 @@ function InfiniteCarousel({ items, direction = "left", speed = 40 }: { items: an
   }, [items]);
 
   useEffect(() => {
-    if (!isReady) return;
+    if (!isReady || isStatic) return;
     
     controls.stop();
     const el = trackRef.current;
     if (!el || items.length === 0) return;
 
-    // El arreglo tiene 4 copias para el loop
-    const moveDistance = el.scrollWidth / 4;
+    const moveDistance = el.scrollWidth / 2;
     const xParams = direction === "left" ? [0, -moveDistance] : [-moveDistance, 0];
 
     controls.start({
       x: xParams,
       transition: { x: { repeat: Infinity, repeatType: "loop", ease: "linear", duration: speed } }
     });
-  }, [controls, items, direction, speed, isReady]);
+  }, [controls, items, direction, speed, isReady, isStatic]);
 
   return (
-    <motion.div ref={trackRef} animate={controls} className="flex gap-8 px-4 w-fit">
-      {items.map((item, idx) => <MaterialCard key={`car-${item.id}-${idx}`} item={item} />)}
+    <motion.div ref={trackRef} animate={isStatic ? undefined : controls} className={`flex gap-8 px-4 ${isStatic ? "w-full overflow-x-auto snap-x snap-mandatory pb-6 mobile-scrollbar-none" : "w-fit"}`}>
+      {items.map((item, idx) => <MaterialCard key={`car-${item.id}-${idx}`} item={item} mobileSnap={isStatic} />)}
     </motion.div>
   );
 }

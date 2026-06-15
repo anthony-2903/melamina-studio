@@ -70,6 +70,8 @@ const Hero = () => {
           `}
           sizes="100vw"
           alt="Cocina de melamina moderna"
+          loading="eager"
+          decoding="async"
           className="w-full h-full object-cover"
         />
         {/* Overlay degradado premium: De Gris Perla a Transparente */}

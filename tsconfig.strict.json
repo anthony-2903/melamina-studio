@@ -1,0 +1,17 @@
+{
+  "extends": "./tsconfig.app.json",
+  "compilerOptions": {
+    "strict": true,
+    "noImplicitAny": true,
+    "noUncheckedIndexedAccess": true
+  },
+  "include": [
+    "src/vite-env.d.ts",
+    "src/lib/cloudinary.ts",
+    "src/lib/mediaValidation.ts",
+    "src/lib/reportWebVitals.ts",
+    "src/components/Seo.tsx",
+    "src/components/OptimizedVideo.tsx",
+    "src/hooks/use-media-preferences.ts"
+  ]
+}

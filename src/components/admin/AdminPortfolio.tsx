@@ -2,6 +2,10 @@
 
 import { useEffect, useState, useRef } from "react";
 import { supabase } from "@/lib/supabaseClient";
+import { uploadToCloudinary } from "@/lib/uploadToCloudinary";
+import OptimizedVideo from "@/components/OptimizedVideo";
+import { getOptimizedUrl } from "@/lib/cloudinary";
+import { readVideoMetadata, validateVideoMetadata } from "@/lib/mediaValidation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -29,12 +33,18 @@ type Portfolio = {
   image_url: string;
   category_id?: string;
   categories: { name: string }[] | null;
+  media_type?: "image" | "video";
+};
+
+type PortfolioRow = Omit<Portfolio, "categories"> & {
+  categories: { name: string } | { name: string }[] | null;
 };
 
 const AdminPortfolio = () => {
   const { toast } = useToast();
   const [mounted, setMounted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
@@ -65,14 +75,19 @@ const AdminPortfolio = () => {
 
   const fetchPortfolios = async () => {
     const { data } = await supabase.from("portfolios").select(`id, title, description, image_url, category_id, categories ( name )`).order("created_at", { ascending: false });
-    const safeData = (data ?? []).map((p: any) => ({
+    const safeData = ((data ?? []) as PortfolioRow[]).map((p) => ({
       ...p,
-      categories: Array.isArray(p.categories) ? p.categories : [],
+      media_type: p.image_url.match(/\.(mp4|mov|webm)(?:\?.*)?$/i) ? "video" as const : "image" as const,
+      categories: Array.isArray(p.categories)
+        ? p.categories
+        : p.categories
+          ? [p.categories]
+          : [],
     }));
     setPortfolios(safeData);
   };
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       // Validar peso: 10MB máximo para videos, 5MB para imágenes
@@ -91,6 +106,21 @@ const AdminPortfolio = () => {
         return;
       }
 
+      if (isVideo) {
+        try {
+          const validationError = validateVideoMetadata(await readVideoMetadata(file));
+          if (validationError) {
+            toast({ title: "Video no compatible", description: validationError, variant: "destructive" });
+            e.target.value = "";
+            return;
+          }
+        } catch (error) {
+          toast({ title: "Video no válido", description: error instanceof Error ? error.message : "No se pudo analizar.", variant: "destructive" });
+          e.target.value = "";
+          return;
+        }
+      }
+
       setImageFile(file);
       // Usar objectURL es más rápido y no satura memoria con videos
       setImagePreview(URL.createObjectURL(file));
@@ -104,33 +134,51 @@ const AdminPortfolio = () => {
       return;
     }
     setIsSubmitting(true);
+    setUploadProgress(0);
 
     const formData = new FormData(e.currentTarget);
     const title = formData.get("name") as string;
     const description = formData.get("description") as string;
 
     try {
-      const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
-      const uploadPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
-      const data = new FormData();
-      data.append("file", imageFile);
-      data.append("upload_preset", uploadPreset);
-
-      const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/auto/upload`, { method: "POST", body: data });
-      const file = await res.json();
+      const upload = await uploadToCloudinary(imageFile, setUploadProgress);
       
-      const { error } = await supabase.from("portfolios").insert({
-        title, description, image_url: file.secure_url, category_id: selectedCategory,
-      });
+      const completeRecord = {
+        title,
+        description,
+        image_url: upload.secureUrl,
+        category_id: selectedCategory,
+        media_type: upload.mediaType,
+        media_width: upload.width,
+        media_height: upload.height,
+        media_duration: upload.duration,
+        cloudinary_public_id: upload.publicId,
+      };
+      let { error } = await supabase.from("portfolios").insert(completeRecord);
+      const missingMetadataColumns = error && (error.code === "PGRST204" || error.code === "42703" || error.message.includes("media_type"));
+      if (missingMetadataColumns) {
+        const fallback = await supabase.from("portfolios").insert({
+          title,
+          description,
+          image_url: upload.secureUrl,
+          category_id: selectedCategory,
+        });
+        error = fallback.error;
+      }
 
       if (error) throw error;
       toast({ title: "¡Publicado!", className: "bg-[#524F4A] text-white" });
       formRef.current?.reset();
       setImageFile(null);
       setImagePreview(null);
+      setUploadProgress(0);
       fetchPortfolios();
-    } catch (err) {
-      toast({ title: "Error", variant: "destructive" });
+    } catch (error) {
+      toast({
+        title: "No se pudo publicar",
+        description: error instanceof Error ? error.message : "Inténtalo nuevamente.",
+        variant: "destructive",
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -154,15 +202,21 @@ const AdminPortfolio = () => {
       toast({ title: "Cambios guardados", className: "bg-[#BB9E7A] text-white" });
       setIsEditDialogOpen(false);
       fetchPortfolios();
+    } else {
+      toast({ title: "No se pudieron guardar los cambios", description: error.message, variant: "destructive" });
     }
     setIsSubmitting(false);
   };
 
   const handleDelete = async (id: string) => {
     if (!confirm("¿Estás seguro de eliminar este proyecto?")) return;
-    await supabase.from("portfolios").delete().eq("id", id);
-    toast({ title: "Eliminado", variant: "destructive" });
-    fetchPortfolios();
+    const { error } = await supabase.from("portfolios").delete().eq("id", id);
+    if (error) {
+      toast({ title: "No se pudo eliminar", description: error.message, variant: "destructive" });
+      return;
+    }
+    toast({ title: "Proyecto eliminado" });
+    await fetchPortfolios();
   };
 
   if (!mounted) return null;
@@ -199,7 +253,7 @@ const AdminPortfolio = () => {
               <Textarea name="description" rows={4} className="rounded-2xl border-[#DBD8D3] bg-[#DBD8D3]/10" />
             </div>
             <Button disabled={isSubmitting} className="w-full h-14 rounded-2xl bg-[#524F4A] hover:bg-[#BB9E7A] text-white font-bold transition-all duration-500">
-              {isSubmitting ? <Loader2 className="animate-spin" /> : "Publicar Proyecto"}
+              {isSubmitting ? <><Loader2 className="mr-2 animate-spin" /> Subiendo {uploadProgress}%</> : "Publicar Proyecto"}
             </Button>
           </div>
 
@@ -239,10 +293,10 @@ const AdminPortfolio = () => {
           {portfolios.map((p) => (
             <div key={p.id} className="group bg-white rounded-[2.5rem] border border-[#DBD8D3]/40 overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-700">
               <div className="relative aspect-[4/5] overflow-hidden">
-                {p.image_url.match(/\.(mp4|mov|webm)$/i) ? (
-                  <video src={p.image_url} autoPlay loop muted playsInline className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" />
+                {p.media_type === "video" || p.image_url.match(/\.(mp4|mov|webm)$/i) ? (
+                  <OptimizedVideo src={p.image_url} posterWidth={600} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" />
                 ) : (
-                  <img src={p.image_url} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" />
+                  <img src={getOptimizedUrl(p.image_url, 600)} loading="lazy" decoding="async" alt={p.title} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" />
                 )}
                 <div className="absolute inset-0 bg-gradient-to-t from-[#524F4A]/90 via-transparent to-transparent opacity-60 group-hover:opacity-100 transition-all duration-500" />
                 

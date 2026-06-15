@@ -1,8 +1,6 @@
-"use client";
-
 import { useEffect, useState, useRef, useCallback, useMemo } from "react";
-import { supabase } from "@/lib/supabaseClient";
 import { motion, useAnimation, AnimatePresence } from "framer-motion";
+import { QueryClientProvider, useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import {
   Dialog,
   DialogContent,
@@ -12,66 +10,62 @@ import {
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { getOptimizedUrl } from "@/lib/cloudinary";
+import { getOptimizedSrcSet, getOptimizedUrl } from "@/lib/cloudinary";
+import OptimizedVideo from "@/components/OptimizedVideo";
 import { ChevronDown, X, Instagram, Facebook, Music2, LayoutGrid, Infinity as InfinityIcon, MessageCircle } from "lucide-react";
 
 import { Skeleton } from "@/components/ui/skeleton";
+import { fetchCategories, fetchPortfolioPage, PORTFOLIO_PAGE_SIZE, type PortfolioItem } from "@/lib/portfolio";
+import { queryClient } from "@/lib/queryClient";
+import { useMediaPreferences } from "@/hooks/use-media-preferences";
 
 export default function Portfolio() {
-  const [portfolio, setPortfolio] = useState<any[]>([]);
-  const [categories, setCategories] = useState<any[]>([]);
+  return (
+    <QueryClientProvider client={queryClient}>
+      <PortfolioContent />
+    </QueryClientProvider>
+  );
+}
+
+function PortfolioContent() {
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [viewMode, setViewMode] = useState<"carousel" | "grid">("carousel");
-  const [isLoading, setIsLoading] = useState(true);
+  const { isMobile, reduceMotion } = useMediaPreferences();
 
   const trackRef = useRef<HTMLDivElement | null>(null);
   const controls = useAnimation();
 
-  const fetchAll = useCallback(async () => {
-    try {
-      setIsLoading(true);
-      const { data: catData } = await supabase.from("categories").select("*");
-      setCategories(catData ?? []);
-      
-      const { data: portData } = await supabase
-        .from("portfolios")
-        .select("*")
-        .order("created_at", { ascending: false });
+  const categoriesQuery = useQuery({ queryKey: ["categories"], queryFn: fetchCategories });
+  const portfolioQuery = useInfiniteQuery({
+    queryKey: ["portfolio"],
+    queryFn: ({ pageParam }) => fetchPortfolioPage(pageParam),
+    initialPageParam: 0,
+    getNextPageParam: (lastPage, pages) => lastPage.length === PORTFOLIO_PAGE_SIZE ? pages.length : undefined,
+  });
 
-      const mapped = (portData ?? []).map((p: any) => ({
-        ...p,
-        category: catData?.find((c: any) => c.id === p.category_id) ?? null,
-      }));
-      setPortfolio(mapped);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchAll();
-  }, [fetchAll]);
+  const categories = categoriesQuery.data ?? [];
+  const portfolio = useMemo(() => portfolioQuery.data?.pages.flat() ?? [], [portfolioQuery.data]);
+  const isLoading = categoriesQuery.isLoading || portfolioQuery.isLoading;
+  const error = categoriesQuery.error ?? portfolioQuery.error;
 
   const filtered = useMemo(() => {
     if (selectedCategory === "all") return portfolio;
     return portfolio.filter((item) => item.category_id === selectedCategory);
   }, [portfolio, selectedCategory]);
 
-  // Multiplicamos por 4 para que el loop sea infinito y fluido sin saltos visuales
+  // Dos copias bastan para mantener el loop continuo sin duplicar trabajo innecesario.
   const duplicated = useMemo(() => {
-    if (filtered.length === 0 || viewMode === "grid") return filtered;
-    return [...filtered, ...filtered, ...filtered, ...filtered];
-  }, [filtered, viewMode]);
+    if (filtered.length === 0 || viewMode === "grid" || isMobile || reduceMotion) return filtered;
+    return [...filtered, ...filtered];
+  }, [filtered, viewMode, isMobile, reduceMotion]);
 
   const startAnimation = useCallback(async () => {
-    if (viewMode === "grid" || duplicated.length === 0 || isLoading) return;
+    if (viewMode === "grid" || duplicated.length === 0 || isLoading || isMobile || reduceMotion) return;
     const el = trackRef.current;
     if (!el) return;
     
     // Calculamos la distancia basada en un solo set del contenido original
-    const moveDistance = el.scrollWidth / 4;
+    const moveDistance = el.scrollWidth / 2;
     
     await controls.set({ x: 0 }); // Reinicio de posición
     await controls.start({
@@ -83,10 +77,10 @@ export default function Portfolio() {
         duration: 50, // Un poco más lento para elegancia
       },
     });
-  }, [controls, duplicated.length, viewMode, isLoading]);
+  }, [controls, duplicated.length, viewMode, isLoading, isMobile, reduceMotion]);
 
   useEffect(() => {
-    if (!isLoading && viewMode === "carousel" && filtered.length > 0) {
+    if (!isLoading && viewMode === "carousel" && filtered.length > 0 && !isMobile && !reduceMotion) {
       // Pequeño delay para asegurar que el DOM se ha pintado y el scrollWidth es correcto
       const timer = setTimeout(() => {
         controls.stop();
@@ -94,7 +88,7 @@ export default function Portfolio() {
       }, 100);
       return () => clearTimeout(timer);
     }
-  }, [selectedCategory, viewMode, startAnimation, controls, isLoading, filtered.length]);
+  }, [selectedCategory, viewMode, startAnimation, controls, isLoading, filtered.length, isMobile, reduceMotion]);
 
   return (
     <section id="portafolio" className="py-24 bg-white overflow-hidden relative">
@@ -145,7 +139,12 @@ export default function Portfolio() {
       </div>
 
       <div className="relative min-h-[550px]">
-        {isLoading ? (
+        {error ? (
+          <div className="container mx-auto px-6 py-20 text-center">
+            <p className="mb-5 text-[#524F4A]/70">No pudimos cargar los proyectos.</p>
+            <Button onClick={() => void portfolioQuery.refetch()} variant="outline">Reintentar</Button>
+          </div>
+        ) : isLoading ? (
           <div key="loading" className="container mx-auto px-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {[1, 2, 3].map((n) => (
               <div key={n} className="w-full aspect-[3/4] rounded-[3.5rem] bg-slate-100 overflow-hidden relative">
@@ -158,12 +157,12 @@ export default function Portfolio() {
             <div key={`carousel-${selectedCategory}`}>
               <motion.div 
                 ref={trackRef} 
-                animate={controls} 
-                className="flex gap-8 px-4 w-max h-full"
+                animate={isMobile || reduceMotion ? undefined : controls}
+                className={`flex gap-8 px-4 h-full ${isMobile || reduceMotion ? "w-full overflow-x-auto snap-x snap-mandatory pb-6" : "w-max"}`}
                 style={{ display: "flex", flexWrap: "nowrap" }}
               >
                 {duplicated.map((project, idx) => (
-                  <ProjectCard key={`car-${project.id}-${idx}`} project={project} />
+                  <ProjectCard key={`car-${project.id}-${idx}`} project={project} mobileSnap={isMobile || reduceMotion} />
                 ))}
               </motion.div>
             </div>
@@ -183,31 +182,43 @@ export default function Portfolio() {
           )
         )}
       </div>
+      {portfolioQuery.hasNextPage && !error && (
+        <div className="container mx-auto px-6 pt-10 text-center">
+          <Button
+            onClick={() => void portfolioQuery.fetchNextPage()}
+            disabled={portfolioQuery.isFetchingNextPage}
+            className="rounded-full bg-[#524F4A] px-8"
+          >
+            {portfolioQuery.isFetchingNextPage ? "Cargando..." : "Cargar más proyectos"}
+          </Button>
+        </div>
+      )}
     </section>
   );
 }
 
-function ProjectCard({ project, isGrid = false }: { project: any; isGrid?: boolean }) {
+function ProjectCard({ project, isGrid = false, mobileSnap = false }: { project: PortfolioItem; isGrid?: boolean; mobileSnap?: boolean }) {
   return (
     <Dialog>
       <DialogTrigger asChild>
         <motion.div
           whileHover={{ y: -12 }}
-          className={`relative flex-shrink-0 group cursor-pointer overflow-hidden rounded-[2.5rem] md:rounded-[3.5rem] bg-slate-100 border border-slate-100 shadow-xl transition-all ${isGrid ? "w-full aspect-[3/4]" : "w-[300px] md:w-[480px] aspect-[3/4]"}`}
+          className={`relative flex-shrink-0 group cursor-pointer overflow-hidden rounded-[2.5rem] md:rounded-[3.5rem] bg-slate-100 border border-slate-100 shadow-xl transition-all ${isGrid ? "w-full aspect-[3/4]" : "w-[82vw] max-w-[480px] md:w-[480px] aspect-[3/4]"} ${mobileSnap ? "snap-center" : ""}`}
         >
-          {project.image_url.match(/\.(mp4|mov|webm)$/i) ? (
-            <video 
+          {project.media_type === "video" ? (
+            <OptimizedVideo
               src={project.image_url} 
-              autoPlay 
-              loop 
-              muted 
-              playsInline 
+              posterWidth={800}
               className="w-full h-full object-cover transition-transform duration-[3s] group-hover:scale-110 pointer-events-none" 
             />
           ) : (
             <img 
               src={getOptimizedUrl(project.image_url, 800)} 
+              srcSet={getOptimizedSrcSet(project.image_url, [480, 800, 1000])}
+              sizes={isGrid ? "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" : "(max-width: 768px) 300px, 480px"}
               alt={project.title} 
+              loading="lazy"
+              decoding="async"
               className="w-full h-full object-cover transition-transform duration-[3s] group-hover:scale-110" 
             />
           )}
@@ -234,10 +245,18 @@ function ProjectCard({ project, isGrid = false }: { project: any; isGrid?: boole
         <div className="flex flex-col md:flex-row h-full max-h-[92vh] overflow-y-auto md:overflow-hidden">
           {/* Multimedia Lateral */}
           <div className="w-full md:w-[55%] h-[350px] md:h-auto relative overflow-hidden bg-slate-100">
-            {project.image_url.match(/\.(mp4|mov|webm)$/i) ? (
-              <video src={project.image_url} autoPlay loop muted playsInline className="w-full h-full object-cover pointer-events-none" />
+            {project.media_type === "video" ? (
+              <OptimizedVideo src={project.image_url} eager posterWidth={1200} className="w-full h-full object-cover pointer-events-none" />
             ) : (
-              <img src={getOptimizedUrl(project.image_url, 1200)} className="w-full h-full object-cover" alt={project.title} />
+              <img
+                src={getOptimizedUrl(project.image_url, 1200)}
+                srcSet={getOptimizedSrcSet(project.image_url, [640, 900, 1200])}
+                sizes="(max-width: 768px) 100vw, 55vw"
+                loading="lazy"
+                decoding="async"
+                className="w-full h-full object-cover"
+                alt={project.title}
+              />
             )}
             <div className="absolute inset-0 shadow-[inset_0_0_100px_rgba(0,0,0,0.1)] pointer-events-none" />
           </div>

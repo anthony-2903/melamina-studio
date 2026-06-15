@@ -20,8 +20,15 @@ export default defineConfig(({ mode }) => ({
       "react-dom": path.resolve(__dirname, "node_modules/react-dom"),
     },
   },
-
   build: {
-    chunkSizeWarningLimit: 1200,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          react: ["react", "react-dom", "react-router-dom"],
+          motion: ["framer-motion"],
+          supabase: ["@supabase/supabase-js"],
+        },
+      },
+    },
   },
 }));
