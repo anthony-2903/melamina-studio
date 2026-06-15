@@ -6,6 +6,7 @@ import {
   DialogContent,
   DialogTrigger,
   DialogTitle,
+  DialogDescription,
   DialogClose,
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
@@ -241,6 +242,9 @@ function ProjectCard({ project, isGrid = false, mobileSnap = false }: { project:
         </DialogClose>
 
         <DialogTitle className="sr-only">{project.title}</DialogTitle>
+        <DialogDescription className="sr-only">
+          {project.description || `Detalles del proyecto ${project.title}.`}
+        </DialogDescription>
         
         <div className="flex flex-col md:flex-row h-full max-h-[92vh] overflow-y-auto md:overflow-hidden">
           {/* Multimedia Lateral */}

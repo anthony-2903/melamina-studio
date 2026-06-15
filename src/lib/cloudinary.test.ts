@@ -8,6 +8,13 @@ describe("cloudinary media helpers", () => {
     expect(getOptimizedSrcSet("/image.webp", [320, 640])).toContain("320w");
   });
 
+  it("encodes spaces so srcset candidates remain valid", () => {
+    const srcSet = getOptimizedSrcSet("/materials/highi gloss/sample.webp", [320, 640]);
+
+    expect(srcSet).toContain("highi%20gloss/sample.webp");
+    expect(srcSet).not.toContain("highi gloss");
+  });
+
   it("creates an optimized video URL", () => {
     expect(getOptimizedVideoUrl(video, 900)).toContain("q_auto:eco,vc_auto,w_900");
   });

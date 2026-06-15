@@ -16,20 +16,20 @@ export function getOptimizedUrl(src: string, width?: number): string {
   // En desarrollo usamos las imágenes locales para evitar que Cloudinary no pueda acceder a localhost
   // A menos que sea una URL externa (como las de Supabase/Cloudinary que ya están en la nube)
   const isRemote = src.startsWith("http");
-  if (import.meta.env.DEV && !isRemote) return src;
+  if (import.meta.env.DEV && !isRemote) return encodeURI(src);
 
   // Si ya es una URL de Cloudinary de nuestra propia cuenta, podemos manipularla directamente
   if (src.includes(`res.cloudinary.com/${CLOUD_NAME}`)) {
-    if (!width) return src;
+    if (!width) return encodeURI(src);
     // Insertamos las transformaciones de ancho antes de /upload/
-    return src.replace("/upload/", `/upload/f_auto,q_auto,w_${width},c_limit/`);
+    return encodeURI(src.replace("/upload/", `/upload/f_auto,q_auto,w_${width},c_limit/`));
   }
 
   // Si es una ruta local absoluta, le añadimos el dominio del sitio
   const fullUrl = src.startsWith("/") ? `${SITE_URL}${src}` : src;
 
   // Si no hay configuración de Cloudinary, usamos la URL original
-  if (!CLOUD_NAME) return fullUrl;
+  if (!CLOUD_NAME) return encodeURI(fullUrl);
 
   // f_auto: formato automático
   // q_auto: compresión de calidad automática

@@ -5,6 +5,7 @@ import {
   DialogContent,
   DialogTrigger,
   DialogTitle,
+  DialogDescription,
   DialogClose,
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
@@ -262,6 +263,10 @@ function MaterialCard({ item, isGrid = false, mobileSnap = false }: { item: Mate
       </DialogTrigger>
 
       <DialogContent className="max-w-6xl w-[95vw] md:w-[90vw] p-0 overflow-hidden border-none bg-white rounded-[2.5rem] shadow-2xl [&>button]:hidden">
+        <DialogTitle className="sr-only">{item.name}</DialogTitle>
+        <DialogDescription className="sr-only">
+          Detalles del acabado {item.name}, referencia {item.ref}, de la coleccion {item.folder}.
+        </DialogDescription>
         <DialogClose className="absolute right-6 top-6 z-50 p-3 bg-white/20 hover:bg-white text-white hover:text-[#524F4A] rounded-full transition-all duration-300 backdrop-blur-xl border border-white/30 shadow-xl"><X size={20} /></DialogClose>
         <div className="flex flex-col md:flex-row h-full max-h-[90vh] overflow-y-auto md:overflow-hidden">
           <div className="w-full md:w-1/2 h-[300px] md:h-auto relative">
