@@ -139,7 +139,7 @@ function PortfolioContent() {
         </div>
       </div>
 
-      <div className="relative min-h-[550px]">
+      <div className="relative min-h-[680px]">
         {error ? (
           <div className="container mx-auto px-6 py-20 text-center">
             <p className="mb-5 text-[#524F4A]/70">No pudimos cargar los proyectos.</p>

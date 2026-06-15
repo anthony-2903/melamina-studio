@@ -14,7 +14,9 @@ const About = lazy(() => import("@/components/About"));
 const Location = lazy(() => import("@/components/Location"));
 const Contact = lazy(() => import("@/components/Contact"));
 
-const SectionLoader = () => <div className="min-h-48 bg-[#F8F7F4]" aria-hidden="true" />;
+const SectionLoader = ({ minHeight = 700 }: { minHeight?: number }) => (
+  <div style={{ minHeight }} className="bg-[#F8F7F4]" aria-hidden="true" />
+);
 
 const Index = () => {
   const { pathname } = useLocation();
@@ -29,14 +31,20 @@ const Index = () => {
       <Header />
       <main>
         {!isProjectsPage && <Hero />}
-        <Suspense fallback={<SectionLoader />}>
-          {isProjectsPage ? <Portfolio /> : <DeferredSection minHeight={650} rootMargin="0px" targetId="portafolio"><Portfolio /></DeferredSection>}
-          {!isProjectsPage && <DeferredSection minHeight={900} targetId="materiales"><MaterialCatalog /></DeferredSection>}
-          {!isProjectsPage && <DeferredSection targetId="servicios"><Services /></DeferredSection>}
-          {!isProjectsPage && <DeferredSection targetId="conocenos"><About /></DeferredSection>}
-          {!isProjectsPage && <DeferredSection><Location /></DeferredSection>}
-          {!isProjectsPage && <DeferredSection targetId="contacto"><Contact /></DeferredSection>}
-        </Suspense>
+        {isProjectsPage ? (
+          <Suspense fallback={<SectionLoader minHeight={900} />}>
+            <Portfolio />
+          </Suspense>
+        ) : (
+          <>
+            <DeferredSection minHeight={1200} rootMargin="0px" targetId="portafolio"><Portfolio /></DeferredSection>
+            <DeferredSection minHeight={1800} targetId="materiales"><MaterialCatalog /></DeferredSection>
+            <DeferredSection minHeight={1100} targetId="servicios"><Services /></DeferredSection>
+            <DeferredSection minHeight={1100} targetId="conocenos"><About /></DeferredSection>
+            <DeferredSection minHeight={1300}><Location /></DeferredSection>
+            <DeferredSection minHeight={1300} targetId="contacto"><Contact /></DeferredSection>
+          </>
+        )}
       </main>
       <Footer />
       <WhatsAppFloat />

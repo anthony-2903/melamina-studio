@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { Suspense, useEffect, useRef, useState, type ReactNode } from "react";
 
 export default function DeferredSection({ children, minHeight = 700, rootMargin = "600px 0px", targetId }: { children: ReactNode; minHeight?: number; rootMargin?: string; targetId?: string }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -34,5 +34,13 @@ export default function DeferredSection({ children, minHeight = 700, rootMargin 
     requestAnimationFrame(() => document.getElementById(targetId)?.scrollIntoView({ behavior: "smooth" }));
   }, [targetId, visible]);
 
-  return <div ref={ref} style={visible ? undefined : { minHeight }}>{visible ? children : null}</div>;
+  return (
+    <div ref={ref} style={{ minHeight }}>
+      {visible ? (
+        <Suspense fallback={<div style={{ minHeight }} aria-hidden="true" />}>
+          {children}
+        </Suspense>
+      ) : null}
+    </div>
+  );
 }
