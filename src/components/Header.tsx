@@ -18,11 +18,11 @@ const Header = () => {
 
   const navLinks = [
     { name: "Inicio", href: "/", title: "Volver al inicio" },
-    { name: "Nosotros", href: "#conocenos", title: "Conoce nuestra historia y valores" },
-    { name: "Portafolio", href: "#portafolio", title: "Explora nuestros proyectos de melamina" },
-    { name: "Materiales", href: "#materiales", title: "Catálogo de texturas y acabados" },
-    { name: "Servicios", href: "#servicios", title: "Lo que podemos hacer por ti" },
-    { name: "Contacto", href: "#contacto", title: "Ponte en contacto con Husheniid" },
+    { name: "Nosotros", href: "/#conocenos", title: "Conoce nuestra historia y valores" },
+    { name: "Portafolio", href: "/#portafolio", title: "Explora nuestros proyectos de melamina" },
+    { name: "Materiales", href: "/#materiales", title: "Catálogo de texturas y acabados" },
+    { name: "Servicios", href: "/#servicios", title: "Lo que podemos hacer por ti" },
+    { name: "Contacto", href: "/#contacto", title: "Ponte en contacto con Husheniid" },
   ];
 
   return (
@@ -35,12 +35,12 @@ const Header = () => {
     >
       <div className="container mx-auto px-4 flex justify-center">
         {/* Nav Container con estética Premium y SEO Semántico */}
-        <nav 
+        <nav
           role="navigation"
           aria-label="Navegación principal"
           className={`flex items-center justify-between w-full max-w-6xl px-6 transition-all duration-500 rounded-[2rem] border ${
-            isScrolled 
-              ? "h-16 bg-white/90 backdrop-blur-xl border-[#DBD8D3] shadow-xl shadow-[#524F4A]/5" 
+            isScrolled
+              ? "h-16 bg-white/90 backdrop-blur-xl border-[#DBD8D3] shadow-xl shadow-[#524F4A]/5"
               : "h-20 bg-transparent border-transparent"
           }`}
         >
@@ -52,9 +52,9 @@ const Header = () => {
               src={getOptimizedUrl(logo, 300)}
               alt="Husheniid - Muebles de Melamina a Medida"
               className={`w-auto object-contain transition-all duration-500 filter group-hover:brightness-110 ${
-                isScrolled 
-                  ? "h-11 md:h-12" 
-                  : "h-14 md:h-18 lg:h-20" 
+                isScrolled
+                  ? "h-11 md:h-12"
+                  : "h-14 md:h-18 lg:h-20"
               }`}
             />
           </a>
@@ -67,7 +67,7 @@ const Header = () => {
                   href={link.href}
                   title={link.title}
                   className={`relative px-4 py-2 text-sm font-bold transition-colors group block ${
-                    isScrolled ? "text-[#524F4A]" : "text-[#524F4A]" 
+                    isScrolled ? "text-[#524F4A]" : "text-[#524F4A]"
                   } hover:text-[#BB9E7A]`}
                 >
                   {link.name}
@@ -80,9 +80,9 @@ const Header = () => {
           {/* Actions: Estilo Gris Carbón y Dorado */}
           <div className="flex items-center gap-3">
             <div className="hidden md:block">
-              <Button 
-                asChild 
-                variant="ghost" 
+              <Button
+                asChild
+                variant="ghost"
                 className="rounded-full font-bold hover:bg-[#DBD8D3]/30 hover:text-[#BB9E7A] text-[#524F4A]"
               >
                 <a href="/login" className="flex items-center gap-2">
@@ -92,11 +92,11 @@ const Header = () => {
               </Button>
             </div>
 
-            <Button 
-              asChild 
+            <Button
+              asChild
               className="hidden lg:flex rounded-full bg-[#524F4A] hover:bg-[#BB9E7A] text-white px-8 transition-all duration-500 group shadow-lg shadow-[#524F4A]/10"
             >
-              <a href="#contacto" className="flex items-center gap-2">
+              <a href="/#contacto" className="flex items-center gap-2">
                 Cotizar ahora
                 <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
               </a>
@@ -126,7 +126,7 @@ const Header = () => {
             <div className="container mx-auto px-8 py-12">
               <ul className="flex flex-col space-y-6 mb-12">
                 {navLinks.map((link, i) => (
-                  <motion.li 
+                  <motion.li
                     key={link.name}
                     initial={{ x: -20, opacity: 0 }}
                     animate={{ x: 0, opacity: 1 }}
@@ -142,14 +142,14 @@ const Header = () => {
                   </motion.li>
                 ))}
               </ul>
-              
+
               <hr className="border-[#DBD8D3] mb-8" />
               <div className="flex flex-col gap-4 pb-8">
                 <Button asChild variant="outline" className="h-14 rounded-2xl border-[#524F4A] text-[#524F4A] text-lg font-bold">
                   <a href="/login" onClick={() => setIsMenuOpen(false)}>Área de Clientes</a>
                 </Button>
                 <Button asChild className="h-14 rounded-2xl bg-[#524F4A] hover:bg-[#BB9E7A] text-white text-lg font-bold transition-all">
-                  <a href="#contacto" onClick={() => setIsMenuOpen(false)}>Consúltenos</a>
+                  <a href="/#contacto" onClick={() => setIsMenuOpen(false)}>Consúltenos</a>
                 </Button>
               </div>
             </div>
@@ -160,4 +160,4 @@ const Header = () => {
   );
 };
 
-export default Header;
+export default Header;

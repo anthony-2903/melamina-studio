@@ -5,9 +5,13 @@ type SeoProps = {
   description: string;
   path?: string;
   noIndex?: boolean;
+  image?: string;
+  type?: "website" | "article";
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[];
 };
 
 const SITE_URL = "https://husheniid.com";
+const DEFAULT_IMAGE = `${SITE_URL}/og-image.webp`;
 
 function setMeta(selector: string, attribute: "name" | "property", key: string, content: string) {
   let element = document.head.querySelector<HTMLMetaElement>(selector);
@@ -19,7 +23,15 @@ function setMeta(selector: string, attribute: "name" | "property", key: string, 
   element.content = content;
 }
 
-export default function Seo({ title, description, path = "/", noIndex = false }: SeoProps) {
+export default function Seo({
+  title,
+  description,
+  path = "/",
+  noIndex = false,
+  image = DEFAULT_IMAGE,
+  type = "website",
+  jsonLd,
+}: SeoProps) {
   useEffect(() => {
     const url = `${SITE_URL}${path}`;
     document.title = title;
@@ -27,8 +39,14 @@ export default function Seo({ title, description, path = "/", noIndex = false }:
     setMeta('meta[name="robots"]', "name", "robots", noIndex ? "noindex,nofollow" : "index,follow");
     setMeta('meta[property="og:title"]', "property", "og:title", title);
     setMeta('meta[property="og:description"]', "property", "og:description", description);
+    setMeta('meta[property="og:type"]', "property", "og:type", type);
     setMeta('meta[property="og:url"]', "property", "og:url", url);
-    setMeta('meta[property="og:image"]', "property", "og:image", `${SITE_URL}/og-image.webp`);
+    setMeta('meta[property="og:image"]', "property", "og:image", image);
+    setMeta('meta[name="twitter:card"]', "name", "twitter:card", "summary_large_image");
+    setMeta('meta[name="twitter:title"]', "name", "twitter:title", title);
+    setMeta('meta[name="twitter:description"]', "name", "twitter:description", description);
+    setMeta('meta[name="twitter:image"]', "name", "twitter:image", image);
+
     let canonical = document.head.querySelector<HTMLLinkElement>('link[rel="canonical"]');
     if (!canonical) {
       canonical = document.createElement("link");
@@ -36,7 +54,20 @@ export default function Seo({ title, description, path = "/", noIndex = false }:
       document.head.appendChild(canonical);
     }
     canonical.href = url;
-  }, [description, noIndex, path, title]);
+
+    let schema = document.head.querySelector<HTMLScriptElement>('script[data-seo-json-ld="page"]');
+    if (jsonLd) {
+      if (!schema) {
+        schema = document.createElement("script");
+        schema.type = "application/ld+json";
+        schema.dataset.seoJsonLd = "page";
+        document.head.appendChild(schema);
+      }
+      schema.textContent = JSON.stringify(Array.isArray(jsonLd) ? jsonLd : [jsonLd]);
+    } else {
+      schema?.remove();
+    }
+  }, [description, image, jsonLd, noIndex, path, title, type]);
 
   return null;
 }

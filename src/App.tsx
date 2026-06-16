@@ -5,6 +5,7 @@ import Index from "./pages/Index";
 const NotFound = lazy(() => import("./pages/NotFound"));
 const Login = lazy(() => import("./pages/login"));
 const Admin = lazy(() => import("./pages/admin"));
+const ServicePage = lazy(() => import("./pages/ServicePage"));
 const ProtectedRoute = lazy(() => import("./components/ProtectedRoute").then((module) => ({ default: module.ProtectedRoute })));
 
 const AuthLayout = lazy(() => import("@/components/AuthLayout"));
@@ -21,6 +22,11 @@ const App = () => (
       <Routes>
         <Route path="/" element={<Index />} />
         <Route path="/proyectos" element={<Index />} />
+        <Route path="/cocinas-de-melamina-huancayo" element={<ServicePage />} />
+        <Route path="/closets-de-melamina-huancayo" element={<ServicePage />} />
+        <Route path="/muebles-de-oficina-huancayo" element={<ServicePage />} />
+        <Route path="/centros-de-entretenimiento-huancayo" element={<ServicePage />} />
+        <Route path="/muebles-a-medida-huancayo" element={<ServicePage />} />
         <Route path="/login" element={<AuthLayout><Login /></AuthLayout>} />
         <Route
           path="/admin"

@@ -133,6 +133,24 @@ const Services = () => {
             </motion.div>
           ))}
         </motion.div>
+
+        <div className="mt-16 grid grid-cols-1 gap-4 md:grid-cols-5">
+          {[
+            { label: "Cocinas de melamina", href: "/cocinas-de-melamina-huancayo" },
+            { label: "Closets de melamina", href: "/closets-de-melamina-huancayo" },
+            { label: "Muebles de oficina", href: "/muebles-de-oficina-huancayo" },
+            { label: "Centros de entretenimiento", href: "/centros-de-entretenimiento-huancayo" },
+            { label: "Muebles a medida", href: "/muebles-a-medida-huancayo" },
+          ].map((link) => (
+            <a
+              key={link.href}
+              href={link.href}
+              className="rounded-2xl border border-[#DBD8D3] bg-white px-5 py-4 text-center text-[11px] font-black uppercase tracking-[0.16em] text-[#524F4A] transition-colors hover:border-[#BB9E7A] hover:text-[#BB9E7A]"
+            >
+              {link.label}
+            </a>
+          ))}
+        </div>
       </div>
     </section>
   );
