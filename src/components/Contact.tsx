@@ -8,11 +8,11 @@ import {
   MessageCircle, 
   Instagram, 
   Facebook, 
-  ArrowUpRight, 
-  Music2Icon
+  ArrowUpRight
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion, Variants } from "framer-motion";
+import TikTokIcon from "@/components/icons/TikTokIcon";
 
 const Contact = () => {
   const containerVariants: Variants = {
@@ -179,7 +179,7 @@ const Contact = () => {
     className="p-3 bg-[#DBD8D3]/20 rounded-xl hover:bg-[#BB9E7A] hover:text-white transition-all text-[#524F4A]"
     title="Síguenos en TikTok"
   >
-    <Music2Icon size={18} />
+    <TikTokIcon width={18} height={18} />
   </a>
 </div>
               </div>

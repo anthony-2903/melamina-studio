@@ -134,8 +134,9 @@ const Services = () => {
           ))}
         </motion.div>
 
-        <div className="mt-16 grid grid-cols-1 gap-4 md:grid-cols-5">
+        <div className="mt-16 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
           {[
+            { label: "Muebles en melamina", href: "/muebles-en-melamina-huancayo" },
             { label: "Cocinas de melamina", href: "/cocinas-de-melamina-huancayo" },
             { label: "Closets de melamina", href: "/closets-de-melamina-huancayo" },
             { label: "Muebles de oficina", href: "/muebles-de-oficina-huancayo" },

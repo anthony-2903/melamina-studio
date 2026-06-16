@@ -1,5 +1,6 @@
-import { Phone, Mail, MapPin, Facebook, Instagram, Music2, ArrowUpRight } from "lucide-react";
+import { Phone, Mail, MapPin, Facebook, Instagram, ArrowUpRight } from "lucide-react";
 import { motion, Variants } from "framer-motion";
+import TikTokIcon from "@/components/icons/TikTokIcon";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -48,7 +49,7 @@ const Footer = () => {
               {[
                 { icon: Facebook, href: "https://www.facebook.com/profile.php?id=61551909329314#" },
                 { icon: Instagram, href: "https://www.instagram.com/hugocaldeton/" },
-                { icon: Music2, href: "https://www.tiktok.com/@husheniid" }
+                { icon: TikTokIcon, href: "https://www.tiktok.com/@husheniid", size: 18 }
               ].map((social, index) => (
                 <a 
                   key={index}
@@ -57,7 +58,7 @@ const Footer = () => {
                   rel="noopener noreferrer"
                   className="w-12 h-12 rounded-full border border-[#DBD8D3]/20 flex items-center justify-center transition-all duration-500 hover:border-[#BB9E7A] hover:text-[#BB9E7A] hover:-translate-y-2 bg-white/5"
                 >
-                  <social.icon size={20} />
+                  <social.icon size={social.size ?? 20} />
                 </a>
               ))}
             </div>

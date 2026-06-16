@@ -21,6 +21,53 @@ export type ServicePageContent = {
 
 export const servicePages: ServicePageContent[] = [
   {
+    slug: "/muebles-en-melamina-huancayo",
+    eyebrow: "Fabricación local",
+    title: "Muebles en Melamina en Huancayo | Husheniid",
+    shortTitle: "Melamina Huancayo",
+    description:
+      "Muebles en melamina en Huancayo fabricados a medida: cocinas, closets, escritorios, centros de entretenimiento y mobiliario para negocios con diseño 3D.",
+    h1: "Muebles en melamina en Huancayo",
+    intro:
+      "Diseñamos, fabricamos e instalamos muebles en melamina para hogares, oficinas y negocios en Huancayo. Trabajamos cada proyecto con medidas reales, asesoría de materiales, diseño 3D y acabados pensados para uso diario.",
+    imageKey: "kitchen",
+    keywords: [
+      "muebles en melamina Huancayo",
+      "muebles de melamina Huancayo",
+      "fabricantes de muebles de melamina",
+      "carpintería en melamina Huancayo",
+    ],
+    benefits: [
+      "Fabricación a medida para cada ambiente",
+      "Cocinas, closets, escritorios, repisas y muebles comerciales",
+      "Diseño 3D para validar la propuesta antes de producir",
+      "Portafolio con proyectos reales realizados en melamina",
+    ],
+    process: [
+      "Recibimos fotos, medidas o coordinamos una visita técnica.",
+      "Definimos el tipo de mueble, uso, acabados, colores y presupuesto.",
+      "Preparamos una propuesta visual y técnica para aprobar el diseño.",
+      "Fabricamos e instalamos el proyecto con revisión final de acabados.",
+    ],
+    faqs: [
+      {
+        question: "¿Qué muebles en melamina fabrican en Huancayo?",
+        answer:
+          "Fabricamos cocinas, closets, escritorios, centros de entretenimiento, repisas, módulos de oficina y muebles comerciales a medida.",
+      },
+      {
+        question: "¿Puedo ver proyectos reales antes de cotizar?",
+        answer:
+          "Sí. Nuestro portafolio muestra proyectos individuales de melamina para revisar estilos, acabados y tipos de mueble antes de solicitar una cotización.",
+      },
+      {
+        question: "¿Atienden fuera de Huancayo?",
+        answer:
+          "Atendemos principalmente Huancayo, Pilcomayo y zonas cercanas de Junín. Para otros lugares revisamos el proyecto y la disponibilidad de instalación.",
+      },
+    ],
+  },
+  {
     slug: "/cocinas-de-melamina-huancayo",
     eyebrow: "Cocinas a medida",
     title: "Cocinas de Melamina en Huancayo | Husheniid",

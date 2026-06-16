@@ -1,3 +1,4 @@
+import { lazy, Suspense } from "react";
 import { ArrowRight, CheckCircle2, MessageCircle } from "lucide-react";
 import { Navigate, useLocation } from "react-router-dom";
 import Header from "@/components/Header";
@@ -11,6 +12,8 @@ import heroKitchen from "@/assets/hero-kitchen.jpg";
 import closetImage from "@/assets/portfolio-closet.jpg";
 import officeImage from "@/assets/portfolio-office.jpg";
 import livingImage from "@/assets/portfolio-sala.jpg";
+
+const Portfolio = lazy(() => import("@/components/Portfolio"));
 
 const imageMap = {
   kitchen: heroKitchen,
@@ -28,6 +31,7 @@ export default function ServicePage() {
   }
 
   const image = imageMap[page.imageKey];
+  const showPortfolio = page.slug === "/muebles-en-melamina-huancayo";
   const whatsappHref = `${WHATSAPP_URL}?text=${encodeURIComponent(
     `Hola Husheniid, quiero cotizar ${page.shortTitle.toLowerCase()} en Huancayo.`,
   )}`;
@@ -84,6 +88,27 @@ export default function ServicePage() {
             </div>
           </div>
         </section>
+
+        {showPortfolio && (
+          <section className="bg-white py-20">
+            <div className="container mx-auto px-6">
+              <div className="mb-12 max-w-3xl">
+                <span className="mb-4 block text-[10px] font-black uppercase tracking-[0.4em] text-[#BB9E7A]">
+                  Proyectos individuales
+                </span>
+                <h2 className="text-4xl font-bold tracking-tight text-[#524F4A] md:text-5xl">
+                  Trabajos reales de muebles en melamina
+                </h2>
+                <p className="mt-5 text-lg leading-relaxed text-slate-500">
+                  Explora nuestro portafolio con cocinas, closets, escritorios, centros de entretenimiento y muebles personalizados fabricados para clientes en Huancayo.
+                </p>
+              </div>
+            </div>
+            <Suspense fallback={<div className="min-h-[720px] bg-white" aria-hidden="true" />}>
+              <Portfolio />
+            </Suspense>
+          </section>
+        )}
 
         <section className="bg-[#F8F7F4] py-20">
           <div className="container mx-auto grid gap-12 px-6 lg:grid-cols-[0.85fr_1.15fr] lg:items-start">

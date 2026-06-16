@@ -13,7 +13,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { getOptimizedSrcSet, getOptimizedUrl } from "@/lib/cloudinary";
 import OptimizedVideo from "@/components/OptimizedVideo";
-import { ChevronDown, X, Instagram, Facebook, Music2, LayoutGrid, Infinity as InfinityIcon, MessageCircle } from "lucide-react";
+import { ChevronDown, X, Instagram, Facebook, LayoutGrid, Infinity as InfinityIcon, MessageCircle } from "lucide-react";
+import TikTokIcon from "@/components/icons/TikTokIcon";
 
 import { Skeleton } from "@/components/ui/skeleton";
 import { fetchCategories, fetchPortfolioPage, PORTFOLIO_PAGE_SIZE, type PortfolioItem } from "@/lib/portfolio";
@@ -291,7 +292,7 @@ function ProjectCard({ project, isGrid = false, mobileSnap = false }: { project:
               <div className="flex gap-3">
                  <SocialLink icon={<Instagram size={18} />} href="https://www.instagram.com/hugocaldeton/" />
                  <SocialLink icon={<Facebook size={18} />} href="https://www.facebook.com/profile.php?id=61551909329314#" />
-                 <SocialLink icon={<Music2 size={18} />} href="https://www.tiktok.com/@husheniid" />
+                 <SocialLink icon={<TikTokIcon width={18} height={18} />} href="https://www.tiktok.com/@husheniid" />
               </div>
               
               <Button 
