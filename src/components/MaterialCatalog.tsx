@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef, useCallback, useMemo } from "react";
-import { motion, useAnimation, AnimatePresence } from "framer-motion";
+import { m, useAnimation, AnimatePresence } from "framer-motion";
 import {
   Dialog,
   DialogContent,
@@ -147,10 +147,10 @@ export default function MaterialCatalog() {
           </div>
           <div className="flex flex-col sm:flex-row items-center gap-4">
             <div className="flex bg-white p-1 rounded-2xl border border-slate-200 shadow-sm">
-              <button onClick={() => setHgView("carousel")} className={`flex items-center gap-2 px-4 py-2 rounded-xl text-[10px] font-bold uppercase transition-all ${hgView === "carousel" ? "bg-[#524F4A] text-white" : "text-slate-400"}`}><InfinityIcon size={14} /> Carrusel</button>
-              <button onClick={() => setHgView("grid")} className={`flex items-center gap-2 px-4 py-2 rounded-xl text-[10px] font-bold uppercase transition-all ${hgView === "grid" ? "bg-[#524F4A] text-white" : "text-slate-400"}`}><LayoutGrid size={14} /> Ver Todo</button>
+              <button type="button" onClick={() => setHgView("carousel")} className={`flex items-center gap-2 px-4 py-2 rounded-xl text-[10px] font-bold uppercase transition-[color,background-color,border-color,opacity,box-shadow,transform,filter] ${hgView === "carousel" ? "bg-[#524F4A] text-white" : "text-slate-400"}`}><InfinityIcon size={14} /> Carrusel</button>
+              <button type="button" onClick={() => setHgView("grid")} className={`flex items-center gap-2 px-4 py-2 rounded-xl text-[10px] font-bold uppercase transition-[color,background-color,border-color,opacity,box-shadow,transform,filter] ${hgView === "grid" ? "bg-[#524F4A] text-white" : "text-slate-400"}`}><LayoutGrid size={14} /> Ver Todo</button>
             </div>
-            <select value={hgFolder} onChange={(e) => setHgFolder(e.target.value)} className="bg-white border-2 border-slate-100 text-[#524F4A] font-bold text-[11px] uppercase tracking-widest px-6 py-4 rounded-2xl outline-none focus:border-[#BB9E7A]">
+            <select aria-label="Filtrar acabados High Gloss" value={hgFolder} onChange={(e) => setHgFolder(e.target.value)} className="bg-white border-2 border-slate-100 text-[#524F4A] font-bold text-[11px] uppercase tracking-widest px-6 py-4 rounded-2xl outline-none focus:border-[#BB9E7A]">
               <option value="all">Todas las carpetas</option>
               {hgFolders.map(f => <option key={f} value={f}>{f}</option>)}
             </select>
@@ -163,8 +163,8 @@ export default function MaterialCatalog() {
               key="hg-loading"
               className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8"
             >
-              {[1, 2, 4, 4].map((n, i) => (
-                <div key={i} className="w-full aspect-[4/5] rounded-[2rem] bg-white border border-slate-200 overflow-hidden relative">
+              {[1, 2, 3, 4].map((n) => (
+                <div key={`hg-skeleton-${n}`} className="w-full aspect-[4/5] rounded-[2rem] bg-white border border-slate-200 overflow-hidden relative">
                   <Skeleton className="w-full h-full" />
                 </div>
               ))}
@@ -197,10 +197,10 @@ export default function MaterialCatalog() {
           </div>
           <div className="flex flex-col sm:flex-row items-center gap-4">
             <div className="flex bg-white p-1 rounded-2xl border border-slate-200 shadow-sm">
-              <button onClick={() => setPkView("carousel")} className={`flex items-center gap-2 px-4 py-2 rounded-xl text-[10px] font-bold uppercase transition-all ${pkView === "carousel" ? "bg-[#524F4A] text-white" : "text-slate-400"}`}><InfinityIcon size={14} /> Carrusel</button>
-              <button onClick={() => setPkView("grid")} className={`flex items-center gap-2 px-4 py-2 rounded-xl text-[10px] font-bold uppercase transition-all ${pkView === "grid" ? "bg-[#524F4A] text-white" : "text-slate-400"}`}><LayoutGrid size={14} /> Ver Todo</button>
+              <button type="button" onClick={() => setPkView("carousel")} className={`flex items-center gap-2 px-4 py-2 rounded-xl text-[10px] font-bold uppercase transition-[color,background-color,border-color,opacity,box-shadow,transform,filter] ${pkView === "carousel" ? "bg-[#524F4A] text-white" : "text-slate-400"}`}><InfinityIcon size={14} /> Carrusel</button>
+              <button type="button" onClick={() => setPkView("grid")} className={`flex items-center gap-2 px-4 py-2 rounded-xl text-[10px] font-bold uppercase transition-[color,background-color,border-color,opacity,box-shadow,transform,filter] ${pkView === "grid" ? "bg-[#524F4A] text-white" : "text-slate-400"}`}><LayoutGrid size={14} /> Ver Todo</button>
             </div>
-            <select value={pkFolder} onChange={(e) => setPkFolder(e.target.value)} className="bg-white border-2 border-slate-100 text-[#524F4A] font-bold text-[11px] uppercase tracking-widest px-6 py-4 rounded-2xl outline-none focus:border-[#BB9E7A]">
+            <select aria-label="Filtrar texturas Pelikano" value={pkFolder} onChange={(e) => setPkFolder(e.target.value)} className="bg-white border-2 border-slate-100 text-[#524F4A] font-bold text-[11px] uppercase tracking-widest px-6 py-4 rounded-2xl outline-none focus:border-[#BB9E7A]">
               <option value="all">Todas las texturas</option>
               {pkFolders.map(f => <option key={f} value={f}>{f}</option>)}
             </select>
@@ -244,7 +244,7 @@ function MaterialCard({ item, isGrid = false, mobileSnap = false }: { item: Mate
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <motion.div layout whileHover={{ y: -10 }} className={`relative flex-shrink-0 group cursor-pointer overflow-hidden rounded-[2rem] bg-white border border-slate-200 shadow-sm transition-all ${isGrid ? "w-full aspect-[4/5]" : "w-[78vw] max-w-[350px] md:w-[350px] aspect-[4/5]"} ${mobileSnap ? "snap-center" : ""}`}>
+        <m.div layout whileHover={{ y: -10 }} className={`relative flex-shrink-0 group cursor-pointer overflow-hidden rounded-[2rem] bg-white border border-slate-200 shadow-sm transition-[color,background-color,border-color,opacity,box-shadow,transform,filter] ${isGrid ? "w-full aspect-[4/5]" : "w-[78vw] max-w-[350px] md:w-[350px] aspect-[4/5]"} ${mobileSnap ? "snap-center" : ""}`}>
           <img 
             src={getOptimizedUrl(item.resolvedSrc, 500)} 
             srcSet={getOptimizedSrcSet(item.resolvedSrc, [320, 500, 700])}
@@ -259,7 +259,7 @@ function MaterialCard({ item, isGrid = false, mobileSnap = false }: { item: Mate
             <Badge className="bg-[#BB9E7A] text-white border-none mb-3 text-[9px] uppercase tracking-[0.2em] font-bold">{item.folder}</Badge>
             <h4 className="text-white text-2xl md:text-3xl font-serif italic leading-tight">{item.name}</h4>
           </div>
-        </motion.div>
+        </m.div>
       </DialogTrigger>
 
       <DialogContent className="max-w-6xl w-[95vw] md:w-[90vw] p-0 overflow-hidden border-none bg-white rounded-[2.5rem] shadow-2xl [&>button]:hidden">
@@ -267,7 +267,7 @@ function MaterialCard({ item, isGrid = false, mobileSnap = false }: { item: Mate
         <DialogDescription className="sr-only">
           Detalles del acabado {item.name}, referencia {item.ref}, de la coleccion {item.folder}.
         </DialogDescription>
-        <DialogClose className="absolute right-6 top-6 z-50 p-3 bg-white/20 hover:bg-white text-white hover:text-[#524F4A] rounded-full transition-all duration-300 backdrop-blur-xl border border-white/30 shadow-xl"><X size={20} /></DialogClose>
+        <DialogClose className="absolute right-6 top-6 z-50 p-3 bg-white/20 hover:bg-white text-white hover:text-[#524F4A] rounded-full transition-[color,background-color,border-color,opacity,box-shadow,transform,filter] duration-300 backdrop-blur-xl border border-white/30 shadow-xl"><X size={20} /></DialogClose>
         <div className="flex flex-col md:flex-row h-full max-h-[90vh] overflow-y-auto md:overflow-hidden">
           <div className="w-full md:w-1/2 h-[300px] md:h-auto relative">
             <img 
@@ -294,7 +294,7 @@ function MaterialCard({ item, isGrid = false, mobileSnap = false }: { item: Mate
 
             <Button
               asChild
-              className="w-full rounded-2xl bg-[#25D366] hover:bg-[#128C7E] text-white h-14 text-lg font-bold transition-all duration-300 shadow-xl shadow-[#25D366]/20 group"
+              className="w-full rounded-2xl bg-[#25D366] hover:bg-[#128C7E] text-white h-14 text-lg font-bold transition-[color,background-color,border-color,opacity,box-shadow,transform,filter] duration-300 shadow-xl shadow-[#25D366]/20 group"
             >
               <a
                 href={`https://wa.me/51979923148?text=${encodeURIComponent(`Hola Husheniid, me interesa el acabado "${item.name}" de la colección "${item.folder}". ¿Lo tienen disponible para un proyecto?`)}`}
@@ -351,8 +351,8 @@ function InfiniteCarousel({ items, direction = "left", speed = 40, isStatic = fa
   }, [controls, items, direction, speed, isReady, isStatic]);
 
   return (
-    <motion.div ref={trackRef} animate={isStatic ? undefined : controls} className={`flex gap-8 px-4 ${isStatic ? "w-full overflow-x-auto snap-x snap-mandatory pb-6 mobile-scrollbar-none" : "w-fit"}`}>
+    <m.div ref={trackRef} animate={isStatic ? undefined : controls} className={`flex gap-8 px-4 ${isStatic ? "w-full overflow-x-auto snap-x snap-mandatory pb-6 mobile-scrollbar-none" : "w-fit"}`}>
       {items.map((item, idx) => <MaterialCard key={`car-${item.id}-${idx}`} item={item} mobileSnap={isStatic} />)}
-    </motion.div>
+    </m.div>
   );
 }

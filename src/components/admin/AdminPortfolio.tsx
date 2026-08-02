@@ -15,7 +15,7 @@ import {
   Pencil, Trash2, Plus, Upload, Image as ImageIcon, 
   Loader2, X, Save 
 } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 import {
   Dialog,
   DialogContent,
@@ -42,7 +42,6 @@ type PortfolioRow = Omit<Portfolio, "categories"> & {
 
 const AdminPortfolio = () => {
   const { toast } = useToast();
-  const [mounted, setMounted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -57,13 +56,18 @@ const AdminPortfolio = () => {
 
   const formRef = useRef<HTMLFormElement>(null);
 
-  useEffect(() => { setMounted(true); }, []);
-
   useEffect(() => {
-    if (!mounted) return;
     fetchCategories();
     fetchPortfolios();
-  }, [mounted]);
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (imagePreview?.startsWith("blob:")) {
+        URL.revokeObjectURL(imagePreview);
+      }
+    };
+  }, [imagePreview]);
 
   const fetchCategories = async () => {
     const { data } = await supabase.from("categories").select("id, name").order("name");
@@ -122,8 +126,12 @@ const AdminPortfolio = () => {
       }
 
       setImageFile(file);
+      if (imagePreview?.startsWith("blob:")) {
+        URL.revokeObjectURL(imagePreview);
+      }
       // Usar objectURL es más rápido y no satura memoria con videos
-      setImagePreview(URL.createObjectURL(file));
+      const previewUrl = URL.createObjectURL(file);
+      setImagePreview(previewUrl);
     }
   };
 
@@ -196,16 +204,25 @@ const AdminPortfolio = () => {
       category_id: formData.get("edit-category"),
     };
 
-    const { error } = await supabase.from("portfolios").update(updates).eq("id", editingItem.id);
+    try {
+      const { error } = await supabase.from("portfolios").update(updates).eq("id", editingItem.id);
 
-    if (!error) {
-      toast({ title: "Cambios guardados", className: "bg-[#BB9E7A] text-white" });
-      setIsEditDialogOpen(false);
-      fetchPortfolios();
-    } else {
-      toast({ title: "No se pudieron guardar los cambios", description: error.message, variant: "destructive" });
+      if (!error) {
+        toast({ title: "Cambios guardados", className: "bg-[#BB9E7A] text-white" });
+        setIsEditDialogOpen(false);
+        fetchPortfolios();
+      } else {
+        toast({ title: "No se pudieron guardar los cambios", description: error.message, variant: "destructive" });
+      }
+    } catch (error) {
+      toast({
+        title: "No se pudieron guardar los cambios",
+        description: error instanceof Error ? error.message : "Inténtalo nuevamente.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
     }
-    setIsSubmitting(false);
   };
 
   const handleDelete = async (id: string) => {
@@ -219,13 +236,11 @@ const AdminPortfolio = () => {
     await fetchPortfolios();
   };
 
-  if (!mounted) return null;
-
   return (
     <div className="space-y-12 pb-20">
       
       {/* FORMULARIO DE CREACIÓN (Mismo que antes) */}
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-white rounded-[2.5rem] border border-[#DBD8D3]/50 shadow-sm overflow-hidden">
+      <m.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-white rounded-[2.5rem] border border-[#DBD8D3]/50 shadow-sm overflow-hidden">
         <div className="p-8 border-b border-[#DBD8D3]/30 bg-[#DBD8D3]/5 flex items-center justify-between">
           <div>
             <h2 className="text-xl font-bold text-[#524F4A] font-serif italic"> Proyecto</h2>
@@ -240,19 +255,19 @@ const AdminPortfolio = () => {
           <div className="space-y-6">
             <div className="space-y-2">
               <Label className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#524F4A]/60 ml-1">Título</Label>
-              <Input name="name" className="h-14 rounded-2xl border-[#DBD8D3] bg-[#DBD8D3]/10 focus:ring-[#BB9E7A]" required />
+              <Input name="name" aria-label="Título del proyecto" className="h-14 rounded-2xl border-[#DBD8D3] bg-[#DBD8D3]/10 focus:ring-[#BB9E7A]" required />
             </div>
             <div className="space-y-2">
               <Label className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#524F4A]/60 ml-1">Categoría</Label>
-              <select value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)} className="w-full h-14 border border-[#DBD8D3] rounded-2xl px-5 bg-[#DBD8D3]/10">
+              <select aria-label="Categoría del proyecto" value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)} className="w-full h-14 border border-[#DBD8D3] rounded-2xl px-5 bg-[#DBD8D3]/10">
                 {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
               </select>
             </div>
             <div className="space-y-2">
               <Label className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#524F4A]/60 ml-1">Descripción</Label>
-              <Textarea name="description" rows={4} className="rounded-2xl border-[#DBD8D3] bg-[#DBD8D3]/10" />
+              <Textarea name="description" aria-label="Descripción del proyecto" rows={4} className="rounded-2xl border-[#DBD8D3] bg-[#DBD8D3]/10" />
             </div>
-            <Button disabled={isSubmitting} className="w-full h-14 rounded-2xl bg-[#524F4A] hover:bg-[#BB9E7A] text-white font-bold transition-all duration-500">
+            <Button type="submit" disabled={isSubmitting} className="w-full h-14 rounded-2xl bg-[#524F4A] hover:bg-[#BB9E7A] text-white font-bold transition-[color,background-color,border-color,opacity,box-shadow,transform,filter] duration-500">
               {isSubmitting ? <><Loader2 className="mr-2 animate-spin" /> Subiendo {uploadProgress}%</> : "Publicar Proyecto"}
             </Button>
           </div>
@@ -263,7 +278,7 @@ const AdminPortfolio = () => {
                 {imageFile?.type.startsWith("video/") ? (
                   <video src={imagePreview} autoPlay loop muted playsInline className="w-full h-full absolute inset-0 object-cover" />
                 ) : (
-                  <img src={imagePreview} className="w-full h-full absolute inset-0 object-cover" />
+                  <img src={imagePreview} alt="Vista previa del proyecto" className="w-full h-full absolute inset-0 object-cover" />
                 )}
                 <div className="absolute inset-0 bg-[#524F4A]/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-sm">
                   <Button type="button" variant="destructive" onClick={() => {setImagePreview(null); setImageFile(null);}} className="rounded-full">
@@ -275,12 +290,12 @@ const AdminPortfolio = () => {
               <div className="text-center p-12">
                 <Upload size={32} className="mx-auto mb-4 text-[#DBD8D3]" />
                 <p className="text-sm font-bold text-[#524F4A]">Seleccionar imagen o video corto</p>
-                <input type="file" accept="image/*,video/mp4,video/quicktime,video/webm" onChange={handleImageChange} className="absolute inset-0 opacity-0 cursor-pointer" />
+                <input type="file" aria-label="Seleccionar imagen o video del proyecto" accept="image/*,video/mp4,video/quicktime,video/webm" onChange={handleImageChange} className="absolute inset-0 opacity-0 cursor-pointer" />
               </div>
             )}
           </div>
         </form>
-      </motion.div>
+      </m.div>
 
       {/* GRID DE TRABAJOS */}
       <div className="space-y-8">
@@ -291,26 +306,29 @@ const AdminPortfolio = () => {
 
         <div className="grid gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
           {portfolios.map((p) => (
-            <div key={p.id} className="group bg-white rounded-[2.5rem] border border-[#DBD8D3]/40 overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-700">
+            <div key={p.id} className="group bg-white rounded-[2.5rem] border border-[#DBD8D3]/40 overflow-hidden shadow-sm hover:shadow-2xl transition-[color,background-color,border-color,opacity,box-shadow,transform,filter] duration-700">
               <div className="relative aspect-[4/5] overflow-hidden">
                 {p.media_type === "video" || p.image_url.match(/\.(mp4|mov|webm)$/i) ? (
                   <OptimizedVideo src={p.image_url} posterWidth={600} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" />
                 ) : (
                   <img src={getOptimizedUrl(p.image_url, 600)} loading="lazy" decoding="async" alt={p.title} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" />
                 )}
-                <div className="absolute inset-0 bg-gradient-to-t from-[#524F4A]/90 via-transparent to-transparent opacity-60 group-hover:opacity-100 transition-all duration-500" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#524F4A]/90 via-transparent to-transparent opacity-60 group-hover:opacity-100 transition-[color,background-color,border-color,opacity,box-shadow,transform,filter] duration-500" />
                 
-                <div className="absolute bottom-8 left-8 right-8 translate-y-4 group-hover:translate-y-0 transition-all duration-500">
+                <div className="absolute bottom-8 left-8 right-8 translate-y-4 group-hover:translate-y-0 transition-[color,background-color,border-color,opacity,box-shadow,transform,filter] duration-500">
                   <p className="text-[10px] text-[#BB9E7A] font-bold uppercase tracking-widest mb-2">{p.categories?.[0]?.name || "Concepto"}</p>
                   <h3 className="font-serif italic text-2xl text-white mb-6 leading-tight">{p.title}</h3>
-                  <div className="flex gap-3 opacity-0 group-hover:opacity-100 transition-all duration-500 delay-100">
+                  <div className="flex gap-3 opacity-0 group-hover:opacity-100 transition-[color,background-color,border-color,opacity,box-shadow,transform,filter] duration-500 delay-100">
                     <Button 
+                      type="button"
                       onClick={() => { setEditingItem(p); setIsEditDialogOpen(true); }}
                       className="flex-1 rounded-xl bg-white text-[#524F4A] hover:bg-[#BB9E7A] hover:text-white border-none h-11 font-bold text-xs uppercase tracking-widest"
                     >
                       <Pencil size={16} className="mr-2" /> Editar
                     </Button>
                     <Button 
+                      type="button"
+                      aria-label={`Eliminar ${p.title}`}
                       onClick={() => handleDelete(p.id)}
                       className="rounded-xl bg-white/10 backdrop-blur-md text-white hover:bg-red-500 border border-white/20 h-11 w-11 p-0"
                     >
@@ -339,26 +357,26 @@ const AdminPortfolio = () => {
           <form onSubmit={handleUpdate} className="p-8 space-y-6">
             <div className="space-y-2">
               <Label className="text-[10px] font-bold uppercase tracking-widest text-[#524F4A]/60 ml-1">Nuevo Título</Label>
-              <Input name="edit-name" defaultValue={editingItem?.title} className="h-12 rounded-xl border-[#DBD8D3] focus:ring-[#BB9E7A]" required />
+              <Input name="edit-name" aria-label="Nuevo título del proyecto" defaultValue={editingItem?.title} className="h-12 rounded-xl border-[#DBD8D3] focus:ring-[#BB9E7A]" required />
             </div>
 
             <div className="space-y-2">
               <Label className="text-[10px] font-bold uppercase tracking-widest text-[#524F4A]/60 ml-1">Categoría</Label>
-              <select name="edit-category" defaultValue={editingItem?.category_id} className="w-full h-12 border border-[#DBD8D3] rounded-xl px-4 bg-[#DBD8D3]/5">
+              <select name="edit-category" aria-label="Nueva categoría del proyecto" defaultValue={editingItem?.category_id} className="w-full h-12 border border-[#DBD8D3] rounded-xl px-4 bg-[#DBD8D3]/5">
                 {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
               </select>
             </div>
 
             <div className="space-y-2">
               <Label className="text-[10px] font-bold uppercase tracking-widest text-[#524F4A]/60 ml-1">Descripción</Label>
-              <Textarea name="edit-description" defaultValue={editingItem?.description} rows={4} className="rounded-xl border-[#DBD8D3] bg-[#DBD8D3]/5 resize-none" />
+              <Textarea name="edit-description" aria-label="Nueva descripción del proyecto" defaultValue={editingItem?.description} rows={4} className="rounded-xl border-[#DBD8D3] bg-[#DBD8D3]/5 resize-none" />
             </div>
 
             <DialogFooter className="pt-4 flex gap-3">
               <Button type="button" variant="ghost" onClick={() => setIsEditDialogOpen(false)} className="rounded-xl font-bold text-xs uppercase tracking-widest text-slate-400">
                 Cancelar
               </Button>
-              <Button type="submit" disabled={isSubmitting} className="rounded-xl bg-[#BB9E7A] hover:bg-[#524F4A] text-white px-8 font-bold text-xs uppercase tracking-widest transition-all shadow-lg shadow-[#BB9E7A]/20">
+              <Button type="submit" disabled={isSubmitting} className="rounded-xl bg-[#BB9E7A] hover:bg-[#524F4A] text-white px-8 font-bold text-xs uppercase tracking-widest transition-[color,background-color,border-color,opacity,box-shadow,transform,filter] shadow-lg shadow-[#BB9E7A]/20">
                 {isSubmitting ? <Loader2 className="animate-spin mr-2" size={16} /> : <Save size={16} className="mr-2" />}
                 Guardar Cambios
               </Button>

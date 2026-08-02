@@ -1,4 +1,4 @@
-import { motion, Variants } from "framer-motion";
+import { m, Variants } from "framer-motion";
 import { MapPin, Navigation, Phone, Clock, ArrowRight } from "lucide-react";
 
 const Location = () => {
@@ -41,8 +41,8 @@ const Location = () => {
       {/* Círculos de Radar Decorativos */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] -z-10 pointer-events-none">
         {[1, 1.5, 2].map((s, i) => (
-          <motion.div
-            key={i}
+          <m.div
+            key={`radar-${s}`}
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: s, opacity: [0, 0.2, 0] }}
             transition={{ duration: 8, repeat: Infinity, delay: i * 2, ease: "linear" }}
@@ -52,21 +52,21 @@ const Location = () => {
       </div>
 
       <div className="container mx-auto px-6 relative">
-        <motion.div
+        <m.div
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
           variants={containerVariants}
           className="max-w-4xl mx-auto text-center mb-24"
         >
-          <motion.span variants={itemVariants} className="text-[#BB9E7A] font-bold tracking-[0.4em] uppercase text-[10px] mb-6 block">
+          <m.span variants={itemVariants} className="text-[#BB9E7A] font-bold tracking-[0.4em] uppercase text-[10px] mb-6 block">
             Ubicación Estratégica
-          </motion.span>
+          </m.span>
 
-          <motion.h2 className="text-6xl md:text-8xl font-bold tracking-tighter text-[#524F4A] mb-8 leading-[0.9] flex flex-wrap justify-center overflow-hidden">
+          <m.h2 className="text-6xl md:text-8xl font-bold tracking-tighter text-[#524F4A] mb-8 leading-[0.9] flex flex-wrap justify-center overflow-hidden">
             {["Ven", "a", "conocer"].map((word, i) => (
               <span key={i} className="overflow-hidden inline-block pb-4 -mb-4 mr-[0.25em]">
-                <motion.span
+                <m.span
                   className="inline-block"
                   variants={{
                     hidden: { y: "110%", opacity: 0 },
@@ -74,11 +74,11 @@ const Location = () => {
                   }}
                 >
                   {word}
-                </motion.span>
+                </m.span>
               </span>
             ))}
             <span className="overflow-hidden inline-block pb-4 -mb-4">
-              <motion.span
+              <m.span
                 className="text-[#BB9E7A] italic font-serif inline-block origin-bottom-left"
                 variants={{
                   hidden: { y: "120%", opacity: 0, rotateZ: 5 },
@@ -91,19 +91,19 @@ const Location = () => {
                 }}
               >
                 nuestroestudio
-              </motion.span>
+              </m.span>
             </span>
-          </motion.h2>
+          </m.h2>
 
-          <motion.p variants={itemVariants} className="text-slate-500 text-xl max-w-2xl mx-auto font-light leading-relaxed">
+          <m.p variants={itemVariants} className="text-slate-500 text-xl max-w-2xl mx-auto font-light leading-relaxed">
             Un espacio diseñado para la inspiración. Encuéntranos en el corazón de Pilcomayo y explora texturas que transformarán tu hogar.
-          </motion.p>
-        </motion.div>
+          </m.p>
+        </m.div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
 
           {/* Card con Glassmorphism */}
-          <motion.div
+          <m.div
             initial={{ opacity: 0, x: -40 }}
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
@@ -135,8 +135,8 @@ const Location = () => {
                     color: "bg-[#524F4A]"
                   }
                 ].map((item, idx) => (
-                  <motion.div
-                    key={idx}
+                  <m.div
+                    key={item.title}
                     initial={{ opacity: 0, y: 10 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.3 + (idx * 0.1) }}
@@ -151,29 +151,29 @@ const Location = () => {
                         {item.desc}
                       </p>
                     </div>
-                  </motion.div>
+                  </m.div>
                 ))}
               </div>
 
-              <motion.a
+              <m.a
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 href={googleMapsUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-14 w-full flex items-center justify-between px-8 py-6 bg-[#524F4A] text-white font-bold rounded-[2rem] transition-all shadow-2xl shadow-[#524F4A]/20 group/btn"
+                className="mt-14 w-full flex items-center justify-between px-8 py-6 bg-[#524F4A] text-white font-bold rounded-[2rem] transition-[color,background-color,border-color,opacity,box-shadow,transform,filter] shadow-2xl shadow-[#524F4A]/20 group/btn"
               >
                 <div className="flex items-center gap-3">
                   <Navigation size={18} fill="currentColor" />
                   <span className="tracking-[0.2em] text-[10px] uppercase">Ruta en Google Maps</span>
                 </div>
                 <ArrowRight className="group-hover/btn:translate-x-2 transition-transform" />
-              </motion.a>
+              </m.a>
             </div>
-          </motion.div>
+          </m.div>
 
           {/* Mapa con Efecto Radar */}
-          <motion.div
+          <m.div
             initial={{ opacity: 0, x: 40, scale: 0.95 }}
             whileInView={{ opacity: 1, x: 0, scale: 1 }}
             transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
@@ -181,14 +181,14 @@ const Location = () => {
             className="lg:col-span-7 relative"
           >
             {/* Elementos flotantes alrededor del mapa */}
-            <motion.div
+            <m.div
               animate={{ y: [0, -15, 0] }}
               transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
               className="absolute -top-6 -left-6 px-6 py-2 bg-[#BB9E7A] text-white rounded-full z-20 text-[9px] font-bold uppercase tracking-widest shadow-xl flex items-center gap-2"
             >
               <span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" />
               Visítanos Ahora
-            </motion.div>
+            </m.div>
 
             {/* Contenedor de Mapa con Borde Escultural */}
             <div className="relative p-3 rounded-[3.5rem] bg-gradient-to-tr from-[#BB9E7A]/20 via-[#DBD8D3]/50 to-white shadow-2xl overflow-hidden group">
@@ -197,7 +197,8 @@ const Location = () => {
               <div className="relative h-[550px] rounded-[2.8rem] overflow-hidden border border-white shadow-inner">
                 <iframe
                   src={mapEmbedUrl}
-                  className="w-full h-full grayscale-[0.3] contrast-[1.1] hover:grayscale-0 transition-all duration-1000"
+                  sandbox="allow-scripts allow-popups allow-popups-to-escape-sandbox"
+                  className="w-full h-full grayscale-[0.3] contrast-[1.1] hover:grayscale-0 transition-[color,background-color,border-color,opacity,box-shadow,transform,filter] duration-1000"
                   style={{ border: 0 }}
                   allowFullScreen
                   loading="lazy"
@@ -209,7 +210,7 @@ const Location = () => {
 
             {/* Acento lateral decorativo */}
             <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-[#524F4A]/5 rounded-full blur-[40px] -z-10" />
-          </motion.div>
+          </m.div>
         </div>
       </div>
     </section>

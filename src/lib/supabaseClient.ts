@@ -6,6 +6,4 @@ const defaultSupabaseAnonKey = "sb_publishable_ooy9W4_e8Ar5I9RAsdIUHw_SDqq8duQ";
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || defaultSupabaseUrl;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || defaultSupabaseAnonKey;
 
-export const isSupabaseConfigured = Boolean(supabaseUrl && supabaseAnonKey);
-
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { Grid, Presentation, Layers, Activity } from "lucide-react";
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { supabase } from "@/lib/supabaseClient";
@@ -101,8 +101,8 @@ export default function AdminDashboard() {
           <h3 className="text-xl font-serif italic mb-6 font-bold text-[#BB9E7A]">Recién Agregados</h3>
           <div className="flex-1 space-y-6">
             {activities.length > 0 ? (
-              activities.map((act, i) => (
-                <ActivityItem key={i} time={act.date} title={`Proyecto: ${act.title}`} />
+              activities.map((act) => (
+                <ActivityItem key={`${act.date}-${act.title}`} time={act.date} title={`Proyecto: ${act.title}`} />
               ))
             ) : (
               <p className="text-sm text-white/50 italic">No hay actividad reciente.</p>
@@ -116,7 +116,7 @@ export default function AdminDashboard() {
 
 function StatCard({ title, value, icon, trend }: { title: string, value: string, icon: React.ReactNode, trend?: string }) {
   return (
-    <motion.div whileHover={{ y: -5 }} className="bg-white rounded-[2rem] p-6 border border-slate-200 shadow-sm flex flex-col justify-between relative overflow-hidden group">
+    <m.div whileHover={{ y: -5 }} className="bg-white rounded-[2rem] p-6 border border-slate-200 shadow-sm flex flex-col justify-between relative overflow-hidden group">
       <div className="flex justify-between items-start mb-4">
         <div className="w-12 h-12 bg-[#DBD8D3]/30 rounded-2xl flex items-center justify-center text-[#524F4A] group-hover:bg-[#BB9E7A] group-hover:text-white transition-colors duration-300">
           {icon}
@@ -131,7 +131,7 @@ function StatCard({ title, value, icon, trend }: { title: string, value: string,
         <h4 className="text-[#524F4A] text-3xl font-bold tracking-tighter mb-1 font-serif italic">{value}</h4>
         <p className="text-xs uppercase tracking-widest font-bold text-slate-400">{title}</p>
       </div>
-    </motion.div>
+    </m.div>
   );
 }
 

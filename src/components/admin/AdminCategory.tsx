@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { Pencil, Trash2, FolderPlus, Tag, Check, X, Loader2, AlertCircle } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 
 import {
   AlertDialog,
@@ -49,18 +49,23 @@ const AdminCategory = () => {
     e.preventDefault();
     if (!name.trim()) return;
     setLoading(true);
-    const { error } = await supabase.from("categories").insert({ name: name.trim() });
-    
-    if (error) {
-      toast({ title: "Error", description: "Esta categoría ya existe o hubo un problema.", variant: "destructive" });
-    } else {
-      toast({ title: "¡Lista!", description: "Categoría añadida con éxito.", className: "bg-[#524F4A] text-white border-none" });
-      setName("");
-      fetchCategories();
-    }
-    setLoading(false);
-  };
 
+    try {
+      const { error } = await supabase.from("categories").insert({ name: name.trim() });
+
+      if (error) {
+        toast({ title: "Error", description: "Esta categoria ya existe o hubo un problema.", variant: "destructive" });
+      } else {
+        toast({ title: "Lista", description: "Categoria anadida con exito.", className: "bg-[#524F4A] text-white border-none" });
+        setName("");
+        fetchCategories();
+      }
+    } catch (error) {
+      toast({ title: "Error", description: error instanceof Error ? error.message : "Intentalo nuevamente.", variant: "destructive" });
+    } finally {
+      setLoading(false);
+    }
+  };
   const handleEdit = async (id: string) => {
     if (!editingName.trim()) { setEditingId(null); return; }
     const { error } = await supabase.from("categories").update({ name: editingName.trim() }).eq("id", id);
@@ -87,9 +92,9 @@ const AdminCategory = () => {
   return (
     <div className="space-y-8 max-w-5xl mx-auto pb-20">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
-        
+
         {/* ================= FORMULARIO (4 COLS) ================= */}
-        <motion.div 
+        <m.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           className="lg:col-span-5"
@@ -114,27 +119,27 @@ const AdminCategory = () => {
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder="Ej: Cocinas Modernas"
-                    className="h-14 pl-12 rounded-2xl border-[#DBD8D3] bg-[#DBD8D3]/10 focus:bg-white focus:ring-[#BB9E7A] focus:border-[#BB9E7A] transition-all text-lg"
+                    className="h-14 pl-12 rounded-2xl border-[#DBD8D3] bg-[#DBD8D3]/10 focus:bg-white focus:ring-[#BB9E7A] focus:border-[#BB9E7A] transition-[color,background-color,border-color,opacity,box-shadow,transform,filter] text-lg"
                   />
                 </div>
               </div>
 
-              <Button 
-                type="submit" 
-                disabled={loading || !name} 
-                className="w-full h-14 rounded-2xl bg-[#524F4A] hover:bg-[#BB9E7A] text-white font-bold text-lg transition-all duration-300"
+              <Button
+                type="submit"
+                disabled={loading || !name}
+                className="w-full h-14 rounded-2xl bg-[#524F4A] hover:bg-[#BB9E7A] text-white font-bold text-lg transition-[color,background-color,border-color,opacity,box-shadow,transform,filter] duration-300"
               >
                 {loading ? <Loader2 className="animate-spin" /> : "Registrar Categoría"}
               </Button>
             </form>
           </div>
-        </motion.div>
+        </m.div>
 
         {/* ================= LISTADO (7 COLS) ================= */}
         <div className="lg:col-span-7 space-y-6">
           <div className="flex items-center justify-between px-4">
             <h3 className="text-xl font-bold text-[#524F4A] flex items-center gap-2 font-serif italic">
-              Categorías Existentes 
+              Categorías Existentes
               <span className="text-sm font-normal text-slate-400 ml-2 not-italic font-sans">({categories.length})</span>
             </h3>
           </div>
@@ -142,25 +147,25 @@ const AdminCategory = () => {
           <div className="grid grid-cols-1 gap-3">
             <AnimatePresence mode="popLayout">
               {categories.length === 0 ? (
-                <motion.div 
+                <m.div
                   initial={{ opacity: 0 }} animate={{ opacity: 1 }}
                   className="p-20 text-center bg-[#DBD8D3]/10 rounded-[2.5rem] border border-dashed border-[#DBD8D3]"
                 >
                   <AlertCircle className="mx-auto text-[#DBD8D3] mb-2" size={40} />
                   <p className="text-slate-400 font-medium tracking-wide">No hay categorías registradas aún.</p>
-                </motion.div>
+                </m.div>
               ) : (
                 categories.map((cat, index) => (
-                  <motion.div
+                  <m.div
                     key={cat.id}
                     layout
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, scale: 0.95 }}
                     transition={{ delay: index * 0.05 }}
-                    className={`group p-4 rounded-2xl border transition-all duration-300 flex items-center justify-between ${
-                      editingId === cat.id 
-                      ? "bg-white border-[#BB9E7A] shadow-xl shadow-[#BB9E7A]/10 ring-1 ring-[#BB9E7A]/20" 
+                    className={`group p-4 rounded-2xl border transition-[color,background-color,border-color,opacity,box-shadow,transform,filter] duration-300 flex items-center justify-between ${
+                      editingId === cat.id
+                      ? "bg-white border-[#BB9E7A] shadow-xl shadow-[#BB9E7A]/10 ring-1 ring-[#BB9E7A]/20"
                       : "bg-white border-[#DBD8D3]/50 hover:border-[#BB9E7A]/50 hover:shadow-md"
                     }`}
                   >
@@ -170,7 +175,7 @@ const AdminCategory = () => {
                       }`}>
                         <Tag size={18} />
                       </div>
-                      
+
                       {editingId === cat.id ? (
                         <div className="flex items-center gap-2 flex-1">
                           <Input
@@ -212,7 +217,7 @@ const AdminCategory = () => {
                         </Button>
                       </div>
                     )}
-                  </motion.div>
+                  </m.div>
                 ))
               )}
             </AnimatePresence>

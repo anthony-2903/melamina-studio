@@ -1,17 +1,17 @@
 "use client";
 
-import { 
-  Phone, 
-  Mail, 
-  MapPin, 
-  Clock, 
-  MessageCircle, 
-  Instagram, 
-  Facebook, 
+import {
+  Phone,
+  Mail,
+  MapPin,
+  Clock,
+  MessageCircle,
+  Instagram,
+  Facebook,
   ArrowUpRight
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { motion, Variants } from "framer-motion";
+import { m, Variants } from "framer-motion";
 import TikTokIcon from "@/components/icons/TikTokIcon";
 
 const Contact = () => {
@@ -32,20 +32,20 @@ const Contact = () => {
       <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-[#524F4A]/5 rounded-full blur-[100px] -z-10" />
 
       <div className="container mx-auto px-6">
-        <motion.div
+        <m.div
           className="max-w-4xl mx-auto text-center mb-24"
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
           variants={containerVariants}
         >
-          <motion.span variants={itemVariants} className="text-[#BB9E7A] font-bold tracking-[0.4em] uppercase text-[10px] mb-6 block">
+          <m.span variants={itemVariants} className="text-[#BB9E7A] font-bold tracking-[0.4em] uppercase text-[10px] mb-6 block">
             Contacto Exclusivo
-          </motion.span>
-          <motion.h2 className="text-6xl md:text-8xl font-bold tracking-tighter text-[#524F4A] mb-8 leading-[0.9] flex flex-wrap justify-center">
+          </m.span>
+          <m.h2 className="text-6xl md:text-8xl font-bold tracking-tighter text-[#524F4A] mb-8 leading-[0.9] flex flex-wrap justify-center">
             {["¿Listo", "para", "elevar", "tu"].map((word, i) => (
               <span key={i} className="overflow-hidden inline-block pb-4 -mb-4 mr-[0.25em]">
-                <motion.span 
+                <m.span
                   className="inline-block"
                   variants={{
                     hidden: { y: "110%", opacity: 0 },
@@ -53,36 +53,36 @@ const Contact = () => {
                   }}
                 >
                   {word}
-                </motion.span>
+                </m.span>
               </span>
             ))}
             <span className="overflow-hidden inline-block pb-4 -mb-4">
-              <motion.span 
+              <m.span
                 className="text-[#BB9E7A] italic font-serif inline-block origin-bottom-left"
                 variants={{
                   hidden: { y: "120%", opacity: 0, rotateZ: 10, scale: 0.8 },
-                  visible: { 
-                    y: 0, 
-                    opacity: 1, 
-                    rotateZ: 0, 
-                    scale: 1, 
-                    transition: { duration: 1.1, ease: [0.16, 1, 0.3, 1] } 
+                  visible: {
+                    y: 0,
+                    opacity: 1,
+                    rotateZ: 0,
+                    scale: 1,
+                    transition: { duration: 1.1, ease: [0.16, 1, 0.3, 1] }
                   }
                 }}
               >
                 espacio?
-              </motion.span>
+              </m.span>
             </span>
-          </motion.h2>
-          <motion.p variants={itemVariants} className="text-slate-500 text-xl max-w-2xl mx-auto font-light leading-relaxed">
+          </m.h2>
+          <m.p variants={itemVariants} className="text-slate-500 text-xl max-w-2xl mx-auto font-light leading-relaxed">
             Eliminamos las barreras. Comunicación directa para proyectos extraordinarios de melamina en Huancayo.
-          </motion.p>
-        </motion.div>
+          </m.p>
+        </m.div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          
+
           {/* TARJETA PRINCIPAL: WHATSAPP (ESTILO PREMIUM GRIS CARBÓN) */}
-          <motion.div 
+          <m.div
             variants={itemVariants}
             initial="hidden"
             whileInView="visible"
@@ -98,8 +98,8 @@ const Contact = () => {
                 Asesoría inmediata y presupuestos por chat. Envíanos fotos de tu espacio hoy mismo.
               </p>
             </div>
-            
-            <Button asChild className="relative z-10 w-full h-16 rounded-2xl bg-white text-[#524F4A] hover:bg-[#BB9E7A] hover:text-white font-bold text-lg transition-all duration-500 group">
+
+            <Button asChild className="relative z-10 w-full h-16 rounded-2xl bg-white text-[#524F4A] hover:bg-[#BB9E7A] hover:text-white font-bold text-lg transition-[color,background-color,border-color,opacity,box-shadow,transform,filter] duration-500 group">
               <a href="https://wa.me/51979923148" target="_blank" className="flex items-center justify-between px-6">
                 Chatear Ahora
                 <ArrowUpRight className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
@@ -107,10 +107,10 @@ const Contact = () => {
             </Button>
 
             <MessageCircle className="absolute -right-16 -bottom-16 text-white/[0.03] w-80 h-80 rotate-12 group-hover:rotate-0 transition-transform duration-1000" />
-          </motion.div>
+          </m.div>
 
           {/* COLUMNA 2: INFO DE CONTACTO */}
-          <motion.div 
+          <m.div
             variants={itemVariants}
             initial="hidden"
             whileInView="visible"
@@ -121,8 +121,8 @@ const Contact = () => {
               { icon: Phone, label: "Llamada Directa", val: "+51 979 923 148", href: "tel:+51979923148" },
               { icon: Mail, label: "Correo Oficial", val: "husheniid@gmail.com", href: "mailto:husheniid@gmail.com" },
             ].map((info, i) => (
-              <div key={i} className="bg-white p-8 rounded-[2.5rem] border border-[#DBD8D3]/50 shadow-sm hover:shadow-xl hover:border-[#BB9E7A]/30 transition-all duration-500 group flex flex-col justify-between h-[213px]">
-                <div className="w-12 h-12 rounded-xl bg-[#DBD8D3]/20 flex items-center justify-center text-[#524F4A] group-hover:text-white group-hover:bg-[#BB9E7A] transition-all">
+              <div key={i} className="bg-white p-8 rounded-[2.5rem] border border-[#DBD8D3]/50 shadow-sm hover:shadow-xl hover:border-[#BB9E7A]/30 transition-[color,background-color,border-color,opacity,box-shadow,transform,filter] duration-500 group flex flex-col justify-between h-[213px]">
+                <div className="w-12 h-12 rounded-xl bg-[#DBD8D3]/20 flex items-center justify-center text-[#524F4A] group-hover:text-white group-hover:bg-[#BB9E7A] transition-[color,background-color,border-color,opacity,box-shadow,transform,filter]">
                   <info.icon size={22} />
                 </div>
                 <div>
@@ -133,10 +133,10 @@ const Contact = () => {
                 </div>
               </div>
             ))}
-          </motion.div>
+          </m.div>
 
           {/* COLUMNA 3: UBICACIÓN Y SOCIAL */}
-          <motion.div 
+          <m.div
             variants={itemVariants}
             initial="hidden"
             whileInView="visible"
@@ -150,33 +150,33 @@ const Contact = () => {
                 </div>
                <div className="flex gap-3">
   {/* Instagram */}
-  <a 
-    href="https://www.instagram.com/hugocaldeton/" 
-    target="_blank" 
+  <a
+    href="https://www.instagram.com/hugocaldeton/"
+    target="_blank"
     rel="noopener noreferrer"
-    className="p-3 bg-[#DBD8D3]/20 rounded-xl hover:bg-[#BB9E7A] hover:text-white transition-all text-[#524F4A]"
+    className="p-3 bg-[#DBD8D3]/20 rounded-xl hover:bg-[#BB9E7A] hover:text-white transition-[color,background-color,border-color,opacity,box-shadow,transform,filter] text-[#524F4A]"
     title="Síguenos en Instagram"
   >
     <Instagram size={18} />
   </a>
 
   {/* Facebook */}
-  <a 
-    href="https://www.facebook.com/profile.php?id=61551909329314#" 
-    target="_blank" 
+  <a
+    href="https://www.facebook.com/profile.php?id=61551909329314#"
+    target="_blank"
     rel="noopener noreferrer"
-    className="p-3 bg-[#DBD8D3]/20 rounded-xl hover:bg-[#BB9E7A] hover:text-white transition-all text-[#524F4A]"
+    className="p-3 bg-[#DBD8D3]/20 rounded-xl hover:bg-[#BB9E7A] hover:text-white transition-[color,background-color,border-color,opacity,box-shadow,transform,filter] text-[#524F4A]"
     title="Síguenos en Facebook"
   >
     <Facebook size={18} />
   </a>
 
   {/* TikTok */}
-  <a 
-    href="https://www.tiktok.com/@husheniid" 
-    target="_blank" 
+  <a
+    href="https://www.tiktok.com/@husheniid"
+    target="_blank"
     rel="noopener noreferrer"
-    className="p-3 bg-[#DBD8D3]/20 rounded-xl hover:bg-[#BB9E7A] hover:text-white transition-all text-[#524F4A]"
+    className="p-3 bg-[#DBD8D3]/20 rounded-xl hover:bg-[#BB9E7A] hover:text-white transition-[color,background-color,border-color,opacity,box-shadow,transform,filter] text-[#524F4A]"
     title="Síguenos en TikTok"
   >
     <TikTokIcon width={18} height={18} />
@@ -205,12 +205,12 @@ const Contact = () => {
                 </p>
               </div>
             </div>
-          </motion.div>
+          </m.div>
 
         </div>
 
         {/* Footer de Sección */}
-        <motion.div 
+        <m.div
           variants={itemVariants}
           initial="hidden"
           whileInView="visible"
@@ -223,7 +223,7 @@ const Contact = () => {
             <a href="#" className="hover:text-[#BB9E7A] transition-colors">Servicios</a>
             <a href="#" className="hover:text-[#BB9E7A] transition-colors">Privacidad</a>
           </div>
-        </motion.div>
+        </m.div>
       </div>
     </section>
   );

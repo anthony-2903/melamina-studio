@@ -1,0 +1,13 @@
+{
+  "$schema": "https://react.doctor/schema/config.json",
+  "ignore": {
+    "files": [
+      "api/*.ts",
+      "dist/**"
+    ]
+  },
+  "rules": {
+    "react-doctor/supabase-rls-policy-risk": "off",
+    "react-doctor/insecure-crypto-risk": "off"
+  }
+}

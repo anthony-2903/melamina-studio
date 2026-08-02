@@ -1,4 +1,10 @@
 {
+  "crons": [
+    {
+      "path": "/api/supabase-keepalive",
+      "schedule": "0 12 * * *"
+    }
+  ],
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }
   ],

@@ -12,7 +12,7 @@ import {
   Bell,
   LayoutDashboard,
 } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 import AdminLogin from "./AdminLogin";
 import AdminPortfolio from "./AdminPortfolio";
 import AdminCategory from "./AdminCategory";
@@ -54,7 +54,7 @@ const AdminPage = () => {
           {/* SIDEBAR ARQUITECTÓNICO */}
           <AnimatePresence mode="wait">
             {sidebarVisible && (
-              <motion.aside
+              <m.aside
                 initial={{ x: -300, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
                 exit={{ x: -300, opacity: 0 }}
@@ -68,6 +68,8 @@ const AdminPage = () => {
                       husheniid <span className="text-[#BB9E7A]">.</span>
                     </h2>
                     <button 
+                      type="button"
+                      aria-label="Ocultar barra lateral"
                       onClick={() => setSidebarVisible(false)}
                       className="p-1.5 hover:bg-white/5 rounded-lg transition-colors text-[#DBD8D3]/50 hover:text-[#BB9E7A]"
                     >
@@ -94,8 +96,9 @@ const AdminPage = () => {
                     <p className="text-[10px] font-bold text-[#DBD8D3]/30 uppercase tracking-[0.3em] mb-4 ml-2">Menú de Gestión</p>
                     
                     <button
+                      type="button"
                       onClick={() => setTab("dashboard")}
-                      className={`w-full flex items-center gap-3 px-4 py-4 rounded-2xl transition-all duration-500 group ${
+                      className={`w-full flex items-center gap-3 px-4 py-4 rounded-2xl transition-[color,background-color,border-color,opacity,box-shadow,transform,filter] duration-500 group ${
                         tab === "dashboard" 
                         ? "bg-[#BB9E7A] text-white shadow-xl shadow-[#BB9E7A]/20" 
                         : "text-[#DBD8D3]/60 hover:bg-white/5 hover:text-[#BB9E7A]"
@@ -106,8 +109,9 @@ const AdminPage = () => {
                     </button>
 
                     <button
+                      type="button"
                       onClick={() => setTab("portfolio")}
-                      className={`w-full flex items-center gap-3 px-4 py-4 rounded-2xl transition-all duration-500 group ${
+                      className={`w-full flex items-center gap-3 px-4 py-4 rounded-2xl transition-[color,background-color,border-color,opacity,box-shadow,transform,filter] duration-500 group ${
                         tab === "portfolio" 
                         ? "bg-[#BB9E7A] text-white shadow-xl shadow-[#BB9E7A]/20" 
                         : "text-[#DBD8D3]/60 hover:bg-white/5 hover:text-[#BB9E7A]"
@@ -118,8 +122,9 @@ const AdminPage = () => {
                     </button>
 
                     <button
+                      type="button"
                       onClick={() => setTab("categories")}
-                      className={`w-full flex items-center gap-3 px-4 py-4 rounded-2xl transition-all duration-500 group ${
+                      className={`w-full flex items-center gap-3 px-4 py-4 rounded-2xl transition-[color,background-color,border-color,opacity,box-shadow,transform,filter] duration-500 group ${
                         tab === "categories" 
                         ? "bg-[#BB9E7A] text-white shadow-xl shadow-[#BB9E7A]/20" 
                         : "text-[#DBD8D3]/60 hover:bg-white/5 hover:text-[#BB9E7A]"
@@ -134,14 +139,15 @@ const AdminPage = () => {
                 {/* Footer Sidebar */}
                 <div className="mt-auto p-8 border-t border-white/5">
                   <button
+                    type="button"
                     onClick={handleLogout}
-                    className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-red-400 hover:bg-red-500/10 transition-all font-bold text-xs uppercase tracking-[0.2em]"
+                    className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-red-400 hover:bg-red-500/10 transition-[color,background-color,border-color,opacity,box-shadow,transform,filter] font-bold text-xs uppercase tracking-[0.2em]"
                   >
                     <LogOut size={18} />
                     Cerrar Sesión
                   </button>
                 </div>
-              </motion.aside>
+              </m.aside>
             )}
           </AnimatePresence>
 
@@ -152,8 +158,10 @@ const AdminPage = () => {
               <div className="flex items-center gap-6">
                 {!sidebarVisible && (
                   <button
+                    type="button"
+                    aria-label="Mostrar barra lateral"
                     onClick={() => setSidebarVisible(true)}
-                    className="p-2.5 bg-[#524F4A] text-white rounded-xl shadow-lg hover:bg-[#BB9E7A] transition-all duration-300"
+                    className="p-2.5 bg-[#524F4A] text-white rounded-xl shadow-lg hover:bg-[#BB9E7A] transition-[color,background-color,border-color,opacity,box-shadow,transform,filter] duration-300"
                   >
                     <ChevronRight size={20} />
                   </button>
@@ -167,14 +175,14 @@ const AdminPage = () => {
               </div>
 
               <div className="flex items-center gap-6">
-                <button className="p-2.5 text-slate-400 hover:text-[#BB9E7A] transition-colors relative group">
+                <button type="button" aria-label="Ver notificaciones" className="p-2.5 text-slate-400 hover:text-[#BB9E7A] transition-colors relative group">
                   <Bell size={22} strokeWidth={1.5} />
                   <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-[#BB9E7A] rounded-full border-2 border-white group-hover:scale-125 transition-transform"></span>
                 </button>
                 
                 <div className="h-8 w-[1px] bg-[#DBD8D3]/50" />
                 
-                <Button variant="outline" className="rounded-2xl border-[#DBD8D3] gap-2 font-bold text-[10px] uppercase tracking-widest hover:bg-[#524F4A] hover:text-white transition-all duration-300 px-6 h-11">
+                <Button variant="outline" className="rounded-2xl border-[#DBD8D3] gap-2 font-bold text-[10px] uppercase tracking-widest hover:bg-[#524F4A] hover:text-white transition-[color,background-color,border-color,opacity,box-shadow,transform,filter] duration-300 px-6 h-11">
                   <Settings size={16} />
                   Ajustes
                 </Button>
@@ -183,7 +191,7 @@ const AdminPage = () => {
 
             {/* CONTENT SCROLL AREA */}
             <div className="flex-1 overflow-y-auto p-10 bg-transparent">
-              <motion.div
+              <m.div
                 key={tab}
                 initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -204,7 +212,7 @@ const AdminPage = () => {
                 {tab === "dashboard" && <AdminDashboard />}
                 {tab === "portfolio" && <AdminPortfolio />}
                 {tab === "categories" && <AdminCategory />}
-              </motion.div>
+              </m.div>
             </div>
           </main>
         </>

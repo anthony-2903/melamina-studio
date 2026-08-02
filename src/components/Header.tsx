@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Menu, X, User, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { motion, AnimatePresence, useScroll, useMotionValueEvent } from "framer-motion";
+import { m, AnimatePresence, useScroll, useMotionValueEvent } from "framer-motion";
 import logo from "@/assets/logo-husheniid.png";
 import { getOptimizedUrl } from "@/lib/cloudinary";
 
@@ -26,19 +26,18 @@ const Header = () => {
   ];
 
   return (
-    <motion.header
+    <m.header
       initial={{ y: -100 }}
       animate={{ y: 0 }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+      className={`fixed top-0 left-0 right-0 z-50 transition-[color,background-color,border-color,opacity,box-shadow,transform,filter] duration-500 ${
         isScrolled ? "py-3" : "py-6"
       }`}
     >
       <div className="container mx-auto px-4 flex justify-center">
         {/* Nav Container con estética Premium y SEO Semántico */}
         <nav
-          role="navigation"
           aria-label="Navegación principal"
-          className={`flex items-center justify-between w-full max-w-6xl px-6 transition-all duration-500 rounded-[2rem] border ${
+          className={`flex items-center justify-between w-full max-w-6xl px-6 transition-[color,background-color,border-color,opacity,box-shadow,transform,filter] duration-500 rounded-[2rem] border ${
             isScrolled
               ? "h-16 bg-white/90 backdrop-blur-xl border-[#DBD8D3] shadow-xl shadow-[#524F4A]/5"
               : "h-20 bg-transparent border-transparent"
@@ -46,12 +45,12 @@ const Header = () => {
         >
           {/* Logo Rectangular Ajustado */}
           <a href="/" className="flex items-center group overflow-hidden" title="Husheniid Home">
-            <motion.img
+            <m.img
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               src={getOptimizedUrl(logo, 300)}
               alt="Husheniid - Muebles de Melamina a Medida"
-              className={`w-auto object-contain transition-all duration-500 filter group-hover:brightness-110 ${
+              className={`w-auto object-contain transition-[color,background-color,border-color,opacity,box-shadow,transform,filter] duration-500 filter group-hover:brightness-110 ${
                 isScrolled
                   ? "h-11 md:h-12"
                   : "h-14 md:h-18 lg:h-20"
@@ -71,7 +70,7 @@ const Header = () => {
                   } hover:text-[#BB9E7A]`}
                 >
                   {link.name}
-                  <span className="absolute bottom-0 left-1/2 w-0 h-1 bg-[#BB9E7A] transition-all duration-300 -translate-x-1/2 rounded-full group-hover:w-4" />
+                  <span className="absolute bottom-0 left-1/2 w-0 h-1 bg-[#BB9E7A] transition-[color,background-color,border-color,opacity,box-shadow,transform,filter] duration-300 -translate-x-1/2 rounded-full group-hover:w-4" />
                 </a>
               </li>
             ))}
@@ -94,7 +93,7 @@ const Header = () => {
 
             <Button
               asChild
-              className="hidden lg:flex rounded-full bg-[#524F4A] hover:bg-[#BB9E7A] text-white px-8 transition-all duration-500 group shadow-lg shadow-[#524F4A]/10"
+              className="hidden lg:flex rounded-full bg-[#524F4A] hover:bg-[#BB9E7A] text-white px-8 transition-[color,background-color,border-color,opacity,box-shadow,transform,filter] duration-500 group shadow-lg shadow-[#524F4A]/10"
             >
               <a href="/#contacto" className="flex items-center gap-2">
                 Cotizar ahora
@@ -104,8 +103,9 @@ const Header = () => {
 
             {/* Mobile Toggle con Accesibilidad */}
             <button
+              type="button"
               aria-label={isMenuOpen ? "Cerrar menú" : "Abrir menú"}
-              className="md:hidden p-3 text-[#524F4A] bg-[#DBD8D3]/50 rounded-2xl hover:bg-[#BB9E7A] hover:text-white transition-all"
+              className="md:hidden p-3 text-[#524F4A] bg-[#DBD8D3]/50 rounded-2xl hover:bg-[#BB9E7A] hover:text-white transition-[color,background-color,border-color,opacity,box-shadow,transform,filter]"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             >
               {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
@@ -117,16 +117,16 @@ const Header = () => {
       {/* Mobile Menu Overlay - Coherencia Bicolor */}
       <AnimatePresence>
         {isMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-white/98 backdrop-blur-3xl border-b border-[#DBD8D3] overflow-hidden"
+          <m.div
+            initial={{ opacity: 0, scaleY: 0.98 }}
+            animate={{ opacity: 1, scaleY: 1 }}
+            exit={{ opacity: 0, scaleY: 0.98 }}
+            className="md:hidden origin-top bg-white/98 backdrop-blur-3xl border-b border-[#DBD8D3] overflow-hidden"
           >
             <div className="container mx-auto px-8 py-12">
               <ul className="flex flex-col space-y-6 mb-12">
                 {navLinks.map((link, i) => (
-                  <motion.li
+                  <m.li
                     key={link.name}
                     initial={{ x: -20, opacity: 0 }}
                     animate={{ x: 0, opacity: 1 }}
@@ -139,7 +139,7 @@ const Header = () => {
                     >
                       {link.name}
                     </a>
-                  </motion.li>
+                  </m.li>
                 ))}
               </ul>
 
@@ -148,15 +148,15 @@ const Header = () => {
                 <Button asChild variant="outline" className="h-14 rounded-2xl border-[#524F4A] text-[#524F4A] text-lg font-bold">
                   <a href="/login" onClick={() => setIsMenuOpen(false)}>Área de Clientes</a>
                 </Button>
-                <Button asChild className="h-14 rounded-2xl bg-[#524F4A] hover:bg-[#BB9E7A] text-white text-lg font-bold transition-all">
+                <Button asChild className="h-14 rounded-2xl bg-[#524F4A] hover:bg-[#BB9E7A] text-white text-lg font-bold transition-[color,background-color,border-color,opacity,box-shadow,transform,filter]">
                   <a href="/#contacto" onClick={() => setIsMenuOpen(false)}>Consúltenos</a>
                 </Button>
               </div>
             </div>
-          </motion.div>
+          </m.div>
         )}
       </AnimatePresence>
-    </motion.header>
+    </m.header>
   );
 };
 

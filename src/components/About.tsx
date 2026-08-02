@@ -1,6 +1,6 @@
 import { Award, Users, Target, Heart } from "lucide-react";
 import workshopImage from "@/assets/about-workshop.jpg";
-import { motion, Variants, useScroll, useTransform } from "framer-motion";
+import { m, Variants, useScroll, useTransform } from "framer-motion";
 import { getOptimizedUrl } from "@/lib/cloudinary";
 import { useRef } from "react";
 
@@ -64,27 +64,27 @@ const About = () => {
   const rotate = useTransform(scrollYProgress, [0, 1], [0, 5]);
 
   return (
-    <section 
-      id="conocenos" 
+    <section
+      id="conocenos"
       ref={containerRef}
       className="py-16 md:py-24 bg-[#DBD8D3]/10 overflow-hidden relative"
     >
       {/* Elementos Decorativos de Fondo: Blobs Animados */}
-      <motion.div
+      <m.div
         style={{ y: y2 }}
         className="absolute top-20 left-[-10%] w-[500px] h-[500px] bg-[#BB9E7A]/5 rounded-full blur-[120px] -z-10"
-        animate={{ 
+        animate={{
           scale: [1, 1.1, 1],
-          opacity: [0.3, 0.5, 0.3] 
+          opacity: [0.3, 0.5, 0.3]
         }}
         transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
       />
-      <motion.div
+      <m.div
         style={{ y: y1 }}
         className="absolute bottom-20 right-[-5%] w-[400px] h-[400px] bg-[#524F4A]/5 rounded-full blur-[100px] -z-10"
-        animate={{ 
+        animate={{
           scale: [1, 1.2, 1],
-          opacity: [0.2, 0.4, 0.2] 
+          opacity: [0.2, 0.4, 0.2]
         }}
         transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 1 }}
       />
@@ -92,39 +92,39 @@ const About = () => {
       <div className="container mx-auto px-6 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
           {/* LADO IZQUIERDO: TEXTO EDITORIAL */}
-          <motion.div
+          <m.div
             variants={containerVariants}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, margin: "-100px" }}
             className="lg:col-span-5 space-y-6 md:space-y-8"
           >
-            <motion.div variants={itemVariants}>
+            <m.div variants={itemVariants}>
               <span className="text-[#BB9E7A] font-bold tracking-[0.4em] uppercase text-xs block mb-4">
                 Desde el Taller
               </span>
               <h2 className="text-4xl md:text-5xl lg:text-7xl font-bold tracking-tighter text-[#524F4A] leading-tight">
                 { "Pasión por la".split(" ").map((word, i) => (
-                  <motion.span
+                  <m.span
                     key={i}
                     custom={i}
                     variants={itemVariants}
                     className="inline-block mr-4"
                   >
                     {word}
-                  </motion.span>
+                  </m.span>
                 ))}
                 <br />
-                <motion.span 
+                <m.span
                   variants={itemVariants}
                   className="text-[#BB9E7A] italic font-serif inline-block"
                 >
                   Melamina
-                </motion.span>
+                </m.span>
               </h2>
-            </motion.div>
+            </m.div>
 
-            <motion.div variants={itemVariants} className="space-y-6">
+            <m.div variants={itemVariants} className="space-y-6">
               <p className="text-xl text-[#524F4A] font-medium leading-relaxed">
                 En{" "}
                 <span className="font-bold border-b-2 border-[#BB9E7A]">
@@ -143,15 +143,15 @@ const About = () => {
                 entretenimiento, stands, escritorios, repisas flotantes y muebles
                 para todo tipo de negocio.
               </p>
-            </motion.div>
+            </m.div>
 
             {/* Grid de Valores */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4">
               {values.map((value) => (
-                <motion.div
+                <m.div
                   key={value.title}
                   variants={itemVariants}
-                  whileHover={{ 
+                  whileHover={{
                     y: -10,
                     scale: 1.02,
                     rotateX: 5,
@@ -166,13 +166,13 @@ const About = () => {
                   <p className="text-xs text-slate-500 leading-snug">
                     {value.description}
                   </p>
-                </motion.div>
+                </m.div>
               ))}
             </div>
-          </motion.div>
+          </m.div>
 
           {/* LADO DERECHO: IMAGEN COMPUESTA */}
-          <motion.div
+          <m.div
             initial={{ opacity: 0, x: 50 }}
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 1, ease: "easeOut" }}
@@ -185,7 +185,7 @@ const About = () => {
             <div className="relative group">
               <div className="absolute -inset-4 border border-[#DBD8D3] rounded-[3rem] -z-10 group-hover:border-[#BB9E7A]/50 transition-colors duration-700"></div>
 
-              <motion.div 
+              <m.div
                 style={{ y: y1, rotate }}
                 className="overflow-hidden rounded-[2.8rem] shadow-2xl relative border-4 border-white"
               >
@@ -196,7 +196,7 @@ const About = () => {
                 />
 
                 {/* Overlay flotante informativo con estética Glassmorphism */}
-                <motion.div 
+                <m.div
                   initial={{ y: 20, opacity: 0 }}
                   whileInView={{ y: 0, opacity: 1 }}
                   transition={{ delay: 0.5 }}
@@ -215,11 +215,11 @@ const About = () => {
                       <Users size={20} className="sm:w-7 sm:h-7" />
                     </div>
                   </div>
-                </motion.div>
-              </motion.div>
+                </m.div>
+              </m.div>
 
               {/* Ubicación Flotante en Gris Carbón */}
-              <motion.div
+              <m.div
                 animate={{ y: [0, 15, 0] }}
                 transition={{
                   duration: 5,
@@ -232,9 +232,9 @@ const About = () => {
                   Ubicación
                 </p>
                 <p className="font-semibold text-white">Huancayo, Perú</p>
-              </motion.div>
+              </m.div>
             </div>
-          </motion.div>
+          </m.div>
         </div>
       </div>
     </section>
