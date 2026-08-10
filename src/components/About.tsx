@@ -192,6 +192,8 @@ const About = () => {
                 <img
                   src={getOptimizedUrl(workshopImage, 1000)}
                   alt="Nuestro taller de carpintería"
+                  loading="lazy"
+                  decoding="async"
                   className="w-full object-cover aspect-[4/5] lg:aspect-[3/4] transition-transform duration-[2s] group-hover:scale-105"
                 />
 

@@ -54,6 +54,7 @@ export default function ServicePage() {
             sizes="100vw"
             alt={page.h1}
             loading="eager"
+            fetchPriority="high"
             decoding="async"
             className="absolute inset-0 h-full w-full object-cover"
           />

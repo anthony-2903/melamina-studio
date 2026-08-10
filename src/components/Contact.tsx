@@ -100,7 +100,7 @@ const Contact = () => {
             </div>
 
             <Button asChild className="relative z-10 w-full h-16 rounded-2xl bg-white text-[#524F4A] hover:bg-[#BB9E7A] hover:text-white font-bold text-lg transition-[color,background-color,border-color,opacity,box-shadow,transform,filter] duration-500 group">
-              <a href="https://wa.me/51979923148" target="_blank" className="flex items-center justify-between px-6">
+              <a href="https://wa.me/51979923148" target="_blank" rel="noopener noreferrer" className="flex items-center justify-between px-6">
                 Chatear Ahora
                 <ArrowUpRight className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
               </a>

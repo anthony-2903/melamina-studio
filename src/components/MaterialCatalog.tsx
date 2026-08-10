@@ -112,7 +112,7 @@ type Material = {
 };
 
 export default function MaterialCatalog() {
-  const { isMobile, reduceMotion } = useMediaPreferences();
+  const { reduceMotion } = useMediaPreferences();
   // Estados HG
   const [hgFolder, setHgFolder] = useState("all");
   const [hgView, setHgView] = useState<"carousel" | "grid">("carousel");
@@ -127,12 +127,12 @@ export default function MaterialCatalog() {
   // Lógica HG
   const hgFolders = useMemo(() => Array.from(new Set(LOCAL_HIGH_GLOSS.map(m => m.folder))), []);
   const hgFiltered = useMemo(() => hgFolder === "all" ? LOCAL_HIGH_GLOSS : LOCAL_HIGH_GLOSS.filter(m => m.folder === hgFolder), [hgFolder]);
-  const hgDuplicated = useMemo(() => hgView === "grid" || isMobile || reduceMotion ? hgFiltered : [...hgFiltered, ...hgFiltered], [hgFiltered, hgView, isMobile, reduceMotion]);
+  const hgDuplicated = useMemo(() => hgView === "grid" || reduceMotion ? hgFiltered : [...hgFiltered, ...hgFiltered], [hgFiltered, hgView, reduceMotion]);
 
   // Lógica PK (Corregida la referencia a pkFiltered)
   const pkFolders = useMemo(() => Array.from(new Set(LOCAL_PELIKANO.map(m => m.folder))), []);
   const pkFiltered = useMemo(() => pkFolder === "all" ? LOCAL_PELIKANO : LOCAL_PELIKANO.filter(m => m.folder === pkFolder), [pkFolder]);
-  const pkDuplicated = useMemo(() => pkView === "grid" || isMobile || reduceMotion ? pkFiltered : [...pkFiltered, ...pkFiltered], [pkFiltered, pkView, isMobile, reduceMotion]);
+  const pkDuplicated = useMemo(() => pkView === "grid" || reduceMotion ? pkFiltered : [...pkFiltered, ...pkFiltered], [pkFiltered, pkView, reduceMotion]);
 
   return (
     <section id="materiales" className="py-24 bg-[#F8F7F4] overflow-hidden relative space-y-32">
@@ -147,8 +147,8 @@ export default function MaterialCatalog() {
           </div>
           <div className="flex flex-col sm:flex-row items-center gap-4">
             <div className="flex bg-white p-1 rounded-2xl border border-slate-200 shadow-sm">
-              <button type="button" onClick={() => setHgView("carousel")} className={`flex items-center gap-2 px-4 py-2 rounded-xl text-[10px] font-bold uppercase transition-[color,background-color,border-color,opacity,box-shadow,transform,filter] ${hgView === "carousel" ? "bg-[#524F4A] text-white" : "text-slate-400"}`}><InfinityIcon size={14} /> Carrusel</button>
-              <button type="button" onClick={() => setHgView("grid")} className={`flex items-center gap-2 px-4 py-2 rounded-xl text-[10px] font-bold uppercase transition-[color,background-color,border-color,opacity,box-shadow,transform,filter] ${hgView === "grid" ? "bg-[#524F4A] text-white" : "text-slate-400"}`}><LayoutGrid size={14} /> Ver Todo</button>
+              <button type="button" aria-pressed={hgView === "carousel"} onClick={() => setHgView("carousel")} className={`flex items-center gap-2 px-4 py-2 rounded-xl text-[10px] font-bold uppercase transition-[color,background-color,border-color,opacity,box-shadow,transform,filter] ${hgView === "carousel" ? "bg-[#524F4A] text-white" : "text-slate-400"}`}><InfinityIcon size={14} aria-hidden="true" /> Carrusel</button>
+              <button type="button" aria-pressed={hgView === "grid"} onClick={() => setHgView("grid")} className={`flex items-center gap-2 px-4 py-2 rounded-xl text-[10px] font-bold uppercase transition-[color,background-color,border-color,opacity,box-shadow,transform,filter] ${hgView === "grid" ? "bg-[#524F4A] text-white" : "text-slate-400"}`}><LayoutGrid size={14} aria-hidden="true" /> Ver Todo</button>
             </div>
             <select aria-label="Filtrar acabados High Gloss" value={hgFolder} onChange={(e) => setHgFolder(e.target.value)} className="bg-white border-2 border-slate-100 text-[#524F4A] font-bold text-[11px] uppercase tracking-widest px-6 py-4 rounded-2xl outline-none focus:border-[#BB9E7A]">
               <option value="all">Todas las carpetas</option>
@@ -172,7 +172,7 @@ export default function MaterialCatalog() {
           ) : (
             hgView === "carousel" ? (
               <div key={`hg-car-${hgFolder}`}>
-                <InfiniteCarousel items={hgDuplicated} direction="right" speed={40} isStatic={isMobile || reduceMotion} />
+                <InfiniteCarousel items={hgDuplicated} direction="right" speed={40} isStatic={reduceMotion} />
               </div>
             ) : (
               <div key={`hg-grid-${hgFolder}`} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -197,8 +197,8 @@ export default function MaterialCatalog() {
           </div>
           <div className="flex flex-col sm:flex-row items-center gap-4">
             <div className="flex bg-white p-1 rounded-2xl border border-slate-200 shadow-sm">
-              <button type="button" onClick={() => setPkView("carousel")} className={`flex items-center gap-2 px-4 py-2 rounded-xl text-[10px] font-bold uppercase transition-[color,background-color,border-color,opacity,box-shadow,transform,filter] ${pkView === "carousel" ? "bg-[#524F4A] text-white" : "text-slate-400"}`}><InfinityIcon size={14} /> Carrusel</button>
-              <button type="button" onClick={() => setPkView("grid")} className={`flex items-center gap-2 px-4 py-2 rounded-xl text-[10px] font-bold uppercase transition-[color,background-color,border-color,opacity,box-shadow,transform,filter] ${pkView === "grid" ? "bg-[#524F4A] text-white" : "text-slate-400"}`}><LayoutGrid size={14} /> Ver Todo</button>
+              <button type="button" aria-pressed={pkView === "carousel"} onClick={() => setPkView("carousel")} className={`flex items-center gap-2 px-4 py-2 rounded-xl text-[10px] font-bold uppercase transition-[color,background-color,border-color,opacity,box-shadow,transform,filter] ${pkView === "carousel" ? "bg-[#524F4A] text-white" : "text-slate-400"}`}><InfinityIcon size={14} aria-hidden="true" /> Carrusel</button>
+              <button type="button" aria-pressed={pkView === "grid"} onClick={() => setPkView("grid")} className={`flex items-center gap-2 px-4 py-2 rounded-xl text-[10px] font-bold uppercase transition-[color,background-color,border-color,opacity,box-shadow,transform,filter] ${pkView === "grid" ? "bg-[#524F4A] text-white" : "text-slate-400"}`}><LayoutGrid size={14} aria-hidden="true" /> Ver Todo</button>
             </div>
             <select aria-label="Filtrar texturas Pelikano" value={pkFolder} onChange={(e) => setPkFolder(e.target.value)} className="bg-white border-2 border-slate-100 text-[#524F4A] font-bold text-[11px] uppercase tracking-widest px-6 py-4 rounded-2xl outline-none focus:border-[#BB9E7A]">
               <option value="all">Todas las texturas</option>
@@ -222,7 +222,7 @@ export default function MaterialCatalog() {
           ) : (
             pkView === "carousel" ? (
               <div key={`pk-car-${pkFolder}`}>
-                <InfiniteCarousel items={pkDuplicated} direction="left" speed={45} isStatic={isMobile || reduceMotion} />
+                <InfiniteCarousel items={pkDuplicated} direction="left" speed={45} isStatic={reduceMotion} />
               </div>
             ) : (
               <div key={`pk-grid-${pkFolder}`} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -267,7 +267,7 @@ function MaterialCard({ item, isGrid = false, mobileSnap = false }: { item: Mate
         <DialogDescription className="sr-only">
           Detalles del acabado {item.name}, referencia {item.ref}, de la coleccion {item.folder}.
         </DialogDescription>
-        <DialogClose className="absolute right-6 top-6 z-50 p-3 bg-white/20 hover:bg-white text-white hover:text-[#524F4A] rounded-full transition-[color,background-color,border-color,opacity,box-shadow,transform,filter] duration-300 backdrop-blur-xl border border-white/30 shadow-xl"><X size={20} /></DialogClose>
+        <DialogClose aria-label="Cerrar detalles del acabado" className="absolute right-6 top-6 z-50 p-3 bg-white/20 hover:bg-white text-white hover:text-[#524F4A] rounded-full transition-[color,background-color,border-color,opacity,box-shadow,transform,filter] duration-300 backdrop-blur-xl border border-white/30 shadow-xl"><X size={20} aria-hidden="true" /></DialogClose>
         <div className="flex flex-col md:flex-row h-full max-h-[90vh] overflow-y-auto md:overflow-hidden">
           <div className="w-full md:w-1/2 h-[300px] md:h-auto relative">
             <img 

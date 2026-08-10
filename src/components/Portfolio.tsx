@@ -241,8 +241,8 @@ function ProjectCard({ project, isGrid = false, mobileSnap = false }: { project:
       </DialogTrigger>
 
       <DialogContent className="max-w-6xl w-[95vw] md:w-[90vw] p-0 overflow-hidden border-none bg-white rounded-[2.5rem] md:rounded-[4rem] shadow-2xl [&>button]:hidden outline-none">
-        <DialogClose className="absolute right-8 top-8 z-50 p-4 bg-[#BB9E7A] hover:bg-[#524F4A] text-white rounded-full transition-[color,background-color,border-color,opacity,box-shadow,transform,filter] duration-500 shadow-2xl border-2 border-white/20">
-          <X size={24} strokeWidth={2.5} />
+        <DialogClose aria-label="Cerrar detalles del proyecto" className="absolute right-8 top-8 z-50 p-4 bg-[#BB9E7A] hover:bg-[#524F4A] text-white rounded-full transition-[color,background-color,border-color,opacity,box-shadow,transform,filter] duration-500 shadow-2xl border-2 border-white/20">
+          <X size={24} strokeWidth={2.5} aria-hidden="true" />
         </DialogClose>
 
         <DialogTitle className="sr-only">{project.title}</DialogTitle>

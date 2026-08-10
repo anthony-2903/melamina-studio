@@ -114,7 +114,7 @@ const Footer = () => {
             © {currentYear} <span className="font-bold text-[#DBD8D3]/50">ESTUDIO HUSHENIID</span>.
           </p>
           <div className="flex gap-8 text-[10px] font-bold uppercase tracking-[0.2em] text-[#DBD8D3]/50">
-            <a href="https://wa.me/51979923148" target="_blank" className="flex items-center gap-2 text-[#BB9E7A] hover:brightness-125 transition-[color,background-color,border-color,opacity,box-shadow,transform,filter]">
+            <a href="https://wa.me/51979923148" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-[#BB9E7A] hover:brightness-125 transition-[color,background-color,border-color,opacity,box-shadow,transform,filter]">
               Solicitar Cotización <ArrowUpRight size={14} />
             </a>
           </div>
