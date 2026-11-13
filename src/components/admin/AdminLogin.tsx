@@ -6,8 +6,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowLeft, Lock, Mail, Loader2, ShieldCheck } from "lucide-react";
+import { ArrowLeft, Eye, EyeOff, Lock, Mail, Loader2, ShieldCheck } from "lucide-react";
 import { m, Variants } from "framer-motion";
+import heroKitchen from "@/assets/hero-kitchen.jpg";
 
 type Props = {
   onLoginSuccess: () => void;
@@ -18,6 +19,7 @@ const AdminLogin = ({ onLoginSuccess }: Props) => {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -68,127 +70,123 @@ const AdminLogin = ({ onLoginSuccess }: Props) => {
   };
 
   return (
-    <div className="fixed inset-0 w-full h-full flex items-center justify-center bg-[#DBD8D3]/30 overflow-hidden font-sans z-[100]">
-      {/* Patrón de Fondo Animado */}
-      <m.div
-        animate={{ backgroundPosition: ["0% 0%", "100% 100%"] }}
-        transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
-        className="absolute inset-0 bg-[radial-gradient(#524F4A_1.2px,transparent_1.2px)] [background-size:32px:32px] opacity-[0.03]"
-      />
-
-      {/* Orbes Mágicos Flotantes */}
-      <m.div
-        animate={{ y: [-40, 40, -40], x: [-30, 30, -30], scale: [1, 1.2, 1], rotate: [0, 90, 0] }}
-        transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute -top-32 -right-32 w-[600px] h-[600px] bg-[#BB9E7A]/30 rounded-full blur-[120px]"
-      />
-      <m.div
-        animate={{ y: [40, -40, 40], x: [30, -30, 30], scale: [1, 1.1, 1], rotate: [0, -90, 0] }}
-        transition={{ duration: 12, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-        className="absolute -bottom-32 -left-32 w-[600px] h-[600px] bg-[#524F4A]/20 rounded-full blur-[120px]"
-      />
-
+    <div className="fixed inset-0 z-[100] overflow-y-auto bg-[#E8E4DE] font-sans">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_15%_15%,rgba(187,158,122,0.28),transparent_32%),radial-gradient(circle_at_88%_85%,rgba(82,79,74,0.14),transparent_30%)]" />
       <m.div
         variants={containerVariants}
         initial="hidden"
         animate="visible"
-        className="w-full max-w-md z-10 px-6"
+        className="relative z-10 mx-auto flex min-h-full w-full max-w-6xl flex-col justify-center px-5 py-8 md:px-8"
       >
         <m.button
           variants={itemVariants}
-          className="mb-8 flex items-center gap-2 text-slate-500 hover:text-[#BB9E7A] transition-[color,background-color,border-color,opacity,box-shadow,transform,filter] group outline-none"
+          type="button"
+          className="group mb-5 flex w-fit items-center gap-2 text-[#524F4A]/60 outline-none transition-colors hover:text-[#BB9E7A]"
           onClick={() => window.location.href = "/"}
         >
-          <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-          <span className="text-[10px] font-bold uppercase tracking-[0.2em]">Regresar a la Galería</span>
+          <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
+          <span className="text-[10px] font-bold uppercase tracking-[0.2em]">Regresar a la galería</span>
         </m.button>
 
-        {/* CONTENEDOR EFECTO CRISTAL (Glassmorphism) */}
         <m.div
           variants={itemVariants}
-          className="bg-white/70 backdrop-blur-3xl rounded-[2.5rem] border border-white/60 shadow-[0_40px_80px_-15px_rgba(82,79,74,0.15)] p-10 md:p-12 relative overflow-hidden"
+          className="grid overflow-hidden rounded-[2.25rem] border border-white/70 bg-[#F8F7F4] shadow-[0_35px_90px_-30px_rgba(82,79,74,0.45)] md:min-h-[640px] md:grid-cols-[1.08fr_0.92fr]"
         >
-          {/* Brillo Superior */}
-          <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-white to-transparent opacity-80" />
-          <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-[#524F4A] via-[#BB9E7A] to-[#524F4A]" />
-
-          <m.div variants={itemVariants} className="flex justify-center mb-8 relative">
-            <div className="absolute inset-0 bg-[#BB9E7A] blur-[30px] opacity-20 animate-pulse rounded-full" />
-            <m.div
-              animate={{ y: [-5, 5, -5] }}
-              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-              className="w-16 h-16 bg-[#524F4A] rounded-2xl flex items-center justify-center text-white shadow-xl shadow-[#524F4A]/20 relative z-10"
-            >
-              <ShieldCheck size={32} strokeWidth={1.5} />
-            </m.div>
-          </m.div>
-
-          <m.div variants={itemVariants} className="text-center mb-10">
-            <h2 className="text-3xl font-bold text-[#524F4A] tracking-tighter">Panel de <span className="italic font-serif">Autor</span></h2>
-            <p className="text-[#BB9E7A] mt-2 text-[10px] uppercase tracking-[0.3em] font-bold bg-[#BB9E7A]/10 inline-block px-3 py-1 rounded-full">
-              Acceso Restringido
-            </p>
-          </m.div>
-
-          <form onSubmit={handleLogin} className="space-y-6">
-            <m.div variants={itemVariants} className="space-y-2">
-              <Label className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#524F4A]/60 ml-1">
-                Identificador
-              </Label>
-              <div className="relative group">
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-[#BB9E7A] transition-colors w-5 h-5 z-10" />
-                <Input
-                  type="email"
-                  placeholder="usuario@correo.com"
-                  className="h-14 pl-12 rounded-2xl border-white/40 bg-white/50 focus:bg-white focus:border-[#BB9E7A] focus:ring-4 focus:ring-[#BB9E7A]/10 transition-[color,background-color,border-color,opacity,box-shadow,transform,filter] shadow-sm"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                />
+          <section className="relative min-h-[230px] overflow-hidden md:min-h-full">
+            <img
+              src={heroKitchen}
+              alt="Cocina de melamina diseñada por Husheniid"
+              className="absolute inset-0 h-full w-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#302E2A]/90 via-[#524F4A]/25 to-transparent" />
+            <div className="absolute inset-x-0 top-0 flex items-center justify-between p-7 md:p-9">
+              <span className="font-serif text-xl font-bold italic tracking-tight text-white">Husheniid</span>
+              <span className="rounded-full border border-white/30 bg-white/15 px-3 py-1.5 text-[8px] font-bold uppercase tracking-[0.22em] text-white backdrop-blur-md">Studio</span>
+            </div>
+            <div className="absolute inset-x-0 bottom-0 p-7 text-white md:p-10">
+              <p className="mb-3 text-[9px] font-bold uppercase tracking-[0.3em] text-[#E4C59F]">Diseño & fabricación</p>
+              <h1 className="max-w-md font-serif text-3xl font-semibold italic leading-tight md:text-5xl">
+                Espacios creados para sentirse tuyos.
+              </h1>
+              <div className="mt-7 flex items-center gap-2" aria-hidden="true">
+                <span className="h-1.5 w-10 rounded-full bg-[#E4C59F]" />
+                <span className="h-1.5 w-1.5 rounded-full bg-white/50" />
+                <span className="h-1.5 w-1.5 rounded-full bg-white/50" />
               </div>
-            </m.div>
+            </div>
+          </section>
 
-            <m.div variants={itemVariants} className="space-y-2">
-              <Label className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#524F4A]/60 ml-1">
-                Clave de Seguridad
-              </Label>
-              <div className="relative group">
-                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-[#BB9E7A] transition-colors w-5 h-5 z-10" />
-                <Input
-                  type="password"
-                  placeholder="••••••••"
-                  className="h-14 pl-12 rounded-2xl border-white/40 bg-white/50 focus:bg-white focus:border-[#BB9E7A] focus:ring-4 focus:ring-[#BB9E7A]/10 transition-[color,background-color,border-color,opacity,box-shadow,transform,filter] shadow-sm"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                />
+          <section className="flex flex-col justify-center px-7 py-10 sm:px-12 md:px-14 lg:px-16">
+            <m.div variants={itemVariants} className="mb-9">
+              <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-[#524F4A] text-white shadow-lg shadow-[#524F4A]/20">
+                <ShieldCheck size={24} strokeWidth={1.6} />
               </div>
+              <p className="mb-2 text-[9px] font-bold uppercase tracking-[0.28em] text-[#BB9E7A]">Acceso restringido</p>
+              <h2 className="text-4xl font-bold tracking-tighter text-[#524F4A]">Bienvenido</h2>
+              <p className="mt-2 text-sm leading-relaxed text-slate-500">Ingresa tus credenciales para administrar el portafolio de Husheniid.</p>
             </m.div>
 
-            <m.div variants={itemVariants}>
-              <Button
-                type="submit"
-                className="relative w-full h-14 rounded-2xl bg-[#524F4A] hover:bg-[#BB9E7A] text-white font-bold transition-[color,background-color,border-color,opacity,box-shadow,transform,filter] duration-500 shadow-xl shadow-[#524F4A]/20 overflow-hidden group active:scale-[0.98]"
-                disabled={loading}
-              >
-                <div className="absolute inset-0 bg-white/20 translate-y-[100%] group-hover:translate-y-[0%] transition-transform duration-500 ease-out" />
-                <div className="relative z-10 flex items-center justify-center">
-                  {loading ? (
-                    <Loader2 className="animate-spin w-5 h-5" />
-                  ) : (
-                    <span className="tracking-[0.2em] uppercase text-[10px]">Autenticar en el Sistema</span>
-                  )}
+            <form onSubmit={handleLogin} className="space-y-5">
+              <m.div variants={itemVariants} className="space-y-2">
+                <Label className="ml-1 text-[9px] font-bold uppercase tracking-[0.2em] text-[#524F4A]/60">Correo electrónico</Label>
+                <div className="group relative">
+                  <Mail className="absolute left-4 top-1/2 z-10 h-5 w-5 -translate-y-1/2 text-slate-400 transition-colors group-focus-within:text-[#BB9E7A]" />
+                  <Input
+                    type="email"
+                    autoComplete="email"
+                    placeholder="usuario@correo.com"
+                    className="h-14 rounded-2xl border-[#DBD8D3] bg-white pl-12 text-[#524F4A] shadow-sm transition-all placeholder:text-slate-300 focus:border-[#BB9E7A] focus:ring-4 focus:ring-[#BB9E7A]/10"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                  />
                 </div>
-              </Button>
-            </m.div>
-          </form>
+              </m.div>
 
-          {/* FOOTER DEL FORM */}
-          <m.div variants={itemVariants} className="mt-10 pt-8 border-t border-white/40 text-center">
-            <p className="text-[#524F4A]/40 text-[9px] font-bold uppercase tracking-[0.3em]">
-              Husheniid Studio &copy; {new Date().getFullYear()}
-            </p>
-          </m.div>
+              <m.div variants={itemVariants} className="space-y-2">
+                <Label className="ml-1 text-[9px] font-bold uppercase tracking-[0.2em] text-[#524F4A]/60">Contraseña</Label>
+                <div className="group relative">
+                  <Lock className="absolute left-4 top-1/2 z-10 h-5 w-5 -translate-y-1/2 text-slate-400 transition-colors group-focus-within:text-[#BB9E7A]" />
+                  <Input
+                    type={showPassword ? "text" : "password"}
+                    autoComplete="current-password"
+                    placeholder="••••••••"
+                    className="h-14 rounded-2xl border-[#DBD8D3] bg-white pl-12 pr-12 text-[#524F4A] shadow-sm transition-all placeholder:text-slate-300 focus:border-[#BB9E7A] focus:ring-4 focus:ring-[#BB9E7A]/10"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                  />
+                  <button
+                    type="button"
+                    aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+                    aria-pressed={showPassword}
+                    title={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+                    onClick={() => setShowPassword((visible) => !visible)}
+                    className="absolute right-4 top-1/2 z-10 -translate-y-1/2 rounded-md p-1 text-slate-400 transition-colors hover:text-[#BB9E7A] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#BB9E7A]"
+                  >
+                    {showPassword ? <EyeOff className="h-5 w-5" aria-hidden="true" /> : <Eye className="h-5 w-5" aria-hidden="true" />}
+                  </button>
+                </div>
+              </m.div>
+
+              <m.div variants={itemVariants} className="pt-2">
+                <Button
+                  type="submit"
+                  className="group relative h-14 w-full overflow-hidden rounded-2xl bg-[#524F4A] font-bold text-white shadow-xl shadow-[#524F4A]/20 transition-all duration-500 hover:bg-[#BB9E7A] active:scale-[0.98]"
+                  disabled={loading}
+                >
+                  <div className="absolute inset-0 translate-y-full bg-white/15 transition-transform duration-500 group-hover:translate-y-0" />
+                  <div className="relative z-10 flex items-center justify-center">
+                    {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : <span className="text-[10px] uppercase tracking-[0.2em]">Ingresar al panel</span>}
+                  </div>
+                </Button>
+              </m.div>
+            </form>
+
+            <m.div variants={itemVariants} className="mt-9 border-t border-[#DBD8D3]/70 pt-6">
+              <p className="text-center text-[8px] font-bold uppercase tracking-[0.28em] text-[#524F4A]/35">Husheniid Studio &copy; {new Date().getFullYear()}</p>
+            </m.div>
+          </section>
         </m.div>
       </m.div>
     </div>
